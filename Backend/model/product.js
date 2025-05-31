@@ -15,7 +15,17 @@ const productSchema = new mongoose.Schema({
     },
     category:{
         type: String,
-        enum: ["men", "women"],    
+        enum: ["T-shirt", "Shirt", "Jeans", "Shorts"],    
+        required: true,
+    },
+    genderType:{
+        type: String,
+        enum: ["Men", "Women", "Unisex"],
+        required: true,
+    },
+    size:{
+        type: String,
+        enum: ["S", "M", "L", "XL", "XXL"],
         required: true,
     },
     image:{
