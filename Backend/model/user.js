@@ -37,7 +37,16 @@ const userSchema = new mongoose.Schema({
     updatedAt:{
         type: Date,
         default: Date.now,
-    }
+    },
+    cart:{
+        type: Array,
+        default: [],
+    },
+    wishlist:{
+        type: Array,
+        default: [],
+    },
+    
 })
 
 module.exports = mongoose.model("User", userSchema);
