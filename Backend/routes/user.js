@@ -8,6 +8,7 @@ const Order = require("../model/order");
 const Payment = require("../model/payment");
 const router = express.Router();
 
+// Normal Signup
 router.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -36,7 +37,7 @@ router.post("/signup", async (req, res) => {
             httpOnly: true,
             secure: true,
             maxAge: 3600000,
-          }); // for development mode          
+          }); // for development mode
           res.status(201).json({
             message: "User created successfully",
             token: token,
@@ -46,6 +47,42 @@ router.post("/signup", async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+// Google login/Signup
+router.post("/google-login", async (req, res) => {
+  try {
+    const { name, email, avatar, googleId } = req.body;
+
+    // check if user already exists
+    let user = await userModel.findOne({ $or: [{ email }, { googleId }] });
+    if (!user) {
+      user = await userModel.create({
+        name,
+        email,
+        googleId,
+        avatar,
+      });
+    } else {
+      // update the existing user's google Id if not set
+      if (!user.googleId) {
+        user.googleId = googleId;
+        await user.save();
+      }
+    }
+
+    // generate token
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET_KEY
+    );
+    res.status(200).json({
+      message: "User logged in successfully",
+      token: token,
+    });
+  } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 });
