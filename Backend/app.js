@@ -4,6 +4,9 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/product");
+const deliveryAddressRoutes = require("./routes/deliveryAddress");
+const orderRoutes = require("./routes/order");
+const cartRoutes = require("./routes/cart");
 require("dotenv").config();
 const app = express();
 
@@ -14,7 +17,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use('/user', userRoutes);
 app.use('/product', productRoutes);
-
+app.use('/delivery-address', deliveryAddressRoutes);
+app.use('/order', orderRoutes);
+app.use('/cart', cartRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);

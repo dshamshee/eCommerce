@@ -82,7 +82,7 @@ router.get('/getProductByType/:type', async(req, res)=>{
         // check which one is on params category or genderType
         const type = req.params.type;
         let products;
-        if(type === "T-shirt" || type === "Jeans"){
+        if(type === "T-shirt" || type === "Jeans" || type === "Shirt"){
             products = await productModel.find({category: type});
         }else if(type === "Men" || type === "Women"){
             products = await productModel.find({genderType: type});

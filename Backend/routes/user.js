@@ -87,6 +87,7 @@ router.post("/google-login", async (req, res) => {
   }
 });
 
+// Normal login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;

@@ -30,11 +30,11 @@ router.post('/add-to-cart', isLoggedIn, async(req, res)=>{
             // check if product already in cart
             const existingProduct = cart.products.find(p=>p.productId.toString() === productId);
             if(existingProduct){
-                existingProduct.quantity += quantity;
-                cart.totalPrice += product.price * quantity;
+                existingProduct.quantity += parseInt(quantity);
+                cart.totalPrice += product.price * parseInt(quantity);
             }else{
                 cart.products.push({productId, quantity});
-                cart.totalPrice += product.price * quantity;
+                cart.totalPrice += product.price * parseInt(quantity);
             }
         }
         await cart.save();
@@ -94,8 +94,16 @@ router.post('/update-cart-item', isLoggedIn, async(req, res)=>{
         }
 
         // update quantity
-        existingProduct.quantity = quantity;
-        cart.totalPrice = product.price * quantity;
+        existingProduct.quantity = parseInt(quantity);
+        
+        // Calculate total price by summing up all products in cart
+        let totalPrice = 0;
+        for (const item of cart.products) {
+            const productDetails = await productModel.findById(item.productId);
+            totalPrice += productDetails.price * item.quantity;
+        }
+        cart.totalPrice = totalPrice;
+        
         await cart.save();
 
         return res.status(200).json({
