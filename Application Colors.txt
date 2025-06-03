@@ -1,0 +1,10 @@
+Components                  Feilds        Dark Mode             Light Mode
+
+Navbar, Headers, Footers => Background => bg-gray-900           bg-white
+Cards, Sections          => Background => bg-gray-800           bg-gray-50
+Buttons, Highlights      => Background => bg-rose-500           bg-rose-600
+Primary Text             => Text Color => text-gray-100         text-gray-900
+Secondary Text           => Text Color => text-gray-400         text-gray-600
+Main Background          => Background => bg-gray-950           bg-gray-100
+Interactive Elements     => Hover      => hover:bg-rose-600     hover:bg-rose-500
+Borders                  => Color      => border-gray-800	    border-gray-200
