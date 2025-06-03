@@ -6,11 +6,12 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 // Create order
 router.post("/create-order", isLoggedIn, async(req, res)=>{
     try {
-        const {products, totalAmount} = req.body;
+        const {products, totalAmount, deliveryAddress} = req.body;
         const order = await orderModel.create({
             userId: req.user._id,
             products, // array of product ids
             totalAmount,
+            deliveryAddress, // delivery address id
         });
         return res.status(200).json({message: "Order created successfully", order});
     } catch (error) {
@@ -60,7 +61,7 @@ router.post('/update-order-status/:id', isLoggedIn, async(req, res)=>{
 })
 
 // Delete order | only for admin 
-router.delete('/delete-order/:id', isLoggedIn, async(req, res)=>{
+router.get('/delete-order/:id', isLoggedIn, async(req, res)=>{
 
     try {
         if(req.user.role !== "admin"){

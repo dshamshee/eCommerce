@@ -14,6 +14,11 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    deliveryAddress:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "DeliveryAddress",
+        required: true,
+    },
     status:{
         type: String,
         enum: ["pending", "confirmed", "shipped", "delivered", "cancelled"],
