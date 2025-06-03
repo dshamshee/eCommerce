@@ -1,3 +1,5 @@
+import profile from "../assets/profile.png"
+
 export const Header = () => {
   return (
     <div className="mainContainer text-gray-100">
@@ -21,8 +23,9 @@ export const Header = () => {
             </ul>
           </div>
 
+
           {/* Cart & Profile Section */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center">
             <div className="dropdown dropdown-end dark:text-gray-100 text-gray-900">
               <div
                 tabIndex={0}
@@ -72,7 +75,8 @@ export const Header = () => {
                 <div className="w-10 rounded-full">
                   <img
                     alt="Tailwind CSS Navbar component"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                    // src="https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                    src={profile}
                   />
                 </div>
               </div>

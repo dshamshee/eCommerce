@@ -3,17 +3,15 @@ import { Header } from "../Sections/Header";
 import { Footer } from "../Sections/Footer";
 
 export const MainLayout = () => {
-
-  
     return (
-      <section className="w-screen h-screen flex flex-col">
+      <section className="min-h-screen flex flex-col overflow-x-hidden">
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
           <Header />
         </div>
-        <main className="flex-1 mt-[80px] mb-[60px] overflow-y-auto">
+        <main className="flex-grow mt-16">
           <Outlet />
         </main>
-        <div className="fixed bottom-0 left-0 right-0 bg-background">
+        <div>
           <Footer />
         </div>
       </section>
@@ -22,7 +20,7 @@ export const MainLayout = () => {
   
   export const SimpleLayout = () => {
     return (
-      <section className="w-screen h-screen flex-grow">
+      <section className="min-h-screen flex-grow overflow-x-hidden">
         <Outlet />
       </section>
     );
