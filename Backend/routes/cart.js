@@ -117,14 +117,14 @@ router.post('/update-cart-item', isLoggedIn, async(req, res)=>{
 
 
 // Remove cart item (send productId)
-router.post('/remove-cart-item', isLoggedIn, async(req, res)=>{
+router.get('/remove-cart-item/:id', isLoggedIn, async(req, res)=>{
 
     try {
-        const {productId} = req.body;
+        const {id} = req.params;
         const userId = req.user._id;
 
         // check if product exists
-        const product = await productModel.findById(productId);
+        const product = await productModel.findById(id);
         if(!product){
             return res.status(404).json({message: "Product not found"});
         }
@@ -136,13 +136,13 @@ router.post('/remove-cart-item', isLoggedIn, async(req, res)=>{
         }
 
         // check if product is in cart
-        const existingProduct = cart.products.find(p=>p.productId.toString() === productId);
+        const existingProduct = cart.products.find(p=>p.productId.toString() === id);
         if(!existingProduct){
             return res.status(404).json({message: "Product not in cart"});
         }
 
         // remove product from cart
-        cart.products = cart.products.filter(p=>p.productId.toString() !== productId);
+        cart.products = cart.products.filter(p=>p.productId.toString() !== id);
         cart.totalPrice -= product.price * existingProduct.quantity;
         await cart.save();
 
