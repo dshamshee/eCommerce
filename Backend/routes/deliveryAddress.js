@@ -26,7 +26,7 @@ router.post('/add-delivery-address', isLoggedIn, async(req, res)=>{
 
 
 // Get all Delivery Addresses
-router.get('/get-all-deliver-addresses', isLoggedIn, async(req, res)=>{
+router.get('/get-all-delivery-addresses', isLoggedIn, async(req, res)=>{
 
     try {
         const deliveryAddresses = await deliveryAddressModel.find({userId: req.user._id});
