@@ -1,20 +1,25 @@
 import { AboutBrand } from "./AboutBrand";
 import { Collection_1 } from "./Collection-1";
 import { GridProducts } from "./GridProducts";
-import { useEffect, useState } from "react";
-import { getProducts } from "../API/productApi";
+// import { useEffect, useState } from "react";
+// import { getProducts } from "../API/POST-Axios/productApi";
+import { useGetProducts } from "../API/GET-SWR/product";
+
 
 
 export const Dashboard = () => {
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
+  const {allProducts, error, isLoading} = useGetProducts();
 
-  useEffect(() => {
-    (async () => {
-      let products = await getProducts();
-      setProducts(products.data.products);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     let products = await getProducts();
+  //     setProducts(products.data.products);
+  //   })();
+  // }, []);
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
 
   return (
@@ -46,8 +51,8 @@ export const Dashboard = () => {
       <hr className="mt-28 mb-5 dark:border-gray-700 border-gray-300"/>
 
       {/* Collection 1 */}
-      <Collection_1 products={products} />
-      <GridProducts products={products}/>
+      <Collection_1 products={allProducts} />
+      <GridProducts products={allProducts}/>
       <hr className="mt-28 mb-5 dark:border-gray-700 border-gray-300"/>
       <AboutBrand />
     </div>
