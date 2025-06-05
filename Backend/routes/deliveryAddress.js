@@ -56,6 +56,20 @@ router.post('/update-delivery-address/:id', isLoggedIn, async(req, res)=>{
     }
 })
 
+
+// Get Delivery Address by id
+router.get('/get-delivery-address/:id', isLoggedIn, async(req, res)=>{
+    try {
+        const deliveryAddress = await deliveryAddressModel.find({_id: req.params.id, userId: req.user._id});
+        if(!deliveryAddress){
+            return res.status(404).json({message: "Delivery address not found"});
+        }
+        return res.status(200).json({message: "Delivery address fetched successfully", deliveryAddress});
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+})
+
 // Delete Delivery Address
 router.get('/delete-delivery-address/:id', isLoggedIn, async(req, res)=>{
 

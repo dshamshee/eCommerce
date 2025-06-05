@@ -3,13 +3,13 @@ import { Collection_1 } from "./Collection-1";
 import { GridProducts } from "./GridProducts";
 // import { useEffect, useState } from "react";
 // import { getProducts } from "../API/POST-Axios/productApi";
-import { useGetProducts } from "../API/GET-SWR/product";
+import { GetProducts } from "../API/GET-SWR/product";
 
 
 
 export const Dashboard = () => {
   // const [products, setProducts] = useState([]);
-  const {allProducts, error, isLoading} = useGetProducts();
+  const {allProducts, error, isLoading} = GetProducts();
 
   // useEffect(() => {
   //   (async () => {

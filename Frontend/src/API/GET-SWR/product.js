@@ -1,9 +1,10 @@
 import useSWR from "swr";
 import { fetcher } from "./fetcher";
 
-export const useGetProducts = () => {
+// get all products
+export const GetProducts = () => {
     const { data, error, isLoading } = useSWR(
-      "/product/getProducts",
+      "/product/get-products",
       fetcher,
     );
   
@@ -13,3 +14,25 @@ export const useGetProducts = () => {
       isLoading,
     };
   }
+
+  // get product by id
+  export const GetProductById = (id)=>{
+
+    const {data, error, isLoading} = useSWR(`/product/get-product/${id}`, fetcher);
+    return{
+      product: data?.product,
+      error,
+      isLoading,
+    }
+  }
+
+  // get product by type (category or genderType)
+export const GetProductByType = (type)=>{
+
+  const {data, error, isLoading} = useSWR(`/product/get-product-by-type/${type}`, fetcher);
+  return{
+    products: data?.products,
+    error,
+    isLoading,
+  }
+}

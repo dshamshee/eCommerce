@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout, { SimpleLayout } from "./Layout/AppLoyout";
 import { Dashboard } from "./Pages/Dashboard";
 import { Login } from "./Auth/Login";
+import { GetReqTesting } from "./routesTesting/GetReqTesting";
 
 function App() {
 
@@ -13,6 +14,10 @@ function App() {
         {
           path: "/",
           element: <Dashboard />,
+        },
+        {
+          path: "/req-testing",
+          element: <GetReqTesting />,
         }
       ]
     },
