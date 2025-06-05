@@ -6,6 +6,8 @@ import { GetReqTesting } from "./routesTesting/GetReqTesting";
 import { Men } from "./Pages/products-section/Men";
 import { Women } from "./Pages/products-section/Women";
 import { Kids } from "./Pages/products-section/Kids";
+import { AddProduct } from "./admin/AddProduct";
+import { ToastContainer } from "react-toastify";
 
 function App() {
 
@@ -33,6 +35,10 @@ function App() {
         {
           path: "/kids",
           element: <Kids />,
+        },
+        {
+          path: "/add-product",
+          element: <AddProduct />,
         }
       ]
     },
@@ -55,7 +61,7 @@ function App() {
 
     <div className="dark:bg-gray-950 dark:text-gray-100 text-gray-900 bg-white">
       <RouterProvider router={router} />
-      {/* <ToastContainer /> */}
+      <ToastContainer />
     </div>
   )
 }

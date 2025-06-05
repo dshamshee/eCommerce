@@ -1,5 +1,4 @@
 import { GetProductByType } from "../../API/GET-SWR/product";
-import { GridProducts } from "../GridProducts";
 
 export const Men = () => {
   const { products, error, isLoading } = GetProductByType("Men");
@@ -16,138 +15,102 @@ export const Men = () => {
       </div>
     );
   }
+
   if (error) {
     return <div>Error: {error.message}</div>;
   }
 
   return (
     <div className="mainContainer">
-      <div className="innerContainer py-6 md:px-4 sm:px-6 lg:px-8 dark:bg-gray-950 bg-gray-100">
-        <div className="max-w-7xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold dark:text-gray-100 text-gray-900 mb-2">
-              Men's Collection
-            </h2>
-            <p className="text-lg dark:text-gray-400 text-gray-900">
-              Discover timeless elegance and contemporary style in our curated
-              men's collection. From refined essentials to statement pieces,
-              elevate your wardrobe with confidence.
-            </p>
-          </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">Men's Collection</h1>
+          <p className="text-gray-600 dark:text-gray-400">Discover our latest styles for men</p>
+        </div>
 
-          {/* Product Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6 gap-2">
-            {products.map((product) => (
-              <div
-                key={product._id}
-                className="group relative dark:bg-gray-900 bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300"
-              >
-                {/* Product Badges */}
-                <div className="absolute top-3 left-3 z-10 flex gap-2">
-                  {product.isNew && (
-                    <span className="dark:bg-green-900 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                      New
-                    </span>
-                  )}
-                  {product.isBestSeller && (
-                    <span className="dark:bg-blue-900 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                      Bestseller
-                    </span>
-                  )}
-                </div>
+        {/* Search Bar */}
+        <div className="relative mb-8">
+          <input 
+            type="text" 
+            placeholder="Search for men's clothing..." 
+            className="w-full p-4 pl-12 rounded-lg border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-blue-500"
+          />
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
 
-                {/* Product Image */}
-                <div className="aspect-square overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-
-                {/* Product Info */}
-                <div className="p-4">
-                  <h3 className="md:text-lg text-xs text-nowrap overflow-hidden text-ellipsis whitespace-nowrap font-medium dark:text-gray-100 text-gray-900 mb-1">
-                    {product.name}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="md:text-sm text-xs dark:text-gray-400 text-gray-900 mb-1 text-nowrap overflow-hidden text-ellipsis whitespace-nowrap">
-                    {product.description}
-                  </p>
-
-                  {/* Price */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="md:text-lg text-sm font-bold dark:text-gray-100 text-gray-900">
-                      ${product.price.toFixed(2)}
-                    </span>
-                    {product.discount && (
-                      <span className="text-sm dark:text-gray-400 text-gray-900 line-through">
-                        ${product.discount.toFixed(2)}
-                      </span>
-                    )}
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {products.map((product, index) => (
+            <div key={index} className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+              <figure className="relative cursor-pointer">
+                <img 
+                  src={`${product.image}`} 
+                  alt="Fashion item" 
+                  className="w-full h-[400px] object-cover"
+                />
+                {index % 3 === 0 && (
+                  <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
+                    New Arrival
                   </div>
-
-                  {/* Color/Size Options */}
-                  <div className="mb-4">
-                    {product.colors && (
-                      <div className="flex items-center gap-1 mb-2">
-                        <span className="text-sm dark:text-gray-400 text-gray-900">
-                          Colors:
-                        </span>
-                        <div className="flex gap-1">
-                          {product.colors.map((color, i) => (
-                            <div
-                              key={i}
-                              className="w-4 h-4 rounded-full border dark:border-gray-700 border-gray-300"
-                              style={{ backgroundColor: color }}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {product.sizes && (
-                      <div className="flex items-center gap-1">
-                        <span className="text-sm dark:text-gray-400 text-gray-900">
-                          Sizes:
-                        </span>
-                        <div className="flex gap-1">
-                          {product.sizes.map((size, i) => (
-                            <span
-                              key={i}
-                              className="text-xs px-1.5 py-0.5 dark:bg-gray-700 bg-gray-300 rounded"
-                            >
-                              {size}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                )}
+                {index % 4 === 0 && (
+                  <div className="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm">
+                    Best Seller
                   </div>
-
-                  {/* Quick Actions */}
-                  {/* <div className="flex gap-2 md:flex-row flex-col">
-                    <button className="hidden md:block flex-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:py-2 md:px-4 border dark:border-gray-700 border-gray-300 py-1 px-2 dark:bg-orange-700 dark:text-gray-100 text-gray-900 font-medium rounded dark:hover:bg-orange-900 bg-orange-400 hover:bg-orange-500 transition-colors">
-                      Buy Now
+                )}
+              </figure>
+              <div className="card-body">
+                <div className="flex justify-between items-start">
+                  <h2 className="card-title text-lg">{product.name}</h2>
+                  <div className="flex flex-col items-end">
+                    <span className="text-xl font-bold text-blue-600">$89.99</span>
+                    <span className="text-sm line-through text-gray-400">Rs {product.price}</span>
+                    <span className="text-xs text-green-500">-30% OFF</span>
+                  </div>
+                </div>
+                <p className="text-gray-600 dark:text-gray-400 text-sm text-nowrap overflow-hidden text-ellipsis">{product.description}</p>
+                
+                {/* Sizes */}
+                <div className="flex gap-2 mt-3">
+                  {['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
+                    <button 
+                      key={size}
+                      className="w-8 h-8 rounded-full border border-gray-300 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900 transition-colors flex items-center justify-center text-sm"
+                    >
+                      {size}
                     </button>
-                    <button className="md:py-2 py-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:px-3 px-2 border dark:border-gray-700 border-gray-300 font-medium rounded dark:hover:bg-primary  hover:bg-blue-300 transition-colors">
-                      Add to Cart
-                    </button>
-                  </div> */}
+                  ))}
+                </div>
+                
+                <div className="card-actions justify-end mt-4">
+                  <button className="btn btn-primary bg-blue-500 hover:bg-blue-600 border-none">
+                    Add to Cart
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
-
-          {/* View All Button */}
-          {/* <div className="text-center mt-10">
-          <button className="px-6 py-3 border cursor-pointer dark:border-gray-700 border-gray-300 text-sm font-medium rounded hover:bg-gray-900 hover:text-white transition-colors">
-            View All Products
-          </button>
-        </div> */}
+            </div>
+          ))}
         </div>
+
+        {/* Filter Section */}
+        {/* <div className="flex flex-wrap gap-4 mb-8">
+          <select className="select select-bordered w-full max-w-xs">
+            <option disabled selected>Category</option>
+            <option>Shirts</option>
+            <option>Pants</option>
+            <option>Suits</option>
+            <option>Accessories</option>
+          </select>
+
+          <select className="select select-bordered w-full max-w-xs">
+            <option disabled selected>Sort By</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Newest First</option>
+          </select>
+        </div> */}
       </div>
     </div>
   );
