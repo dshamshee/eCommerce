@@ -27,7 +27,7 @@ export const DeleteUser = ()=>{
 export const LogoutUser = ()=>{
     const {data, error, isLoading} = useSWR("/user/logout", fetcher);
     return{
-        data,
+        logout:data,
         error,
         isLoading,
     }

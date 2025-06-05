@@ -1,8 +1,13 @@
 import profile from "../assets/profile.png";
 import brandLogoWhite from "../assets/brand-logo-white.png";
 import brandLogoBlack from "../assets/brand-logo-black.png";
+import { useNavigate } from "react-router-dom";
 
 export const HeaderMD = ()=>{
+
+  const navigate = useNavigate();
+
+
     return(
         <div className="innerContainer hidden md:block">
         <div className="navbar bg-white dark:bg-gray-900 shadow-sm flex justify-between px-5">
@@ -101,18 +106,35 @@ export const HeaderMD = ()=>{
                 className="menu menu-sm dropdown-content dark:bg-gray-800 dark:text-gray-100 text-gray-900 bg-gray-50 rounded-lg rounded-box z-1 mt-3 w-52 p-2 shadow"
               >
                 <li>
-                  <a className="justify-between">
-                    Profile
-                    <span className="badge bg-rose-500 dark:text-gray-100 text-white">
+                  <a className="items-start flex flex-col">
+                    <div className="w-full">
+                      <h1 className="dark:text-gray-100 text-gray-900 font-semibold text-lg text-center">Welcome User</h1>
+                      <p className="text-sm dark:text-gray-400 text-gray-600 text-center">hello@gmail.com</p>
+                    </div>
+                    {/* <span className="badge bg-rose-500 dark:text-gray-100 text-white">
                       New
-                    </span>
+                    </span> */}
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a>Settings</a>
-                </li>
+                </li> */}
                 <li>
-                  <a>Logout</a>
+                  {
+                    localStorage.getItem('token')
+                    ? <a
+                    className="text-rose-500 hover:text-rose-600"
+                     onClick={()=>{
+                      localStorage.removeItem('token');
+                      navigate('/');
+                    }}>Logout</a> 
+
+                    : <a
+                    className=" mt-2 btn-warning btn btn-xs text-lg font-semibold"
+                     onClick={()=>{
+                      navigate('/login');
+                    }}>Login</a>
+                  }
                 </li>
               </ul>
             </div>

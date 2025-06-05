@@ -3,6 +3,9 @@ import MainLayout, { SimpleLayout } from "./Layout/AppLoyout";
 import { Dashboard } from "./Pages/Dashboard";
 import { Login } from "./Auth/Login";
 import { GetReqTesting } from "./routesTesting/GetReqTesting";
+import { Men } from "./Pages/products-section/Men";
+import { Women } from "./Pages/products-section/Women";
+import { Kids } from "./Pages/products-section/Kids";
 
 function App() {
 
@@ -18,6 +21,18 @@ function App() {
         {
           path: "/req-testing",
           element: <GetReqTesting />,
+        },
+        {
+          path: "/men",
+          element: <Men />,
+        },
+        {
+          path: "/women",
+          element: <Women />,
+        },
+        {
+          path: "/kids",
+          element: <Kids />,
         }
       ]
     },

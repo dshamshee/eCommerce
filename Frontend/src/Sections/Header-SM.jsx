@@ -1,6 +1,7 @@
-
+import { useNavigate } from "react-router-dom";
 
 export const HeaderSM = () => {
+  const navigate = useNavigate();
   return (
     <div className="innerContainer md:hidden">
       <div className="navbar bg-white dark:bg-gray-900 shadow-sm">
@@ -72,7 +73,19 @@ export const HeaderSM = () => {
           <li><a>Women</a></li>
           <li><a>Kids</a></li>
           <li><a>Profile</a></li>
-          <li><a>Logout</a></li>
+          <li>
+                  {
+                    localStorage.getItem('token')
+                    ? <a onClick={()=>{
+                      localStorage.removeItem('token');
+                      navigate('/');
+                    }}>Logout</a> 
+
+                    : <a onClick={()=>{
+                      navigate('/login');
+                    }}>Login</a>
+                  }
+                </li>
         </ul>
       </div>
     </div>

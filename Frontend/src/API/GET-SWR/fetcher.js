@@ -8,7 +8,13 @@
 // });
 
 export const fetcher = async (url) => {
-    const res = await fetch(`${import.meta.env.VITE_AXIOS_BASE_URI}${url}`);
+  const token = localStorage.getItem('token');
+    const res = await fetch(`${import.meta.env.VITE_AXIOS_BASE_URI}${url}`, {
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      }
+    });
     // const res = await baseUrl.get(`${url}`);
   
     if (!res.ok) {

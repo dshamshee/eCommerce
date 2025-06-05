@@ -1,0 +1,5 @@
+add sizes array on product model: sizes[]
+add discount on product model: discount-%
+add colors on product model: colors[]
+add isNew on product model : isNew: true/false
+add isBestSeller on product mode: isBestSeller: true/false
