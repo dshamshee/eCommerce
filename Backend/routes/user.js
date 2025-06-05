@@ -123,7 +123,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/getUser", isLoggedIn, async (req, res) => {
+router.get("/get-user", isLoggedIn, async (req, res) => {
   try {
     res.status(200).json({
       message: "User fetched successfully",
@@ -134,7 +134,7 @@ router.get("/getUser", isLoggedIn, async (req, res) => {
   }
 });
 
-router.post("/updateuser", isLoggedIn, async (req, res) => {
+router.post("/update-user", isLoggedIn, async (req, res) => {
   try {
     // Get the update fields from request body
     const updates = req.body;
@@ -167,7 +167,7 @@ router.post("/updateuser", isLoggedIn, async (req, res) => {
   }
 });
 
-router.get("/deleteUser", isLoggedIn, async (req, res) => {
+router.get("/delete-User", isLoggedIn, async (req, res) => {
   // Start a new session for the transaction
   const session = await mongoose.startSession();
   session.startTransaction();

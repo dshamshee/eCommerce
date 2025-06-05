@@ -4,7 +4,7 @@ const productModel = require("../model/product");
 const isLoggedIn = require("../middleware/isLoggedIn");
 // const user = require("../model/user");
 
-router.post("/addproduct", isLoggedIn,async(req, res)=>{
+router.post("/add-product", isLoggedIn,async(req, res)=>{
 
     try {
         const {name, description, price, category, genderType, size, image, stock} = req.body;
@@ -29,7 +29,7 @@ router.post("/addproduct", isLoggedIn,async(req, res)=>{
     
 })
 
-router.get('/getProducts', async(req, res)=>{
+router.get('/get-products', async(req, res)=>{
     try {
         const products = await productModel.find();
         return res.status(200).json({
@@ -41,7 +41,7 @@ router.get('/getProducts', async(req, res)=>{
     }
 })
 
-router.get('/getProduct/:id', async (req, res)=>{
+router.get('/get-product/:id', async (req, res)=>{
     try {
         const product = await productModel.find({_id: req.params.id});
         if(!product) return res.status(404).json({message: "Product not found"});
@@ -54,7 +54,7 @@ router.get('/getProduct/:id', async (req, res)=>{
     }
 })
 
-router.post('/updateProduct/:id', isLoggedIn, async(req, res)=>{
+router.post('/update-product/:id', isLoggedIn, async(req, res)=>{
     
     try {
         const {name, description, price, category, image, stock} = req.body;
@@ -76,7 +76,7 @@ router.post('/updateProduct/:id', isLoggedIn, async(req, res)=>{
     }
 })
 
-router.get('/getProductByType/:type', async(req, res)=>{
+router.get('/get-product-by-type/:type', async(req, res)=>{
 
     try {
         // check which one is on params category or genderType
