@@ -2,6 +2,8 @@
 
 export const Collection_1 = ({products}) => {
 
+  let imageUrl = `${import.meta.env.VITE_SERVER_PROXY_URI}/images/`;
+
 
   return (
     <div className="mainContainer mt-20">
@@ -17,7 +19,7 @@ export const Collection_1 = ({products}) => {
           {
             // only 7 products are shown in the carousel
             products.slice(0, 7).map((product) => {
-              return <CarouseItem image={product.image} key={product._id} />;
+              return <CarouseItem image={product.image.includes('http') ? product.image : product.image = imageUrl + product.image} key={product._id} />;
             })
           }
         </div>

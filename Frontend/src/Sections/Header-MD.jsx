@@ -29,13 +29,13 @@ export const HeaderMD = ()=>{
           <div className="flex w-[50%]">
             <ul className="w-full flex flex-row justify-evenly items-center ">
               <li className="text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer">
-                <a>Home</a>
+                <a href="/">Home</a>
               </li>
               <li className="text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer">
-                <a>Men</a>
+                <a href="/men">Men</a>
               </li>
               <li className="text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer">
-                <a>Women</a>
+                <a href="/women">Women</a>
               </li>
               <li className="text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer">
                 <a>Kids</a>

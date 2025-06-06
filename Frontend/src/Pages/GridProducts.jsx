@@ -1,5 +1,7 @@
 export const GridProducts = ({products})=>{
 
+    let imageUrl = `${import.meta.env.VITE_SERVER_PROXY_URI}/images/`;
+
     return(
 
         <div className="mainContainer">
@@ -13,7 +15,8 @@ export const GridProducts = ({products})=>{
 
         {/* Product Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6 gap-2">
-          {products.map((product) => (
+          {/* only 8 products are shown in the grid in future change the range (8,16) */}
+          {products.slice(0, 8).map((product) => (
             <div 
               key={product._id} 
               className="group relative dark:bg-gray-900 bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300"
@@ -35,7 +38,7 @@ export const GridProducts = ({products})=>{
               {/* Product Image */}
               <div className="aspect-square overflow-hidden">
                 <img
-                  src={product.image}
+                  src={product.image.includes('http') ? product.image : product.image = imageUrl + product.image}
                   alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

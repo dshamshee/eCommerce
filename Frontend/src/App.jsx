@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout, { SimpleLayout } from "./Layout/AppLoyout";
 import { Dashboard } from "./Pages/Dashboard";
 import { Login } from "./Auth/Login";
+import { Signup } from "./Auth/Signup";
 import { GetReqTesting } from "./routesTesting/GetReqTesting";
 import { Men } from "./Pages/products-section/Men";
 import { Women } from "./Pages/products-section/Women";
@@ -51,6 +52,10 @@ function App() {
         {
           path: "/login",
           element: <Login />,
+        },
+        {
+          path: "/signup",
+          element: <Signup />,
         }
       ]
     }

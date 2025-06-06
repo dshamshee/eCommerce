@@ -6,33 +6,32 @@ const upload = require("../config/multer_config");
 // const user = require("../model/user");
 
 router.post("/add-product", isLoggedIn, upload.single("image"), async(req, res)=>{
-
     try {
-        const {name, description, price, category, genderType, sizes, stock, discount, colors, isNew, isBestSeller} = req.body;
         if(req.user.role !== "admin") return res.status(403).json({message: "You are not authorized to add a product"});
         const product = await productModel.create({
-            name,
-            description,
-            price,
-            category,
-            genderType,
-            sizes,
+            name: req.body.name,
+            description: req.body.description,
+            price: parseFloat(req.body.price),
+            category: req.body.category,
+            genderType: req.body.genderType,
+            sizes: req.body.sizes,
             image: req.file.filename,
-            stock,
-            discount,
-            colors,
-            isNewProduct:isNew, // backend me isNew ek keyword product model me isNewProduct name rakhe hai 
-            isBestSeller
-        })
+            stock: parseInt(req.body.stock),
+            discount: parseFloat(req.body.discount) || 0,
+            colors: req.body.colors,
+            isNewProduct: req.body.isNew === 'true', 
+            isBestSeller: req.body.isBestSeller === 'true'
+        });
+        
         return res.status(201).json({
             message: "Product added successfully",
             product
-        })
+        });
     } catch (error) {
+        console.error('Error adding product:', error);
         return res.status(500).json({message: error.message});
     }
-    
-})
+});
 
 router.get('/get-products', async(req, res)=>{
     try {

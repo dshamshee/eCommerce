@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema({
             return !this.googleId; // Password is required only if googleId is not present
         },
     },
+    phone:{
+        type: Number,
+        required: true,
+        unique: true,
+    },
     googleId: {
         type: String,
         sparse: true, // Allows null/undefined values

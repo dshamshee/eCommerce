@@ -1,19 +1,46 @@
+import { useState } from "react";
 import { GetProductByType } from "../../API/GET-SWR/product";
+import { ProductSkeleton } from "./ProductSceleton";
 
 export const Men = () => {
   const { products, error, isLoading } = GetProductByType("Men");
+  const [searchInput, setSearchInput] = useState("");
+  
+  
+  let imageUrl = `${import.meta.env.VITE_SERVER_PROXY_URI}/images/`;
+
+  let filterdata = !!products && products.filter((product)=>{
+    return product.name.toString().toLowerCase().includes(searchInput.toLowerCase())
+   })
+   console.log(filterdata)
+
+
+  const handleProductDetails = (id)=>{
+    console.log(id)
+  }
 
   if (isLoading) {
     return (
-      <div className="mainContainer flex justify-center items-center h-screen">
-        <div className="flex w-52 flex-col gap-4">
-          <div className="skeleton h-32 w-full"></div>
-          <div className="skeleton h-4 w-28"></div>
-          <div className="skeleton h-4 w-full"></div>
-          <div className="skeleton h-4 w-full"></div>
-        </div>
+      <div className="mainContainer flex gap-10 justify-center items-center h-screen">
+       <ProductSkeleton />
+       <ProductSkeleton />
+       <ProductSkeleton />
       </div>
     );
+  }
+
+  if(filterdata.length === 0){
+    return <div className="mainContainer flex flex-col gap-5 justify-center items-center h-screen">
+      <div className="skeletons flex gap-10">
+      <ProductSkeleton/>
+      <ProductSkeleton/>
+      <ProductSkeleton/>
+      </div>
+      <div className="text text-gray-500 text-center dark:text-gray-400 w-[300px]">
+        <div className="text-2xl font-bold">No products found</div>
+        <a href="/men" className="text-center hover:text-blue-300">Back</a>
+      </div>
+    </div>
   }
 
   if (error) {
@@ -30,7 +57,9 @@ export const Men = () => {
 
         {/* Search Bar */}
         <div className="relative mb-8">
-          <input 
+          <input
+            onChange={(e)=>{setSearchInput(e.target.value)}} 
+            value={searchInput}
             type="text" 
             placeholder="Search for men's clothing..." 
             className="w-full p-4 pl-12 rounded-lg border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-blue-500"
@@ -42,11 +71,11 @@ export const Men = () => {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product, index) => (
+          {filterdata.map((product, index) => (
             <div key={index} className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-              <figure className="relative cursor-pointer">
+              <figure className="relative cursor-pointer" onClick={()=>{handleProductDetails(product._id)}}>
                 <img 
-                  src={`${product.image}`} 
+                  src={product.image.includes('http') ? product.image : product.image = imageUrl + product.image} 
                   alt="Fashion item" 
                   className="w-full h-[400px] object-cover"
                 />
@@ -65,9 +94,9 @@ export const Men = () => {
                 <div className="flex justify-between items-start">
                   <h2 className="card-title text-lg">{product.name}</h2>
                   <div className="flex flex-col items-end">
-                    <span className="text-xl font-bold text-blue-600">$89.99</span>
-                    <span className="text-sm line-through text-gray-400">Rs {product.price}</span>
-                    <span className="text-xs text-green-500">-30% OFF</span>
+                    <span className="text-xl font-bold text-blue-600">{product.price-product.discount}</span>
+                    <span className="text-sm line-through text-gray-400">{product.discount ? `Rs ${product.discount}` : `Rs 00` }</span>
+                    <span className="text-xs text-green-500">-{Math.floor((product.discount/product.price)*100)}% OFF</span>
                   </div>
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 text-sm text-nowrap overflow-hidden text-ellipsis">{product.description}</p>

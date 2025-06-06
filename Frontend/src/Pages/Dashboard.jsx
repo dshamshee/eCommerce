@@ -1,6 +1,7 @@
 import { AboutBrand } from "./AboutBrand";
 import { Collection_1 } from "./Collection-1";
 import { GridProducts } from "./GridProducts";
+import { ProductSkeleton } from "./products-section/ProductSceleton";
 // import { useEffect, useState } from "react";
 // import { getProducts } from "../API/POST-Axios/productApi";
 import { GetProducts } from "../API/GET-SWR/product";
@@ -11,6 +12,7 @@ export const Dashboard = () => {
   // const [products, setProducts] = useState([]);
   const {allProducts, error, isLoading} = GetProducts();
 
+
   // useEffect(() => {
   //   (async () => {
   //     let products = await getProducts();
@@ -18,7 +20,15 @@ export const Dashboard = () => {
   //   })();
   // }, []);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return(
+      <div className="mainContainer flex gap-10 justify-center items-center h-screen">
+        <ProductSkeleton />
+        <ProductSkeleton />
+        <ProductSkeleton />
+      </div>
+    )
+  }
   if (error) return <div>Error: {error.message}</div>;
 
 

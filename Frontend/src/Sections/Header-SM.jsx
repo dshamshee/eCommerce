@@ -68,9 +68,9 @@ export const HeaderSM = () => {
         <ul
           tabIndex={0}
           className="menu dropdown-content dark:bg-gray-800 dark:text-gray-100 text-gray-900 bg-gray-50 rounded-box z-1 mt-4 w-52 p-2 shadow-sm">
-          <li><a>Home</a></li>
-          <li><a>Men</a></li>
-          <li><a>Women</a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/men">Men</a></li>
+          <li><a href="/women">Women</a></li>
           <li><a>Kids</a></li>
           <li><a>Profile</a></li>
           <li>
