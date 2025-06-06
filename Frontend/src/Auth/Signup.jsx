@@ -148,7 +148,7 @@ export const Signup = ()=>{
                                         />
                                         <button
                                             type="button"
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                                             onClick={() => {
                                                 const passwordInput = document.getElementById('password');
                                                 const passwordIcon = document.getElementById('passwordIcon');
@@ -183,7 +183,7 @@ export const Signup = ()=>{
                                         />
                                         <button
                                             type="button"
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                                             onClick={() => {
                                                 const confirmPasswordInput = document.getElementById('confirmPassword');
                                                 const confirmPasswordIcon = document.getElementById('confirmPasswordIcon');

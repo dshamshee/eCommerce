@@ -9,9 +9,9 @@ import { Women } from "./Pages/products-section/Women";
 import { Kids } from "./Pages/products-section/Kids";
 import { AddProduct } from "./admin/AddProduct";
 import { ToastContainer } from "react-toastify";
+import { ProtectedRoute } from "./Layout/ProtectedRoute";
 
 function App() {
-
   const router = createBrowserRouter([
     {
       path: "/",
@@ -39,11 +39,10 @@ function App() {
         },
         {
           path: "/add-product",
-          element: <AddProduct />,
-        }
-      ]
+          element: <ProtectedRoute><AddProduct /></ProtectedRoute>,
+        },
+      ],
     },
-
 
     {
       path: "/",
@@ -56,19 +55,17 @@ function App() {
         {
           path: "/signup",
           element: <Signup />,
-        }
-      ]
-    }
-  ])
+        },
+      ],
+    },
+  ]);
 
-
-  return(
-
+  return (
     <div className="dark:bg-gray-950 dark:text-gray-100 text-gray-900 bg-white">
       <RouterProvider router={router} />
       <ToastContainer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
