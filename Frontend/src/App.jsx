@@ -49,7 +49,7 @@ function App() {
       element: <SimpleLayout />,
       children: [
         {
-          path: "/",
+          path: "/login",
           element: <Login />,
         }
       ]

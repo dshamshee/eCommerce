@@ -2,12 +2,13 @@ const express = require("express");
 const router = express.Router();
 const productModel = require("../model/product");
 const isLoggedIn = require("../middleware/isLoggedIn");
+const upload = require("../config/multer_config");
 // const user = require("../model/user");
 
-router.post("/add-product", isLoggedIn,async(req, res)=>{
+router.post("/add-product", isLoggedIn, upload.single("image"), async(req, res)=>{
 
     try {
-        const {name, description, price, category, genderType, size, image, stock} = req.body;
+        const {name, description, price, category, genderType, sizes, stock, discount, colors, isNew, isBestSeller} = req.body;
         if(req.user.role !== "admin") return res.status(403).json({message: "You are not authorized to add a product"});
         const product = await productModel.create({
             name,
@@ -15,9 +16,13 @@ router.post("/add-product", isLoggedIn,async(req, res)=>{
             price,
             category,
             genderType,
-            size,
-            image,
-            stock
+            sizes,
+            image: req.file.filename,
+            stock,
+            discount,
+            colors,
+            isNewProduct:isNew, // backend me isNew ek keyword product model me isNewProduct name rakhe hai 
+            isBestSeller
         })
         return res.status(201).json({
             message: "Product added successfully",

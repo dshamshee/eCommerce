@@ -13,6 +13,10 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    discount:{
+        type: Number,
+        default: 0,
+    },
     category:{
         type: String,
         enum: ["T-shirt", "Shirt", "Jeans", "Shorts"],    
@@ -23,10 +27,14 @@ const productSchema = new mongoose.Schema({
         enum: ["Men", "Women", "Unisex"],
         required: true,
     },
-    size:{
-        type: String,
-        enum: ["S", "M", "L", "XL", "XXL"],
+    sizes:{
+        type: [String],
+        enum: ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
         required: true,
+    },
+    colors:{
+        type: [String],
+        default: ["Black"],
     },
     image:{
         type: String,
@@ -35,6 +43,14 @@ const productSchema = new mongoose.Schema({
     stock:{
         type: Number,
         required: true,
+    },
+    isNewProduct:{
+        type: Boolean,
+        default: false,
+    },
+    isBestSeller:{
+        type: Boolean,
+        default: false,
     },
     createdAt:{
         type: Date,

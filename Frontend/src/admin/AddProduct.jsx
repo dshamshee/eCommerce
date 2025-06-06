@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { addProduct } from "../API/POST-Axios/productApi";
 
 export const AddProduct = ()=>{
     const [imagePreview, setImagePreview] = useState(null);
@@ -32,25 +33,26 @@ export const AddProduct = ()=>{
         }
     };
 
-    const handleSubmit = (e)=>{
+    const handleSubmit = async(e)=>{
         e.preventDefault();
         const formData = new FormData(e.target);
         const productData = {
             name: formData.get('name'),
             description: formData.get('description'),
             price: parseFloat(formData.get('price')),
-            gender: formData.get('gender'),
+            genderType: formData.get('genderType'),
             category: formData.get('category'),
             image: imagePreview, // Changed from formData.get('image') to imagePreview
             colors: formData.get('colors')?.split(',').map(c => c.trim()) || [],
             sizes: formData.get('sizes')?.split(',').map(s => s.trim()) || [],
             discount: parseFloat(formData.get('discount')) || 0,
             isNew: formData.get('isNew') === 'true',
-            isBestSeller: formData.get('isBestSeller') === 'true'
+            isBestSeller: formData.get('isBestSeller') === 'true',
+            stock: parseInt(formData.get('stock')) || 0
         };
 
         // Validate required fields
-        if (!productData.name || !productData.description || !productData.price || !productData.gender || !productData.category || !productData.image) {
+        if (!productData.name || !productData.description || !productData.price || !productData.genderType || !productData.category || !productData.image) {
             toast.error('Please fill in all required fields');
             return;
         }
@@ -67,8 +69,17 @@ export const AddProduct = ()=>{
             return;
         }
 
-        console.log(productData);
-        toast.success('Product added successfully');
+        // console.log(productData);
+
+        try {
+            const response = await addProduct(productData);
+            if(response.status === 201){
+                console.log(response);
+                toast.success('Product added successfully');
+            }
+        } catch (error) {
+            toast.error('Failed to add product', error.response.data.message);
+        }
     }
 
     return(
@@ -125,14 +136,14 @@ export const AddProduct = ()=>{
                                 Gender Category
                             </label>
                             <select 
-                                name="gender" 
+                                name="genderType" 
                                 className="w-full px-3 py-2 border dark:border-gray-700 border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 bg-gray-50"
                                 required
                             >
                                 <option value="">Select gender</option>
-                                <option value="Men">Men's Fashion</option>
-                                <option value="Women">Women's Fashion</option>
-                                <option value="Kids">Kids' Fashion</option>
+                                <option value="Men">Men</option>
+                                <option value="Women">Women</option>
+                                <option value="Kids">Kids</option>
                             </select>
                         </div>
                     </div>
@@ -246,19 +257,35 @@ export const AddProduct = ()=>{
                         </div>
                     </div>
 
-                    <div className="form-control">
-                        <label className="block text-sm font-medium mb-2 dark:text-gray-200 text-gray-700">
-                            Discounted Price
-                        </label>
-                        <div className="relative">
-                            <span className="absolute left-3 top-2 dark:text-gray-400 text-gray-500">$</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="form-control">
+                            <label className="block text-sm font-medium mb-2 dark:text-gray-200 text-gray-700">
+                                Discounted Price
+                            </label>
+                            <div className="relative">
+                                <span className="absolute left-3 top-2 dark:text-gray-400 text-gray-500">$</span>
+                                <input 
+                                    type="number" 
+                                    name="discount" 
+                                    step="0.01"
+                                    min="0"
+                                    placeholder="0.00" 
+                                    className="w-full pl-8 pr-3 py-2 border dark:border-gray-700 border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 bg-gray-50"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-control">
+                            <label className="block text-sm font-medium mb-2 dark:text-gray-200 text-gray-700">
+                                Stock Quantity
+                            </label>
                             <input 
                                 type="number" 
-                                name="discount" 
-                                step="0.01"
+                                name="stock" 
                                 min="0"
-                                placeholder="0.00" 
-                                className="w-full pl-8 pr-3 py-2 border dark:border-gray-700 border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 bg-gray-50"
+                                placeholder="Enter stock quantity" 
+                                className="w-full px-3 py-2 border dark:border-gray-700 border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 bg-gray-50"
+                                required
                             />
                         </div>
                     </div>
