@@ -3,6 +3,7 @@ const router = express.Router();
 const productModel = require("../model/product");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const upload = require("../config/multer_config");
+const uploadOnCloudinary = require("../utils/cloudinaryConfig");
 // const user = require("../model/user");
 
 router.post("/add-product", isLoggedIn, async(req, res)=>{
@@ -50,14 +51,24 @@ router.post("/add-product", isLoggedIn, async(req, res)=>{
 });
 
 
-// image upload route
+// Product images upload route
 router.post('/upload-images', isLoggedIn, upload.array('images'), async(req , res)=>{
     try {
         const images = req.files;
+        const imageUploadedSuccessfully = await images.map(async(image)=>{
+            const response = await uploadOnCloudinary(image.path);
+            console.log('imgURL', response);
+            return response;
+        })
+        // console.log('imageUploadedSuccessfully', imageUploadedSuccessfully);
+        const imageUrls = await Promise.all(imageUploadedSuccessfully);
+        console.log('imageUrls', imageUrls);
+        
+        // console.log('imageUrls', imageUrls);
         // console.log('images', images);
         return res.status(200).json({
             message: "Images uploaded successfully",
-            images
+            imageUrls
         })
     } catch (error) {
         return res.status(500).json({message: error.message});

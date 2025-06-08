@@ -1,6 +1,7 @@
-import { v2 as cloudinary } from 'cloudinary';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
+// const { fileURLToPath } = require('url');
+
 
 
     // Configuration
@@ -16,19 +17,19 @@ const uploadOnCloudinary = async (localFilePath) =>{
         if(!localFilePath) return null; // if no local file path is provided, return null / error message 
 
         // upload the file on cloudinary
-        const response = await cloudinary.uploader.upload(fileURLToPath, {
+        const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto", // automatically detect the file type (image, video, etc.)
         })
 
         // file has been uploaded successfully
-        console.log("File uploaded successfully on cloudinary", response.url);
-        return response;
+        // console.log("File uploaded successfully on cloudinary", response.url);
+        return response.url;
     } catch (error) {
         fs.unlinkSync(localFilePath); // delete the file from the local file system 
         return null;
     }
 }
 
-export {uploadOnCloudinary};
+module.exports = uploadOnCloudinary;
 
     
