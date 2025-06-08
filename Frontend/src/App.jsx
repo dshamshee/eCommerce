@@ -10,6 +10,7 @@ import { Kids } from "./Pages/products-section/Kids";
 import { AddProduct } from "./admin/AddProduct";
 import { ToastContainer } from "react-toastify";
 import { ProtectedRoute } from "./Layout/ProtectedRoute";
+import { ProductDetails } from "./Pages/products-section/ProductDetails";
 
 function App() {
   const router = createBrowserRouter([
@@ -40,6 +41,10 @@ function App() {
         {
           path: "/add-product",
           element: <ProtectedRoute><AddProduct /></ProtectedRoute>,
+        },
+        {
+          path: "/product-details",
+          element: <ProductDetails />,
         },
       ],
     },

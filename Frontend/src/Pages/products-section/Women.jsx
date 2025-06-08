@@ -137,9 +137,7 @@ export const Women = () => {
               >
                 <img
                   src={
-                    product.image.includes("http")
-                      ? product.image
-                      : (product.image = imageUrl + product.image)
+                    `${imageUrl}${product.images[0]}`
                   }
                   alt="Fashion item"
                   className="w-full h-[400px] object-cover"

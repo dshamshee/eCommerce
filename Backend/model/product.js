@@ -29,16 +29,16 @@ const productSchema = new mongoose.Schema({
     },
     sizes:{
         type: [String],
-        enum: ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
+        enum: ["XS","S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
         required: true,
     },
     colors:{
         type: [String],
         default: ["Black"],
     },
-    image:{
-        type: String,
-        required: true,
+    images: {
+        type: [String],
+        // required: true,
     },
     stock:{
         type: Number,

@@ -7,6 +7,7 @@ const productRoutes = require("./routes/product");
 const deliveryAddressRoutes = require("./routes/deliveryAddress");
 const orderRoutes = require("./routes/order");
 const cartRoutes = require("./routes/cart");
+const cors = require("cors");
 require("dotenv").config();
 const app = express();
 
@@ -14,6 +15,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['set-cookie']
+}));
 
 app.use('/api/user', userRoutes);
 app.use('/api/product', productRoutes);

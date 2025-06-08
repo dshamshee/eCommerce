@@ -5,22 +5,38 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 const upload = require("../config/multer_config");
 // const user = require("../model/user");
 
-router.post("/add-product", isLoggedIn, upload.single("image"), async(req, res)=>{
-    try {
+router.post("/add-product", isLoggedIn, async(req, res)=>{
+    const {productData} = req.body;
+    // console.log('formData', formData);
+    // selectedImages.map((image)=>{
+    //     console.log('image', image.filename);
+    // })
+    try 
+    {
+        // Get the filenames from all uploaded images
+        // const imageNames = req.files.map((file)=>{
+        //     console.log('file', file);
+        //     return file.filename;
+        // });
+
         if(req.user.role !== "admin") return res.status(403).json({message: "You are not authorized to add a product"});
+        
+        // Parse the JSON strings back to arrays
+        // const colors = JSON.parse(req.body.colors);
+        // const sizes = JSON.parse(req.body.sizes);
         const product = await productModel.create({
-            name: req.body.name,
-            description: req.body.description,
-            price: parseFloat(req.body.price),
-            category: req.body.category,
-            genderType: req.body.genderType,
-            sizes: req.body.sizes,
-            image: req.file.filename,
-            stock: parseInt(req.body.stock),
-            discount: parseFloat(req.body.discount) || 0,
-            colors: req.body.colors,
-            isNewProduct: req.body.isNew === 'true', 
-            isBestSeller: req.body.isBestSeller === 'true'
+            name: productData.name,
+            description: productData.description,
+            price: parseFloat(productData.price),
+            category: productData.category,
+            genderType: productData.genderType,
+            sizes: productData.sizes,
+            // images: selectedImages,  // Store array of filenames
+            stock: parseInt(productData.stock),
+            discount: parseFloat(productData.discount) || 0,
+            colors: productData.colors,
+            isNewProduct: productData.isNew === 'true', 
+            isBestSeller: productData.isBestSeller === 'true'
         });
         
         return res.status(201).json({
@@ -33,8 +49,25 @@ router.post("/add-product", isLoggedIn, upload.single("image"), async(req, res)=
     }
 });
 
+
+// image upload route
+router.post('/upload-images', isLoggedIn, upload.array('images'), async(req , res)=>{
+    try {
+        const images = req.files;
+        // console.log('images', images);
+        return res.status(200).json({
+            message: "Images uploaded successfully",
+            images
+        })
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+})
+
+
 router.get('/get-products', async(req, res)=>{
     try {
+        // console.log("get-products route called");
         const products = await productModel.find();
         return res.status(200).json({
             message: "Products fetched successfully",
@@ -81,6 +114,7 @@ router.post('/update-product/:id', isLoggedIn, async(req, res)=>{
 })
 
 router.get('/get-product-by-type/:type', async(req, res)=>{
+    // console.log("get-product-by-type route called");
 
     try {
         // check which one is on params category or genderType
@@ -88,7 +122,7 @@ router.get('/get-product-by-type/:type', async(req, res)=>{
         let products;
         if(type === "T-shirt" || type === "Jeans" || type === "Shirt" || type === "Shorts"){
             products = await productModel.find({category: type});
-        }else if(type === "Men" || type === "Women"){
+        }else if(type === "Men" || type === "Women" || type === "Unisex"){
             products = await productModel.find({genderType: type});
         }else{
             return res.status(400).json({message: "Invalid type"});

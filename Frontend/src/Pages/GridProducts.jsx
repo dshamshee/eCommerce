@@ -38,7 +38,7 @@ export const GridProducts = ({products})=>{
               {/* Product Image */}
               <div className="aspect-square overflow-hidden">
                 <img
-                  src={product.image.includes('http') ? product.image : product.image = imageUrl + product.image}
+                  src={product.images.includes('http') ? product.images : product.images = imageUrl + product.images}
                   alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

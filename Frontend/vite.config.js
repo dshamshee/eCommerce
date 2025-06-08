@@ -5,13 +5,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // eslint-disable-next-line no-undef
-const proxyURI = process.env.VITE_SERVER_PROXY_URI;
+// const proxyURI = process.env.VITE_SERVER_PROXY_URI; // http://localhost:3000
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server:{
-    proxy:{
-      '/api': proxyURI,
-    }
-  }
+  // server:{
+  //   proxy:{
+  //     '/api': 'http://localhost:3000',
+  //   }
+  // }
 })

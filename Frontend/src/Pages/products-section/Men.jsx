@@ -130,9 +130,9 @@ export const Men = () => {
               >
                 <img
                   src={
-                    product.image.includes("http")
-                      ? product.image
-                      : (product.image = imageUrl + product.image)
+                    product.images.includes("http")
+                      ? product.images
+                      : (product.images = imageUrl + product.images)
                   }
                   alt="Fashion item"
                   className="w-full h-[400px] object-cover"

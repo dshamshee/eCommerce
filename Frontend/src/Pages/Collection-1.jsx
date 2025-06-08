@@ -19,7 +19,7 @@ export const Collection_1 = ({products}) => {
           {
             // only 7 products are shown in the carousel
             products.slice(0, 7).map((product) => {
-              return <CarouseItem image={product.image.includes('http') ? product.image : product.image = imageUrl + product.image} key={product._id} />;
+              return <CarouseItem image={product.images.includes('http') ? product.images : product.images = imageUrl + product.images} key={product._id} />;
             })
           }
         </div>
