@@ -6,7 +6,6 @@ export const Men = () => {
   const { products, error, isLoading } = GetProductByType("Men");
   const [searchInput, setSearchInput] = useState("");
 
-  let imageUrl = `${import.meta.env.VITE_SERVER_PROXY_URI}/images/`;
 
   let filterdata =
     !!products &&
@@ -129,11 +128,7 @@ export const Men = () => {
                 }}
               >
                 <img
-                  src={
-                    product.images.includes("http")
-                      ? product.images
-                      : (product.images = imageUrl + product.images)
-                  }
+                  src={product.images[0]}
                   alt="Fashion item"
                   className="w-full h-[400px] object-cover"
                 />

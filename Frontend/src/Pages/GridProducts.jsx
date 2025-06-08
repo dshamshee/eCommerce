@@ -1,7 +1,5 @@
 export const GridProducts = ({products})=>{
 
-    let imageUrl = `${import.meta.env.VITE_SERVER_PROXY_URI}/images/`;
-
     return(
 
         <div className="mainContainer">
@@ -38,7 +36,7 @@ export const GridProducts = ({products})=>{
               {/* Product Image */}
               <div className="aspect-square overflow-hidden">
                 <img
-                  src={product.images.includes('http') ? product.images : product.images = imageUrl + product.images}
+                  src={product.images[0]}
                   alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

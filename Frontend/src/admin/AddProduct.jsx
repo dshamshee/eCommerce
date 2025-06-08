@@ -79,21 +79,19 @@ export const AddProduct = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const response = await addProduct(formData);
-            const imageUploadResponse = await uploadImages(selectedImages);
-            
+            const response = await addProduct(formData);            
             if(response.status === 201){
                 toast.success('Product added successfully!');
+                const imageUploadResponse = await uploadImages(selectedImages, response.data.product._id);
+                if(imageUploadResponse.status === 200){
+                    toast.success('Images uploaded successfully!');
+                }
                 dispatch({ type: 'RESET_FORM' });
                 setSelectedImages([]);
                 setSelectedImageNames([]);
             }
             
-            if(imageUploadResponse.status === 200){
-                toast.success('Images uploaded successfully!');
-            } else {
-                toast.error('Error uploading images');
-            }
+
         } catch (error) {
             toast.error(error.message || 'Error adding product');
         } finally {

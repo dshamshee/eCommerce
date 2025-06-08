@@ -41,10 +41,10 @@ export const addProduct = async (productData) => {
 
 
 // upload images
-export const uploadImages = async(images)=>{
+export const uploadImages = async(images, id)=>{
   console.log('uploadImages function frontend called');
   try {
-    const response = await apiForAddProduct.post('/product/upload-images', images); // /api/product/upload-images
+    const response = await apiForAddProduct.post(`/product/upload-images/${id}`, images); // /api/product/upload-images
     return response;
   } catch (error) {
     throw error.response?.data?.message || 'Error uploading images';

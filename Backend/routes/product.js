@@ -52,26 +52,40 @@ router.post("/add-product", isLoggedIn, async(req, res)=>{
 
 
 // Product images upload route
-router.post('/upload-images', isLoggedIn, upload.array('images'), async(req , res)=>{
+router.post('/upload-images/:id', isLoggedIn, upload.array('images'), async(req , res)=>{
     try {
         const images = req.files;
         const imageUploadedSuccessfully = await images.map(async(image)=>{
             const response = await uploadOnCloudinary(image.path);
-            console.log('imgURL', response);
+            // console.log('imgURL', response);
             return response;
         })
-        // console.log('imageUploadedSuccessfully', imageUploadedSuccessfully);
+
         const imageUrls = await Promise.all(imageUploadedSuccessfully);
-        console.log('imageUrls', imageUrls);
         
-        // console.log('imageUrls', imageUrls);
-        // console.log('images', images);
+        if(imageUrls.length > 0){
+            const productImages = imageUrls.map(async(imagePath)=>{
+                await productModel.findOneAndUpdate({_id: req.params.id}, {$push: {images: imagePath}});
+            })
+            
+            // if(productImages){
+            //     // delete the image from the local storage
+            //     const imagePaths = images.map((image)=>{
+            //         return image.path;
+            //     })
+            //     imagePaths.forEach((imagePath)=>{
+            //         fs.unlinkSync(imagePath);
+            //     })
+            // }
+        }
+            
         return res.status(200).json({
             message: "Images uploaded successfully",
             imageUrls
         })
     } catch (error) {
-        return res.status(500).json({message: error.message});
+        // return res.status(500).json({message: error.message});
+        return res.status(500).json({message: "Error uploading images on cloudinary"});
     }
 })
 

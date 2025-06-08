@@ -7,7 +7,6 @@ export const Women = () => {
   const [searchInput, setSearchInput] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  let imageUrl = `${import.meta.env.VITE_SERVER_PROXY_URI}/images/`;
 
   let filterdata =
     !!products &&
@@ -136,9 +135,7 @@ export const Women = () => {
                 }}
               >
                 <img
-                  src={
-                    `${imageUrl}${product.images[0]}`
-                  }
+                  src={product.images[0]}
                   alt="Fashion item"
                   className="w-full h-[400px] object-cover"
                 />
