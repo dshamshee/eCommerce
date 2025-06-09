@@ -1,44 +1,68 @@
 import { useState } from "react";
-
+import { useParams } from "react-router-dom";
+import { GetProductById } from "../../API/GET-SWR/product";
+import { ProductSkeleton } from "./ProductSceleton";
 
 export const ProductDetails = () => {
-    const [product, setProduct] = useState({
-        name: "Premium Cotton Casual T-Shirt",
-        price: 39.99,
-        description: "Ultra-soft premium cotton t-shirt with a modern fit. Features reinforced stitching and a comfortable crew neckline. Perfect for everyday wear.",
-        brand: "StyleFit",
-        category: "Men's Clothing",
-        sizes: ["XS", "S", "M", "L", "XL", "XXL"],
-        colors: ["White", "Black", "Navy", "Gray", "Burgundy"],
-        fabric: "100% Cotton",
-        care: ["Machine wash cold", "Tumble dry low", "Do not bleach", "Iron on low heat"],
-        features: [
-            "Premium cotton fabric",
-            "Reinforced stitching",
-            "Crew neckline",
-            "Regular fit",
-            "Pre-shrunk material"
-        ],
-        measurements: {
-            "S": "Chest: 38\" | Length: 28\"",
-            "M": "Chest: 40\" | Length: 29\"",
-            "L": "Chest: 42\" | Length: 30\"",
-            "XL": "Chest: 44\" | Length: 31\""
-        },
-        images: [
-            "https://placehold.co/600x400",
-            "https://placehold.co/600x400",
-            "https://placehold.co/600x400",
-            "https://placehold.co/600x400"
-        ],
-        inStock: true,
-        rating: 4.5,
-        reviews: 128
-    });
+    const {id} = useParams();
+    const {product, error, isLoading} = GetProductById(id);
+
+    
+    // const [product, setProduct] = useState({
+    //     name: "Premium Cotton Casual T-Shirt",
+    //     price: 39.99,
+    //     description: "Ultra-soft premium cotton t-shirt with a modern fit. Features reinforced stitching and a comfortable crew neckline. Perfect for everyday wear.",
+    //     brand: "StyleFit",
+    //     category: "Men's Clothing",
+    //     sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+    //     colors: ["White", "Black", "Navy", "Gray", "Burgundy"],
+    //     fabric: "100% Cotton",
+    //     care: ["Machine wash cold", "Tumble dry low", "Do not bleach", "Iron on low heat"],
+    //     features: [
+    //         "Premium cotton fabric",
+    //         "Reinforced stitching",
+    //         "Crew neckline",
+    //         "Regular fit",
+    //         "Pre-shrunk material"
+    //     ],
+        // measurements: {
+        //     "S": "Chest: 38\" | Length: 28\"",
+        //     "M": "Chest: 40\" | Length: 29\"",
+        //     "L": "Chest: 42\" | Length: 30\"",
+        //     "XL": "Chest: 44\" | Length: 31\""
+        // },
+    //     images: [
+    //         "https://placehold.co/600x400",
+    //         "https://placehold.co/600x400",
+    //         "https://placehold.co/600x400",
+    //         "https://placehold.co/600x400"
+    //     ],
+    //     inStock: true,
+    //     rating: 4.5,
+    //     reviews: 128
+    // });
 
     const [selectedSize, setSelectedSize] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
     const [quantity, setQuantity] = useState(1);
+
+    if(isLoading || !product){
+        return (
+            <div className="sceleton flex flex-row gap-4 w-[90%] mx-auto h-[100vh]">
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
+                <ProductSkeleton />
+            </div>
+        )
+    }
+    if(error || !product){
+        return <div>Error: {error.message}</div>
+    }
+    console.log(product);
+
+    
+
 
     const similarProducts = [
         {
@@ -183,7 +207,7 @@ export const ProductDetails = () => {
                         </div>
 
                         {/* Fabric & Care */}
-                        <div className="border-t pt-4">
+                        {/* <div className="border-t pt-4">
                             <h3 className="font-semibold mb-2">Fabric & Care</h3>
                             <p className="text-sm mb-2">Fabric: {product.fabric}</p>
                             <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
@@ -191,23 +215,23 @@ export const ProductDetails = () => {
                                     <li key={index}>{instruction}</li>
                                 ))}
                             </ul>
-                        </div>
+                        </div> */}
 
                         {/* Features */}
-                        <div className="border-t pt-4">
+                        {/* <div className="border-t pt-4">
                             <h3 className="font-semibold mb-2">Features</h3>
                             <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
                                 {product.features.map((feature, index) => (
                                     <li key={index}>{feature}</li>
                                 ))}
                             </ul>
-                        </div>
+                        </div> */}
 
                         {/* Additional Info */}
                         <div className="border-t pt-4">
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between items-center text-sm">
                                 <span>Brand:</span>
-                                <span>{product.brand}</span>
+                                <span className="font-playfair font-semibold">WOLVE<span className="text-rose-500 italic text-xl font-playfair">N</span><span className="">STITCH</span></span>
                             </div>
                             <div className="flex justify-between text-sm mt-2">
                                 <span>Category:</span>
@@ -215,8 +239,8 @@ export const ProductDetails = () => {
                             </div>
                             <div className="flex justify-between text-sm mt-2">
                                 <span>Availability:</span>
-                                <span className={product.inStock ? 'text-green-500' : 'text-red-500'}>
-                                    {product.inStock ? 'In Stock' : 'Out of Stock'}
+                                <span className={product.stock > 0 ? 'text-green-500' : 'text-red-500'}>
+                                    {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
                                 </span>
                             </div>
                         </div>

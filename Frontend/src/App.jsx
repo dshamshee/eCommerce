@@ -43,7 +43,7 @@ function App() {
           element: <ProtectedRoute><AddProduct /></ProtectedRoute>,
         },
         {
-          path: "/product-details",
+          path: "/product-details/:id",
           element: <ProductDetails />,
         },
       ],

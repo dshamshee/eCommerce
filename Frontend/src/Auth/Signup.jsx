@@ -53,7 +53,9 @@ export const Signup = ()=>{
             if(response.status === 201){
                 toast.success('Signup successful');
                 localStorage.setItem('token', response.data.token);
-                console.log(response.data)
+                localStorage.setItem('userName', response.data.userName);
+                localStorage.setItem('userEmail', response.data.userEmail);
+                // console.log(response.data)
                 navigate('/');
             }
         } catch (error) {

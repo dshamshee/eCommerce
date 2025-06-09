@@ -181,9 +181,9 @@ export const Men = () => {
                 </div>
 
                 <div className="card-actions justify-end mt-4">
-                  <button className="btn btn-primary bg-blue-500 hover:bg-blue-600 border-none">
-                    Add to Cart
-                  </button>
+                  <a href={`/product-details/${product._id}`}><button className="btn btn-primary bg-blue-500 hover:bg-blue-600 border-none">
+                    View Details
+                  </button></a>
                 </div>
               </div>
             </div>

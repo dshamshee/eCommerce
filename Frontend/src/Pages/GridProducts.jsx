@@ -86,9 +86,10 @@ const ProductCard = memo(({ product }) => (
         <button className="hidden md:block flex-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:py-2 md:px-4 border dark:border-gray-700 border-gray-300 py-1 px-2 dark:bg-gray-800 dark:text-gray-100 text-gray-900 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
           Cart
         </button>
-        <button className="md:py-2 py-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:px-3 px-2 border dark:border-gray-700 border-gray-300 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
+        <a href={`/product-details/${product._id}`}><button className="md:py-2 py-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:px-3 px-2 border dark:border-gray-700 border-gray-300 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
           Quick View
         </button>
+        </a>
       </div>
     </div>
   </div>

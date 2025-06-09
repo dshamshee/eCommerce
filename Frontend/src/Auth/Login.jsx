@@ -19,6 +19,8 @@ export const Login = () => {
                 console.log(response);
                 toast.success('Successfully logged in');
                 localStorage.setItem('token', response.data.token);
+                localStorage.setItem('userName', response.data.userName);
+                localStorage.setItem('userEmail', response.data.userEmail);
                 navigate('/');
             }   
         } catch (error) {

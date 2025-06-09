@@ -108,8 +108,8 @@ export const HeaderMD = ()=>{
                 <li>
                   <a className="items-start flex flex-col">
                     <div className="w-full">
-                      <h1 className="dark:text-gray-100 text-gray-900 font-semibold text-lg text-center">Welcome User</h1>
-                      <p className="text-sm dark:text-gray-400 text-gray-600 text-center">hello@gmail.com</p>
+                      <h1 className="dark:text-gray-100 text-gray-900 font-semibold text-lg text-center">Welcome {localStorage.getItem('userName')}</h1>
+                      <p className="text-sm dark:text-gray-400 text-gray-600 text-center">{localStorage.getItem('userEmail')}</p>
                     </div>
                     {/* <span className="badge bg-rose-500 dark:text-gray-100 text-white">
                       New

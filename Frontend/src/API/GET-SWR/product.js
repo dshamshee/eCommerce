@@ -1,9 +1,9 @@
 import useSWR from "swr";
 import { fetcher } from "./fetcher";
-import { preload } from "swr";
+// import { preload } from "swr";
 
 // Preload all products
-preload('/product/get-products', fetcher)
+// preload('/product/get-products', fetcher)
 
 // SWR Global configuration
 const swrConfig = {
@@ -38,6 +38,7 @@ export const GetProducts = () => {
     );
     return{
       product: data?.product,
+      // productImages: data?.productImages,
       error,
       isLoading,
     }

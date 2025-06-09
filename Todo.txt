@@ -3,3 +3,25 @@ add discount on product model: discount-Rs
 add colors on product model: colors[]
 add isNew on product model : isNew: true/false
 add isBestSeller on product mode: isBestSeller: true/false
+
+
+Additinal Product Schema
+rating: 4.5,
+reviews: 128
+fabric (%100 Cotten/100% Polister)
+care: ["Machine wash cold", "Tumble dry low", "Do not bleach", "Iron on low heat"]
+features: [
+    "Premium cotton fabric",
+    "Reinforced stitching",
+    "Crew neckline",
+    "Regular fit",
+    "Pre-shrunk material"
+]
+
+Additinal Schema
+measurements: {
+    "S": "Chest: 38\" | Length: 28\"",
+    "M": "Chest: 40\" | Length: 29\"",
+    "L": "Chest: 42\" | Length: 30\"",
+    "XL": "Chest: 44\" | Length: 31\""
+}

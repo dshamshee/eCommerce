@@ -104,7 +104,7 @@ router.get('/get-products', async(req, res)=>{
 // get product by id
 router.get('/get-product/:id', async (req, res)=>{
     try {
-        const product = await productModel.find({_id: req.params.id});
+        const product = await productModel.findOne({_id: req.params.id});
         if(!product) return res.status(404).json({message: "Product not found"});
         return res.status(200).json({
             message: "Product fetched successfully",
