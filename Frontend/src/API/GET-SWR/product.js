@@ -1,11 +1,23 @@
 import useSWR from "swr";
 import { fetcher } from "./fetcher";
+import { preload } from "swr";
+
+// Preload all products
+preload('/product/get-products', fetcher)
+
+// SWR Global configuration
+const swrConfig = {
+  revalidateOnFocus: false,  // Disable revalidation on window focus
+  revalidateOnScroll: false, // Disable revalidation on scroll
+  dedupingInterval: 10000,   // Dedupe requests within 10 seconds
+}
 
 // get all products
 export const GetProducts = () => {
     const { data, error, isLoading } = useSWR(
       "/product/get-products",
       fetcher,
+      swrConfig
     );
   
     return {
@@ -17,8 +29,11 @@ export const GetProducts = () => {
 
   // get product by id
   export const GetProductById = (id)=>{
-
-    const {data, error, isLoading} = useSWR(`/product/get-product/${id}`, fetcher);
+    const {data, error, isLoading} = useSWR(
+      `/product/get-product/${id}`, 
+      fetcher,
+      swrConfig
+    );
     return{
       product: data?.product,
       error,
@@ -28,10 +43,14 @@ export const GetProducts = () => {
 
   // get product by type (category or genderType)
 export const GetProductByType = (type)=>{
-
-  const {data, error, isLoading} = useSWR(`/product/get-product-by-type/${type}`, fetcher);
+  const {data, error, isLoading} = useSWR(
+    `/product/get-product-by-type/${type}`, 
+    fetcher,
+    swrConfig
+  );
   return{
-    products: data?.products,
+    products: data?.allProducts,
+    // unisexProducts: data?.unisexProducts,
     error,
     isLoading,
   }

@@ -28,7 +28,7 @@ const formReducer = (state, action) => {
     }
 };
 
-const categories = ['T-shirt', 'Shirt', 'Jeans', 'Hoodie', 'Jacket', 'Sweater'];
+const categories = ['T-shirt', 'Shirt', 'Jeans', 'Hoodie', 'Jacket', 'Sweater', 'Shorts'];
 const availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 const availableColors = ['Red', 'Blue', 'Green', 'Black', 'White', 'Grey', 'Navy'];
 

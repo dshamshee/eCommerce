@@ -2,25 +2,13 @@ import { AboutBrand } from "./AboutBrand";
 import { Collection_1 } from "./Collection-1";
 import { GridProducts } from "./GridProducts";
 import { ProductSkeleton } from "./products-section/ProductSceleton";
-// import { useEffect, useState } from "react";
-// import { getProducts } from "../API/POST-Axios/productApi";
 import { GetProducts } from "../API/GET-SWR/product";
 
 
-
 export const Dashboard = () => {
-  // const [products, setProducts] = useState([]);
   const {allProducts, error, isLoading} = GetProducts();
 
-
-  // useEffect(() => {
-  //   (async () => {
-  //     let products = await getProducts();
-  //     setProducts(products.data.products);
-  //   })();
-  // }, []);
-
-  if (isLoading) {
+  if (isLoading || !allProducts[0].images[0]) {
     return(
       <div className="mainContainer flex gap-10 justify-center items-center h-screen">
         <ProductSkeleton />

@@ -4,6 +4,7 @@ const productModel = require("../model/product");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const upload = require("../config/multer_config");
 const uploadOnCloudinary = require("../utils/cloudinaryConfig");
+const fs = require("fs");
 // const user = require("../model/user");
 
 router.post("/add-product", isLoggedIn, async(req, res)=>{
@@ -50,7 +51,6 @@ router.post("/add-product", isLoggedIn, async(req, res)=>{
     }
 });
 
-
 // Product images upload route
 router.post('/upload-images/:id', isLoggedIn, upload.array('images'), async(req , res)=>{
     try {
@@ -68,15 +68,13 @@ router.post('/upload-images/:id', isLoggedIn, upload.array('images'), async(req 
                 await productModel.findOneAndUpdate({_id: req.params.id}, {$push: {images: imagePath}});
             })
             
-            // if(productImages){
-            //     // delete the image from the local storage
-            //     const imagePaths = images.map((image)=>{
-            //         return image.path;
-            //     })
-            //     imagePaths.forEach((imagePath)=>{
-            //         fs.unlinkSync(imagePath);
-            //     })
-            // }
+            // Delete images from local storage after successful Cloudinary upload
+            await Promise.all(productImages);
+            const imagePaths = images.map(image => image.path);
+            imagePaths.forEach(imagePath => {
+                fs.unlinkSync(imagePath);
+                // console.log(`Deleted image from local storage: ${imagePath}`);
+            });
         }
             
         return res.status(200).json({
@@ -89,7 +87,7 @@ router.post('/upload-images/:id', isLoggedIn, upload.array('images'), async(req 
     }
 })
 
-
+// get all products
 router.get('/get-products', async(req, res)=>{
     try {
         // console.log("get-products route called");
@@ -103,6 +101,7 @@ router.get('/get-products', async(req, res)=>{
     }
 })
 
+// get product by id
 router.get('/get-product/:id', async (req, res)=>{
     try {
         const product = await productModel.find({_id: req.params.id});
@@ -116,6 +115,7 @@ router.get('/get-product/:id', async (req, res)=>{
     }
 })
 
+// update product by id
 router.post('/update-product/:id', isLoggedIn, async(req, res)=>{
     
     try {
@@ -138,23 +138,25 @@ router.post('/update-product/:id', isLoggedIn, async(req, res)=>{
     }
 })
 
+// get product by type (category or genderType)
 router.get('/get-product-by-type/:type', async(req, res)=>{
     // console.log("get-product-by-type route called");
 
     try {
         // check which one is on params category or genderType
         const type = req.params.type;
-        let products;
+        let products, unisexProducts;
         if(type === "T-shirt" || type === "Jeans" || type === "Shirt" || type === "Shorts"){
             products = await productModel.find({category: type});
-        }else if(type === "Men" || type === "Women" || type === "Unisex"){
+        }else if(type === "Men" || type === "Women"){
             products = await productModel.find({genderType: type});
+            unisexProducts = await productModel.find({genderType: "Unisex"});
         }else{
             return res.status(400).json({message: "Invalid type"});
         }
         return res.status(200).json({
             message: "Products fetched successfully",
-            products
+            allProducts: [...products, ...unisexProducts]
         })
     } catch (error) {
         return res.status(500).json({message: error.message});
