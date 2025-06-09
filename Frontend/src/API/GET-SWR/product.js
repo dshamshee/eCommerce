@@ -10,6 +10,8 @@ const swrConfig = {
   revalidateOnFocus: false,  // Disable revalidation on window focus
   revalidateOnScroll: false, // Disable revalidation on scroll
   dedupingInterval: 10000,   // Dedupe requests within 10 seconds
+  revalidateIfStale: false, // Disable revalidation if stale
+  revalidateOnMount: true, // Revalidate on mount
 }
 
 // get all products
