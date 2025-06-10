@@ -11,6 +11,7 @@ import { AddProduct } from "./admin/AddProduct";
 import { ToastContainer } from "react-toastify";
 import { ProtectedRoute } from "./Layout/ProtectedRoute";
 import { ProductDetails } from "./Pages/products-section/ProductDetails";
+import { Dashboard2 } from "./Pages/Dashboard2";
 
 function App() {
   const router = createBrowserRouter([
@@ -45,6 +46,10 @@ function App() {
         {
           path: "/product-details/:id",
           element: <ProductDetails />,
+        },
+        {
+          path: "/dashboard2",
+          element: <Dashboard2 />,
         },
       ],
     },
