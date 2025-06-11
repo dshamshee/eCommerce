@@ -1,15 +1,24 @@
 import { useState } from "react";
-import { GetProductByType } from "../../API/GET-SWR/product";
+// import { GetProductByType } from "../../API/GET-SWR/product";
 import { ProductSkeleton } from "./ProductSceleton";
+import { useProductContext } from "../../context/ProductContext";
 
 export const Men = () => {
-  const { products, error, isLoading } = GetProductByType("Men");
+  
+  const {filteredProducts, error, isLoading} = useProductContext();
+  // const [menProducts, setMenProducts] = useState([]);
+  // const { products, error, isLoading } = GetProductByType("Men");
   const [searchInput, setSearchInput] = useState("");
+
+  // useEffect(() => {
+  //    filterByGenderType("Men");
+  //   // setMenProducts(filteredProducts);
+  // }, []);
 
 
   let filterdata =
-    !!products &&
-    products.filter((product) => {
+    !!filteredProducts &&
+    filteredProducts.filter((product) => {
       return product.name
         .toString()
         .toLowerCase()

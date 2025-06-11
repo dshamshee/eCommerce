@@ -2,11 +2,13 @@ import { AboutBrand } from "./AboutBrand";
 import { Collection_1 } from "./Collection-1";
 import { GridProducts } from "./GridProducts";
 import { ProductSkeleton } from "./products-section/ProductSceleton";
-import { GetProducts } from "../API/GET-SWR/product";
+// import { GetProducts } from "../API/GET-SWR/product";
+import { useProductContext } from "../context/ProductContext";
 
 
 export const Dashboard = () => {
-  const {allProducts, error, isLoading} = GetProducts();
+  // const {allProducts, error, isLoading} = GetProducts();
+  const {allProducts, error, isLoading} = useProductContext();
 
   if (isLoading || !allProducts[0].images[0]) {
     return(

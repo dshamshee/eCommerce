@@ -1,7 +1,8 @@
 import { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Memoized Product Card Component
-const ProductCard = memo(({ product }) => (
+const ProductCard = memo(({ product, handleNavigate }) => (
   <div 
     key={product._id} 
     className="group relative dark:bg-gray-900 bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300"
@@ -86,7 +87,7 @@ const ProductCard = memo(({ product }) => (
         <button className="hidden md:block flex-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:py-2 md:px-4 border dark:border-gray-700 border-gray-300 py-1 px-2 dark:bg-gray-800 dark:text-gray-100 text-gray-900 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
           Cart
         </button>
-        <a href={`/product-details/${product._id}`}><button className="md:py-2 py-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:px-3 px-2 border dark:border-gray-700 border-gray-300 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
+        <a onClick={() => handleNavigate(product._id)}><button className="md:py-2 py-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:px-3 px-2 border dark:border-gray-700 border-gray-300 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
           Quick View
         </button>
         </a>
@@ -98,6 +99,12 @@ const ProductCard = memo(({ product }) => (
 // Main Grid Component
 export const GridProducts = memo(({products}) => {
   const displayProducts = products.slice(0, 8);
+  const navigate = useNavigate();
+  // const {getProductById} = useProductContext();
+
+  const handleNavigate = (id) => {
+    navigate(`/product-details/${id}`);
+  };
 
   return (
     <div className="mainContainer">
@@ -112,7 +119,7 @@ export const GridProducts = memo(({products}) => {
           {/* Product Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6 gap-2">
             {displayProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
+              <ProductCard key={product._id} product={product} handleNavigate={handleNavigate} />
             ))}
           </div>
 

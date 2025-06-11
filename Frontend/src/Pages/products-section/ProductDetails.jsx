@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { GetProductById } from "../../API/GET-SWR/product";
+// import { GetProductById } from "../../API/GET-SWR/product";
 import { ProductSkeleton } from "./ProductSceleton";
+import { useProductContext } from "../../context/ProductContext";
 
 export const ProductDetails = () => {
     const {id} = useParams();
-    const {product, error, isLoading} = GetProductById(id);
+    const {getProductById, isLoading, error} = useProductContext();
+    const product = getProductById(id);
 
     
     // const [product, setProduct] = useState({

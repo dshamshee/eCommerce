@@ -2,11 +2,31 @@ import profile from "../assets/profile.png";
 import brandLogoWhite from "../assets/brand-logo-white.png";
 import brandLogoBlack from "../assets/brand-logo-black.png";
 import { useNavigate } from "react-router-dom";
+import { useProductContext } from "../context/ProductContext";
 
 export const HeaderMD = ()=>{
-
+  const {filterByGenderType} = useProductContext();
   const navigate = useNavigate();
 
+  const handleMenToggle = () => {
+    navigate("/men");
+    filterByGenderType("Men");
+  }
+
+  const handleWomenToggle = () => {
+    navigate("/women");
+    filterByGenderType("Women");
+  }
+
+  const handleKidsToggle = () => {
+    navigate("/kids");
+    filterByGenderType("Kids");
+  }
+
+  const handleHomeToggle = () => {
+    filterByGenderType("all");
+    navigate("/");
+  }
 
     return(
         <div className="innerContainer hidden md:block">
@@ -29,16 +49,16 @@ export const HeaderMD = ()=>{
           <div className="flex w-[50%]">
             <ul className="w-full flex flex-row justify-evenly items-center">
               <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/' ? 'text-rose-600 dark:text-rose-500' : ''}`}>
-                <a href="/">Home</a>
+                <a onClick={handleHomeToggle}>Home</a>
               </li>
               <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/men' ? 'text-rose-600 dark:text-rose-500' : ''}`}>
-                <a href="/men">Men</a>
+                <a onClick={handleMenToggle}>Men</a>
               </li>
               <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/women' ? 'text-rose-600 dark:text-rose-500' : ''}`}>
-                <a href="/women">Women</a>
+                <a onClick={handleWomenToggle}>Women</a>
               </li>
               <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/kids' ? 'text-rose-600 dark:text-rose-500' : ''}`}>
-                <a href="/kids">Kids</a>
+                <a onClick={handleKidsToggle}>Kids</a>
               </li>
             </ul>
           </div>

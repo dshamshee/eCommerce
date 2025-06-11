@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { GetProductByType } from "../../API/GET-SWR/product";
+// import { GetProductByType } from "../../API/GET-SWR/product";
 import { ProductSkeleton } from "./ProductSceleton";
+import { useProductContext } from "../../context/ProductContext";
 
 export const Women = () => {
-  const { products, error, isLoading } = GetProductByType("Women");
+  const { filteredProducts, error, isLoading } = useProductContext();
   const [searchInput, setSearchInput] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
 
   let filterdata =
-    !!products &&
-    products.filter((product) => {
+    !!filteredProducts &&
+    filteredProducts.filter((product) => {
       return product.name
         .toString()
         .toLowerCase()

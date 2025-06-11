@@ -12,7 +12,7 @@ export const Collection_1 = ({products}) => {
         <p className=" text-sm text-gray-400 md:hidden mt-5">
           Swipe to see more
         </p>
-        <div className="carousel rounded-box">
+        <div className="carousel carousel-center gap-4 rounded-box">
           {
             // only 7 products are shown in the carousel
             products.slice(0, 7).map((product) => {
@@ -29,7 +29,7 @@ export const Collection_1 = ({products}) => {
 const CarouseItem = ({ image }) => {
   return (
     <>
-      <div className="carousel-item mx-2 rounded-md hidden md:block ">
+      <div className="carousel-item hidden md:block ">
         <div className="img">
           <img
             src={image}
