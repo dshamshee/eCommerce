@@ -25,3 +25,31 @@ measurements: {
     "L": "Chest: 42\" | Length: 30\"",
     "XL": "Chest: 44\" | Length: 31\""
 }
+
+
+Dashboard 2
+1. Tending
+2. New & Popular
+
+
+
+
+Product Schema Setting 
+Key                 Status 
+Name                Done
+Description         Done 
+Price               Done
+Discount            Done 
+Category            Done
+GenderType          Done 
+Sizes               Done 
+Colors              Done
+Images              Done
+Stock               Done 
+isNewProduct        Done (New Arrival)
+isBestSeller        Done (Trendings)
+Ratings             Pending 
+reviews             Pending 
+Fabric              Pending 
+care                Pending 
+Features            Pending 
