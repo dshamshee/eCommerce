@@ -38,7 +38,7 @@ export const Trending = () => {
 
 const Card = ({ product, handleProductClick }) => {
   return (
-    <div className="container w-[230px] h-[410px] rounded-md flex flex-col bg-gray-800 overflow-hidden">
+    <div className="container w-[230px] h-[410px] rounded-md flex flex-col dark:bg-gray-800 bg-gray-200 overflow-hidden">
       {/* Card Image */}
       <img
         onClick={() => {
@@ -50,11 +50,11 @@ const Card = ({ product, handleProductClick }) => {
       />
 
       {/* Card Body */}
-      <div className="w-full h-[100px] flex flex-col gap-2 px-2 text-white mt-3">
-        <h1 className="text-lg font-bold text-nowrap overflow-hidden text-ellipsis text-gray-300">
+      <div className="w-full h-[100px] flex flex-col gap-2 px-2 dark:text-white text-gray-600 mt-3">
+        <h1 className="text-lg font-bold text-nowrap overflow-hidden text-ellipsis">
           {product.name}
         </h1>
-        <p className="text-sm text-nowrap text-gray-500 line-clamp-2 overflow-hidden text-ellipsis">
+        <p className="text-sm text-nowrap dark:text-gray-500 text-gray-900 line-clamp-2 overflow-hidden text-ellipsis">
           {product.description}
         </p>
       </div>

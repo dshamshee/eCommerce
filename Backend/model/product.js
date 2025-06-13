@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Decimal128 } = require("mongodb");
 
 const productSchema = new mongoose.Schema({
     name:{
@@ -24,7 +25,7 @@ const productSchema = new mongoose.Schema({
     },
     genderType:{
         type: String,
-        enum: ["Men", "Women", "Unisex"],
+        enum: ["Men", "Women", "Unisex", "Kids"],
         required: true,
     },
     sizes:{
@@ -48,9 +49,33 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    newProductExpiry: {
+        type: Date,
+        default: null,
+    },
     isBestSeller:{
         type: Boolean,
         default: false,
+    },
+    ratings:{
+        type: Decimal128,
+        default: new Decimal128("0"),
+    },
+    reviews:{
+        type: Number,
+        default: 0,
+    },
+    fabric:{
+        type: String,
+        default: "",
+    },
+    care:{
+        type: [String],
+        default: [],
+    },
+    features:{
+        type: [String],
+        default: [],
     },
     createdAt:{
         type: Date,
@@ -61,5 +86,24 @@ const productSchema = new mongoose.Schema({
         default: Date.now,
     }
 })
+
+// Pre-save hook to handle isNewProduct expiry
+productSchema.pre('save', function(next) {
+    // If isNewProduct is being set to true and newProductExpiry is not set
+    if (this.isNewProduct === true && !this.newProductExpiry) {
+        // Set expiry date to 7 days from now
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 7);
+        this.newProductExpiry = expiryDate;
+    }
+    
+    // If there's an expiry date and it has passed, set isNewProduct to false
+    if (this.newProductExpiry && new Date() >= this.newProductExpiry) {
+        this.isNewProduct = false;
+        this.newProductExpiry = null;
+    }
+    
+    next();
+});
 
 module.exports = mongoose.model("Product", productSchema);

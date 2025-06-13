@@ -1,5 +1,5 @@
 import { useProductContext } from "../../Context/ProductContext";
-import SmoothImage from 'react-smooth-image'
+// import SmoothImage from 'react-smooth-image'
 
 export const NewPopular = ()=>{
 
@@ -32,9 +32,9 @@ export const NewPopular = ()=>{
 const PopularCard = ({product})=>{
 
     return(
-        <div className="container bg-blue-300 rounded-md">
-            {/* <img className="w-[480px] h-[600px] rounded-md cursor-pointer object-cover transition-all duration-300 hover:scale-102" src={product.images[0]} alt="" /> */}
-            <SmoothImage
+        <div className="container h-[600px] rounded-md">
+            <img className="w-[480px] h-[600px] rounded-md cursor-pointer object-cover transition-all duration-300 hover:scale-102" src={product.images[0]} alt="" />
+            {/* <SmoothImage
          src={product.images[0]}
          alt="a nice image of mordor"
          transitionTime={1.0}
@@ -50,8 +50,8 @@ const PopularCard = ({product})=>{
         //      transform: 'scale(1.02)'
         //    }
         //  }}
-      />
-            <h1 className="text-2xl font-bold relative top-[-40px] left-3 text-gray-900 dark:text-gray-400">{product.name}</h1>
+      /> */}
+            <h1 className="text-2xl font-bold relative top-[-40px] left-3 text-gray-600 dark:text-gray-400">{product.name}</h1>
         </div>
     )
 }
