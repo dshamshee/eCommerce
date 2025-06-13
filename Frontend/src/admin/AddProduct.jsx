@@ -14,13 +14,30 @@ const initialState = {
     images: [],
     stock: '',
     isNew: false,
-    isBestSeller: false
+    isBestSeller: false,
+    fabric: '',
+    care: [''],
+    features: ['']
 };
 
 const formReducer = (state, action) => {
     switch (action.type) {
         case 'UPDATE_FIELD':
             return { ...state, [action.field]: action.value };
+        case 'ADD_ARRAY_ITEM':
+            return { ...state, [action.field]: [...state[action.field], ''] };
+        case 'UPDATE_ARRAY_ITEM':
+            return {
+                ...state,
+                [action.field]: state[action.field].map((item, index) => 
+                    index === action.index ? action.value : item
+                )
+            };
+        case 'REMOVE_ARRAY_ITEM':
+            return {
+                ...state,
+                [action.field]: state[action.field].filter((_, index) => index !== action.index)
+            };
         case 'RESET_FORM':
             return initialState;
         default:
@@ -55,6 +72,25 @@ export const AddProduct = () => {
        }
     }, []);
 
+    const handleArrayItemChange = useCallback((field, index, value) => {
+        dispatch({ 
+            type: 'UPDATE_ARRAY_ITEM',
+            field,
+            index,
+            value
+        });
+    }, []);
+
+    const handleAddArrayItem = useCallback((field) => {
+        dispatch({ type: 'ADD_ARRAY_ITEM', field });
+    }, []);
+
+    const handleRemoveArrayItem = useCallback((field, index) => {
+        if (formData[field].length > 1) {
+            dispatch({ type: 'REMOVE_ARRAY_ITEM', field, index });
+        }
+    }, [formData]);
+
     const handleSizeToggle = useCallback((size) => {
         dispatch({
             type: 'UPDATE_FIELD',
@@ -79,7 +115,14 @@ export const AddProduct = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const response = await addProduct(formData);            
+            // Filter out empty strings from care and features arrays
+            const cleanedFormData = {
+                ...formData,
+                care: formData.care.filter(item => item.trim() !== ''),
+                features: formData.features.filter(item => item.trim() !== '')
+            };
+
+            const response = await addProduct(cleanedFormData);            
             if(response.status === 201){
                 toast.success('Product added successfully!');
                 const imageUploadResponse = await uploadImages(selectedImages, response.data.product._id);
@@ -236,6 +279,98 @@ export const AddProduct = () => {
                                     <option value="Women">Women</option>
                                     <option value="Unisex">Unisex</option>
                                 </select>
+                            </div>
+                        </div>
+
+                        {/* Fabric, Care Instructions, and Features */}
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Fabric <span className="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="text"
+                                    name="fabric"
+                                    value={formData.fabric}
+                                    onChange={handleChange}
+                                    placeholder="e.g. 100% Cotton"
+                                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Care Instructions <span className="text-red-500">*</span>
+                                </label>
+                                <div className="space-y-2">
+                                    {formData.care.map((item, index) => (
+                                        <div key={index} className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={item}
+                                                onChange={(e) => handleArrayItemChange('care', index, e.target.value)}
+                                                placeholder={`Care instruction ${index + 1}`}
+                                                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveArrayItem('care', index)}
+                                                className="px-3 py-2 text-gray-500 hover:text-red-500 transition-colors duration-200"
+                                                disabled={formData.care.length === 1}
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    ))}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleAddArrayItem('care')}
+                                        className="w-full px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                                    >
+                                        + Add Care Instruction
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Features <span className="text-red-500">*</span>
+                                </label>
+                                <div className="space-y-2">
+                                    {formData.features.map((item, index) => (
+                                        <div key={index} className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={item}
+                                                onChange={(e) => handleArrayItemChange('features', index, e.target.value)}
+                                                placeholder={`Feature ${index + 1}`}
+                                                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveArrayItem('features', index)}
+                                                className="px-3 py-2 text-gray-500 hover:text-red-500 transition-colors duration-200"
+                                                disabled={formData.features.length === 1}
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    ))}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleAddArrayItem('features')}
+                                        className="w-full px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                                    >
+                                        + Add Feature
+                                    </button>
+                                </div>
                             </div>
                         </div>
 

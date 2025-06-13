@@ -15,11 +15,9 @@ router.post("/add-product", isLoggedIn, async(req, res)=>{
     // })
     try 
     {
-        // Get the filenames from all uploaded images
-        // const imageNames = req.files.map((file)=>{
-        //     console.log('file', file);
-        //     return file.filename;
-        // });
+        // console.log('care', productData.care);
+        // console.log('features', productData.features);
+        // console.log('fabric', productData.fabric);
 
         if(req.user.role !== "admin") return res.status(403).json({message: "You are not authorized to add a product"});
         
@@ -37,8 +35,11 @@ router.post("/add-product", isLoggedIn, async(req, res)=>{
             stock: parseInt(productData.stock),
             discount: parseFloat(productData.discount) || 0,
             colors: productData.colors,
-            isNewProduct: productData.isNew === 'true', 
-            isBestSeller: productData.isBestSeller === 'true'
+            isNewProduct: productData.isNew === true || productData.isNew === 'true', 
+            isBestSeller: productData.isBestSeller === true || productData.isBestSeller === 'true',
+            fabric: productData.fabric,
+            care: productData.care,
+            features: productData.features
         });
         
         return res.status(201).json({
