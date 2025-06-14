@@ -37,7 +37,6 @@ router.post("/signup", async (req, res) => {
           res.cookie("token", token, {
             httpOnly: true,
             secure: true,
-            maxAge: 3600000,
           }); // for development mode
           res.status(201).json({
             message: "User created successfully",
@@ -81,6 +80,10 @@ router.post("/google-login", async (req, res) => {
       { id: user._id, email: user.email },
       process.env.JWT_SECRET_KEY
     );
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+    }); // for development mode
     res.status(200).json({
       message: "User logged in successfully",
       token: token,
@@ -112,7 +115,6 @@ router.post("/login", async (req, res) => {
           res.cookie("token", token, {
             httpOnly: true,
             secure: true,
-            maxAge: 3600000,
           }); // for development mode
           res.status(200).json({
             message: "User logged in successfully",

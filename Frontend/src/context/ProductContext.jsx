@@ -77,8 +77,17 @@ export const ProductProvider = ({ children }) => {
       case 'New Products':
         sorted = allProducts?.filter(product => product.isNewProduct === true);
         break;
-      case 'Best Seller':
+      case 'best seller':
         sorted = allProducts?.filter(product => product.isBestSeller === true);
+        break;
+      case 'new arrival': 
+        sorted = allProducts?.filter(product => product.isNewProduct === true);
+        break;
+      case 'available':
+        sorted = allProducts?.filter(product => product.stock > 0);
+        break;
+      case 'out of stock':
+        sorted = allProducts?.filter(product => product.stock === 0);
         break;
       default:
         // No sorting

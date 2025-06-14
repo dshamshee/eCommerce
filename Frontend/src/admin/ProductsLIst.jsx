@@ -37,20 +37,24 @@ const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
   }
 
   return (
-    <div className="mainContainer p-10 dark:bg-gray-900 bg-white">
+    <div className="mainContainer hidden md:block p-10 dark:bg-gray-900 bg-white">
 
 
       <ul className="list dark:bg-gray-800 bg-gray-100 rounded-box shadow-md">
         
         <li className="p-4 pb-2 text-2xl opacity-60 tracking-wide text-center ">
           <div>List of Products</div>
-          <div className="shorting flex justify-center gap-5">
+          <div className="shorting flex justify-center gap-5 mt-2">
             <select onChange={(e) => sortProducts(e.target.value)} className="select select-bordered w-full max-w-xs">
                 <option value="">Sort By</option>
                 <option value="all">All</option>
                 <option value="price-low-to-high">Price: Low to High</option>
                 <option value="price-high-to-low">Price: High to Low</option>
                 <option value="newest">Newest First</option>
+                <option value="available">Available</option>
+                <option value="best seller">Best Seller</option>
+                <option value="new arrival">New Arrival</option>
+                <option value="out of stock">Out of Stock</option>
             </select>
 
             <select onChange={(e) => sortProducts(e.target.value)} className="select select-bordered w-full max-w-xs">
@@ -59,33 +63,35 @@ const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
                 <option value="Men">Men</option>
                 <option value="Women">Women</option>
                 <option value="Kids">Kids</option>
-                <option value="New Products">New Products</option>
-                <option value="Best Seller">Best Seller</option>
             </select>
         </div>
         </li>
+        {/* <li><hr className="border-gray-600 mt-8" /></li> */}
         
         <li className="list-row">
-          <div className="text-2xl text  font-thin dark:opacity-30 opacity-60 tabular-nums">SL</div>
-          <div className="text-2xl text  font-thin dark:opacity-30 opacity-60 tabular-nums ">
+          <div className="md:text-xl text-center font-thin dark:opacity-80 opacity-60 tabular-nums hidden md:block">SL</div>
+          <div className="md:text-xl text-center font-thin dark:opacity-80 opacity-60 tabular-nums hidden md:block">
             Image
           </div>
-          <div className="list-col-grow text-2xl font-thin dark:opacity-30 opacity-60 tabular-nums">
+          <div className="list-col-grow md:text-xl font-thin dark:opacity-80 opacity-60 tabular-nums hidden md:block">
             Name
           </div>
-          <div className="text-2xl font-thin mr-38 dark:opacity-30 opacity-60 tabular-nums">
+          <div className="md:text-xl text-center font-thin mr-20 dark:opacity-80 opacity-60 tabular-nums hidden md:block">
+            Date
+          </div>
+          <div className="md:text-xl text-center font-thin mr-14 dark:opacity-80 opacity-60 tabular-nums hidden md:block">
             Stock
           </div>
-          <div className="text-2xl font-thin mr-5 dark:opacity-30 opacity-60 tabular-nums">
+          {/* <div className="text-xl font-thin mr-5 dark:opacity-30 opacity-60 tabular-nums">
             Ratings
-          </div>
-          <div className="text-2xl font-thin mr-5 dark:opacity-30 opacity-60 tabular-nums">
+          </div> */}
+          <div className="md:text-xl text-center font-thin mr-8 dark:opacity-80 opacity-60 tabular-nums hidden md:block">
             Best Seller
           </div>
-          <div className="text-2xl font-thin mr-5  dark:opacity-30 opacity-60 tabular-nums">
-            New
+          <div className="md:text-xl text-center font-thin mr-3  dark:opacity-80 opacity-60 tabular-nums hidden md:block">
+            New Arrival
           </div>
-          <div className="text-2xl font-thin dark:opacity-30 opacity-60 tabular-nums">
+          <div className="md:text-xl text-center font-thin dark:opacity-80 opacity-60 tabular-nums hidden md:block">
             Action
           </div>
         </li>
@@ -94,8 +100,8 @@ const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
             filteredProducts.map((product, index)=>{
                 return(
                     <li className="list-row" key={product._id}>
-          <div className="text-4xl font-thin opacity-30 tabular-nums">{index +1 < 10 ? `0${index +1}` : index +1}</div>
-          <div>
+          <div className="text-4xl font-thin opacity-30 tabular-nums hidden md:block">{index +1 < 10 ? `0${index +1}` : index +1}</div>
+          <div className="hidden md:block">
             <img
               className="size-10 rounded-box"
               src={product.images[0]}
@@ -107,21 +113,25 @@ const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
               {product.genderType}
             </div>
           </div>
-          <div className={`text-2xl mr-20 tabular-nums w-34 ${product.stock > 0 ? 'text-accent' : 'text-red-500'}`}>
+
+          <div className="text-xl text-center font-thin mr-1 dark:opacity-80 opacity-60 tabular-nums hidden md:block">
+            {new Date(product.createdAt).toLocaleDateString('en-GB')}
+          </div>
+          <div className={`text-lg tabular-nums w-34 text-center hidden md:block ${product.stock > 0 ? 'text-accent' : 'text-red-500'}`}>
         <span>
         {product.stock > 0 ? 'Available' : 'Out of stock'}
         </span>
           </div>
-          <div className="text-2xl mr-18 font-thin opacity-30 tabular-nums">
+          {/* <div className="text-2xl font-thin opacity-30 tabular-nums">
             {
               console.log(product.ratings)
             }
-          </div>
-          <div className="text-2xl mr-20 font-thin opacity-30 tabular-nums">
+          </div> */}
+          <div className={`text-xl w-28 text-center tabular-nums hidden md:block ${product.isBestSeller ? 'text-accent' : 'text-red-500'}`}>
             {product.isBestSeller ? "Yes" : "No"}
           </div>
-          <div className="text-2xl mr-14 font-thin opacity-30 tabular-nums">
-            {product.isNewProduct ? "Yes" : "No"}
+          <div className={`text-xl w-34 text-center tabular-nums hidden md:block ${product.isNewProduct ? 'text-accent' : 'text-red-500'}`}>
+            {product.isNewProduct ? "Yes" : "No"} 
           </div>
           <button disabled={isDesableBtn} onClick={()=> handleDeleteProduct(product._id)} className="btn btn-square btn-outline hover:bg-red-500">
             <svg
