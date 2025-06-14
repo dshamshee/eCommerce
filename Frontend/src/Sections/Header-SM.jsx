@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 export const HeaderSM = () => {
   const navigate = useNavigate();
   return (
-    <div className="innerContainer md:hidden">
+    <div className="innerContainer md:hidden dark:border-b dark:border-b-gray-700">
       <div className="navbar bg-white dark:bg-gray-900 shadow-sm">
   <div className="ps-4">
   <a className="md:text-2xl font-bold text-gray-900 dark:text-gray-100 font-playfair">

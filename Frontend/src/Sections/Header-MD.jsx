@@ -29,7 +29,7 @@ export const HeaderMD = ()=>{
   }
 
     return(
-        <div className="innerContainer hidden md:block">
+        <div className="innerContainer hidden md:block dark:border-b dark:border-b-gray-700">
         <div className="navbar bg-white dark:bg-gray-900 shadow-sm flex justify-between px-5">
           {/* Logo Section */}
           <div className="flex gap-3 items-center justify-center">

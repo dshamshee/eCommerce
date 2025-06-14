@@ -58,3 +58,17 @@ export const GetProductByType = (type)=>{
     isLoading,
   }
 }
+
+// Delete functionality now work with SWR
+// export const DeleteProduct = (id)=>{
+//   const {data, error, isLoading} = useSWR(
+//     `/product/delete-product/${id}`, 
+//     fetcher,
+//     swrConfig
+//   );
+//   return{
+//     DeleteStatus:data,
+//     DeleteError:error,
+//     DeleteLoading:isLoading,
+//   }
+// }

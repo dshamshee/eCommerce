@@ -13,6 +13,7 @@ import { ProtectedRoute } from "./Layout/ProtectedRoute";
 import { ProductDetails } from "./Pages/products-section/ProductDetails";
 import { Dashboard2 } from "./Pages/Dashboard2";
 import ProductsPage from "./Pages/ProductsPage";
+import { ProductsList } from "./admin/ProductsLIst";
 
 function App() {
   const router = createBrowserRouter([
@@ -43,6 +44,10 @@ function App() {
         {
           path: "/add-product",
           element: <ProtectedRoute><AddProduct /></ProtectedRoute>,
+        },
+        {
+          path: "/products-list",
+          element: <ProtectedRoute><ProductsList /></ProtectedRoute>,
         },
         {
           path: "/product-details/:id",

@@ -50,3 +50,14 @@ export const uploadImages = async(images, id)=>{
     throw error.response?.data?.message || 'Error uploading images';
   }
 }
+
+
+export const DeleteProduct = async(id)=>{
+
+  try {
+    const response = await api.get(`/product/delete-product/${id}`);
+    return response;
+  } catch (error) {
+    throw error.response?.data?.message || 'Error deleting product';
+  }
+}

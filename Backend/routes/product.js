@@ -164,4 +164,19 @@ router.get('/get-product-by-type/:type', async(req, res)=>{
     }
 })
 
+
+router.get('/delete-product/:id', isLoggedIn, async (req, res)=>{
+    try {
+        if(req.user.role !== "admin") return res.status(403).json({message: "You are not authorized to delete a product"});
+        const product = await productModel.findOneAndDelete({_id: req.params.id});
+        if(!product) return res.status(404).json({message: "Product not found"});
+        return res.status(200).json({
+            message: "Product deleted successfully",
+            product
+        })
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+})
+
 module.exports = router;

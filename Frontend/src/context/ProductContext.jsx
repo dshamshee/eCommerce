@@ -62,6 +62,24 @@ export const ProductProvider = ({ children }) => {
       case 'newest':
         sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         break;
+      case 'all':
+        sorted = allProducts;
+        break;
+      case 'Men':
+        sorted = allProducts?.filter(product => product.genderType === 'Men');
+        break;
+      case 'Women':
+        sorted = allProducts?.filter(product => product.genderType === 'Women');
+        break;
+      case 'Kids':
+        sorted = allProducts?.filter(product => product.genderType === 'Kids');
+        break;
+      case 'New Products':
+        sorted = allProducts?.filter(product => product.isNewProduct === true);
+        break;
+      case 'Best Seller':
+        sorted = allProducts?.filter(product => product.isBestSeller === true);
+        break;
       default:
         // No sorting
         break;
