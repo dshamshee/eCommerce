@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mts-pjsc/image-optimize": "^1.2.2",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
     "bson": "^6.10.4",
     "daisyui": "^5.0.43",
     "dotenv": "^16.5.0",
+    "lodash": "^4.17.21",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.1",

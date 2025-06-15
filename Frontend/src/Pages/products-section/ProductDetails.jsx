@@ -4,6 +4,7 @@ import { ProductSkeleton } from "./ProductSceleton";
 import { useProductContext } from "../../context/ProductContext";
 import { toast } from "react-toastify";
 import { addToCart } from "../../API/POST-Axios/cart";
+// import { debounce } from 'lodash';
 
 export const ProductDetails = () => {
     const {id} = useParams();
@@ -106,7 +107,9 @@ export const ProductDetails = () => {
         }
     }
 
-    
+const handleBuyNow = ()=>{
+    console.log("Buy Now Button Clicked");
+}    
 
 
     // const similarProducts = [
@@ -247,13 +250,18 @@ export const ProductDetails = () => {
                         </div>
 
                         {/* Add to Cart Button */}
-                        <div className="pt-4">
+                        <div className="py-1 flex flex-row gap-2 w-full justify-around items-center">
                             <button 
-                            className="btn btn-primary hover:bg-rose-500 btn-block"
+                            className="btn btn-info hover:bg-rose-500 w-[45%]"
                             onClick={handleAddToCart}
                             >
                                 Add to Cart
                             </button>
+
+                            <button 
+                            className="btn btn-warning hover:bg-success w-[50%]"
+                            onClick={handleBuyNow}
+                            >Buy Now</button>
                         </div>
 
                         {/* Fabric & Care */}
@@ -303,7 +311,9 @@ export const ProductDetails = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {similarProducts.map((item) => (
                             <div key={item._id} className="card bg-base-100 shadow-xl">
-                                <figure><img src={item.images[0]} alt={item.name} className="w-full h-64 object-cover" /></figure>
+                                <figure>
+                                    <img src={item.images[0]} alt={item.name} className="w-full h-64 object-cover" />
+                                    </figure>
                                 <div className="card-body">
                                     <h3 className="card-title text-lg">{item.name}</h3>
                                     <div className="flex items-center">
