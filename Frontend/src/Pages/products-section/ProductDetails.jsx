@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// import { GetProductById } from "../../API/GET-SWR/product";
 import { ProductSkeleton } from "./ProductSceleton";
 import { useProductContext } from "../../context/ProductContext";
-import { Decimal128 } from 'bson';
+import { toast } from "react-toastify";
+import { addToCart } from "../../API/POST-Axios/cart";
 
 export const ProductDetails = () => {
     const {id} = useParams();
@@ -51,6 +51,13 @@ export const ProductDetails = () => {
     const [selectedColor, setSelectedColor] = useState('');
     const [quantity, setQuantity] = useState(1);
 
+    useEffect(() => {
+        setSelectedSize('');
+        setSelectedColor('');
+        setQuantity(1);
+    }, [product])
+    
+
     if(isLoading || !product){
         return (
             <div className="sceleton flex flex-row gap-4 w-[90%] mx-auto h-[100vh]">
@@ -64,7 +71,40 @@ export const ProductDetails = () => {
     if(error || !product){
         return <div>Error: {error.message}</div>
     }
-    // console.log(product);
+    
+
+    const handleAddToCart = async ()=>{
+        if(!selectedSize || !selectedColor){
+            toast.error("Please select size and color");
+            return;
+        }
+
+        // check if product is in stock
+        if(product.stock === 0){
+            toast.error("Product is out of stock");
+            return;
+        }
+
+        // add product to cart
+        const productData = {
+            productId: product._id,
+            quantity,
+            size: selectedSize,
+            color: selectedColor,
+        }
+        // console.log(productData);
+        
+        const response = await addToCart(productData);
+        if(response.status === 200){
+            toast.success("Product added to cart");
+            setQuantity(1);
+            setSelectedSize('');
+            setSelectedColor('');
+            // navigate('/cart');
+        }else{
+            toast.error(response.data.message);
+        }
+    }
 
     
 
@@ -208,7 +248,10 @@ export const ProductDetails = () => {
 
                         {/* Add to Cart Button */}
                         <div className="pt-4">
-                            <button className="btn btn-primary hover:bg-rose-500 btn-block">
+                            <button 
+                            className="btn btn-primary hover:bg-rose-500 btn-block"
+                            onClick={handleAddToCart}
+                            >
                                 Add to Cart
                             </button>
                         </div>

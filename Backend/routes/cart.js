@@ -9,7 +9,7 @@ const productModel = require("../model/product");
 router.post('/add-to-cart', isLoggedIn, async(req, res)=>{
 
     try {
-        const {productId, quantity} = req.body;
+        const {productId, quantity, size, color} = req.body;
         const userId = req.user._id;
 
         // check if product exists
@@ -23,7 +23,7 @@ router.post('/add-to-cart', isLoggedIn, async(req, res)=>{
         if(!cart){
             cart = await cartModel.create({
                 userId,
-                products: [{productId, quantity}],
+                products: [{productId, quantity, size, color}],
                 totalPrice: product.price * quantity,
             })
         }else{
@@ -33,7 +33,7 @@ router.post('/add-to-cart', isLoggedIn, async(req, res)=>{
                 existingProduct.quantity += parseInt(quantity);
                 cart.totalPrice += product.price * parseInt(quantity);
             }else{
-                cart.products.push({productId, quantity});
+                cart.products.push({productId, quantity, size, color});
                 cart.totalPrice += product.price * parseInt(quantity);
             }
         }
