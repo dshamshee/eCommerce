@@ -14,6 +14,7 @@ import { ProductDetails } from "./Pages/products-section/ProductDetails";
 import { Dashboard2 } from "./Pages/Dashboard2";
 import ProductsPage from "./Pages/ProductsPage";
 import { ProductsList } from "./admin/ProductsLIst";
+import { CartPage } from "./Pages/Cart/CartPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -60,6 +61,10 @@ function App() {
         {
           path: "/products",
           element: <ProductsPage />,
+        },
+        {
+          path: "/cart",
+          element: <CartPage />,
         },
       ],
     },
