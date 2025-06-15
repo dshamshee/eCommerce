@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // import { GetProductById } from "../../API/GET-SWR/product";
 import { ProductSkeleton } from "./ProductSceleton";
 import { useProductContext } from "../../context/ProductContext";
+import { Decimal128 } from 'bson';
 
 export const ProductDetails = () => {
     const {id} = useParams();
-    const {getProductById, isLoading, error} = useProductContext();
+    const {getProductById, isLoading, error, filterByCategory} = useProductContext();
     const product = getProductById(id);
+    const navigate = useNavigate();
+    const similarProducts = !isLoading && product ? filterByCategory(product.category) : [];
 
     
     // const [product, setProduct] = useState({
@@ -61,41 +64,41 @@ export const ProductDetails = () => {
     if(error || !product){
         return <div>Error: {error.message}</div>
     }
-    console.log(product);
+    // console.log(product);
 
     
 
 
-    const similarProducts = [
-        {
-            id: 1,
-            name: "Classic Denim Jacket",
-            price: 89.99,
-            image: "https://placehold.co/300x400",
-            rating: 4.3
-        },
-        {
-            id: 2, 
-            name: "Slim Fit Chinos",
-            price: 59.99,
-            image: "https://placehold.co/300x400",
-            rating: 4.4
-        },
-        {
-            id: 3,
-            name: "Polo Shirt",
-            price: 34.99,
-            image: "https://placehold.co/300x400",
-            rating: 4.2
-        },
-        {
-            id: 4,
-            name: "Casual Hoodie",
-            price: 49.99,
-            image: "https://placehold.co/300x400",
-            rating: 4.6
-        }
-    ];
+    // const similarProducts = [
+    //     {
+    //         id: 1,
+    //         name: "Classic Denim Jacket",
+    //         price: 89.99,
+    //         image: "https://placehold.co/300x400",
+    //         rating: 4.3
+    //     },
+    //     {
+    //         id: 2, 
+    //         name: "Slim Fit Chinos",
+    //         price: 59.99,
+    //         image: "https://placehold.co/300x400",
+    //         rating: 4.4
+    //     },
+    //     {
+    //         id: 3,
+    //         name: "Polo Shirt",
+    //         price: 34.99,
+    //         image: "https://placehold.co/300x400",
+    //         rating: 4.2
+    //     },
+    //     {
+    //         id: 4,
+    //         name: "Casual Hoodie",
+    //         price: 49.99,
+    //         image: "https://placehold.co/300x400",
+    //         rating: 4.6
+    //     }
+    // ];
 
     return (
         <div className="mainContainer p-4 md:p-8">
@@ -131,7 +134,7 @@ export const ProductDetails = () => {
                                             key={i}
                                             type="radio" 
                                             name="rating-2" 
-                                            className={`mask mask-star-2 ${i < Math.floor(product.rating) ? 'bg-orange-400' : 'bg-gray-300'}`}
+                                            className={`mask mask-star-2 ${i < Math.floor(product.ratings?.$numberDecimal) ? 'bg-orange-400' : 'bg-gray-500 dark:bg-gray-200'}`}
                                             disabled
                                         />
                                     ))}
@@ -158,11 +161,13 @@ export const ProductDetails = () => {
                                     </button>
                                 ))}
                             </div>
-                            {selectedSize && (
+                            
+                            {/* For showing the size measurements */}
+                            {/* {selectedSize && (
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                                     {product.measurements[selectedSize]}
                                 </p>
-                            )}
+                            )} */}
                         </div>
 
                         {/* Color Selection */}
@@ -172,7 +177,7 @@ export const ProductDetails = () => {
                                 {product.colors.map((color) => (
                                     <button
                                         key={color}
-                                        className={`btn btn-sm ${selectedColor === color ? 'btn-primary' : 'btn-outline'}`}
+                                        className={`btn btn-sm  ${selectedColor === color ? 'btn-primary' : 'btn-outline'}`}
                                         onClick={() => setSelectedColor(color)}
                                     >
                                         {color}
@@ -203,13 +208,13 @@ export const ProductDetails = () => {
 
                         {/* Add to Cart Button */}
                         <div className="pt-4">
-                            <button className="btn btn-primary btn-block">
+                            <button className="btn btn-primary hover:bg-rose-500 btn-block">
                                 Add to Cart
                             </button>
                         </div>
 
                         {/* Fabric & Care */}
-                        {/* <div className="border-t pt-4">
+                        <div className="border-t pt-4">
                             <h3 className="font-semibold mb-2">Fabric & Care</h3>
                             <p className="text-sm mb-2">Fabric: {product.fabric}</p>
                             <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
@@ -217,23 +222,23 @@ export const ProductDetails = () => {
                                     <li key={index}>{instruction}</li>
                                 ))}
                             </ul>
-                        </div> */}
+                        </div>
 
                         {/* Features */}
-                        {/* <div className="border-t pt-4">
+                        <div className="border-t pt-4">
                             <h3 className="font-semibold mb-2">Features</h3>
                             <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
                                 {product.features.map((feature, index) => (
                                     <li key={index}>{feature}</li>
                                 ))}
                             </ul>
-                        </div> */}
+                        </div>
 
                         {/* Additional Info */}
                         <div className="border-t pt-4">
                             <div className="flex justify-between items-center text-sm">
                                 <span>Brand:</span>
-                                <span className="font-playfair font-semibold">WOLVE<span className="text-rose-500 italic text-xl font-playfair">N</span><span className="">STITCH</span></span>
+                                <span className="font-playfair font-bold">WOLVE<span className="italic text-xl font-playfair">N</span><span className="text-rose-500">STITCH</span></span>
                             </div>
                             <div className="flex justify-between text-sm mt-2">
                                 <span>Category:</span>
@@ -254,8 +259,8 @@ export const ProductDetails = () => {
                     <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {similarProducts.map((item) => (
-                            <div key={item.id} className="card bg-base-100 shadow-xl">
-                                <figure><img src={item.image} alt={item.name} className="w-full h-64 object-cover" /></figure>
+                            <div key={item._id} className="card bg-base-100 shadow-xl">
+                                <figure><img src={item.images[0]} alt={item.name} className="w-full h-64 object-cover" /></figure>
                                 <div className="card-body">
                                     <h3 className="card-title text-lg">{item.name}</h3>
                                     <div className="flex items-center">
@@ -265,7 +270,7 @@ export const ProductDetails = () => {
                                                     key={i}
                                                     type="radio" 
                                                     name={`rating-${item.id}`}
-                                                    className={`mask mask-star-2 ${i < Math.floor(item.rating) ? 'bg-orange-400' : 'bg-gray-300'}`}
+                                                    className={`mask mask-star-2 ${i < Math.floor(item.ratings?.$numberDecimal  ) ? 'bg-orange-400' : 'bg-gray-300'}`}
                                                     disabled
                                                 />
                                             ))}
@@ -273,7 +278,13 @@ export const ProductDetails = () => {
                                     </div>
                                     <p className="text-lg font-semibold">${item.price}</p>
                                     <div className="card-actions justify-end">
-                                        <button className="btn btn-primary btn-sm">View Details</button>
+                                        <button className="btn btn-primary btn-sm" onClick={() => {
+                                            navigate(`/product-details/${item._id}`)
+                                            window.scrollTo({
+                                                top: 0,
+                                                behavior: 'smooth'
+                                            });
+                                        }}>View Details</button>
                                     </div>
                                 </div>
                             </div>

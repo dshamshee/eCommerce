@@ -2,12 +2,13 @@ import { useState } from "react";
 // import { GetProductByType } from "../../API/GET-SWR/product";
 import { ProductSkeleton } from "./ProductSceleton";
 import { useProductContext } from "../../context/ProductContext";
+import { useNavigate } from "react-router-dom";
 
 export const Women = () => {
   const { filteredProducts, error, isLoading } = useProductContext();
   const [searchInput, setSearchInput] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-
+  const navigate = useNavigate();
 
   let filterdata =
     !!filteredProducts &&
@@ -20,7 +21,7 @@ export const Women = () => {
   console.log(filterdata);
 
   const handleProductDetails = (id) => {
-    console.log(id);
+    navigate(`/product-details/${id}`);
   };
 
   const handleSelect = (event) => {
@@ -188,7 +189,7 @@ export const Women = () => {
                 </div>
 
                 <div className="card-actions justify-end mt-4">
-                  <button className="btn btn-primary bg-rose-500 hover:bg-rose-600 border-none">
+                  <button onClick={()=> handleProductDetails(product._id)} className="btn btn-primary bg-rose-500 hover:bg-rose-600 border-none">
                     Add to Cart
                   </button>
                 </div>

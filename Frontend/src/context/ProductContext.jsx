@@ -40,6 +40,16 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
+  const filterByCategory = (category) => {
+    if (!category || category === 'all') {
+      setFilteredProducts(allProducts);
+    } else {
+      const filtered = allProducts?.filter(product => product.category === category);
+      const shuffled = filtered.sort(() => 0.5 - Math.random()); // Shuffle the array (randomize the array order to get random products)
+      return shuffled.slice(0, 4); // Return the first 4 products
+    }
+  };
+
   // Function to filter products by price range
   const filterByPriceRange = (min, max) => {
     const filtered = allProducts?.filter(product => 
@@ -132,7 +142,8 @@ export const ProductProvider = ({ children }) => {
     sortProducts,
     searchProducts,
     resetFilters,
-    getProductById
+    getProductById,
+    filterByCategory
   };
 
   return (

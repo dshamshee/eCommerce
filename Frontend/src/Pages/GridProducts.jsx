@@ -15,7 +15,7 @@ const ProductCard = memo(({ product, handleNavigate }) => (
         </span>
       )}
       {product.isBestSeller && (
-        <span className="dark:bg-blue-900 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+        <span className="bg-yellow-500 text-white text-xs font-medium px-2.5 py-0.5 rounded">
           Bestseller
         </span>
       )}
@@ -104,6 +104,10 @@ export const GridProducts = memo(({products}) => {
 
   const handleNavigate = (id) => {
     navigate(`/product-details/${id}`);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+  });
   };
 
   return (

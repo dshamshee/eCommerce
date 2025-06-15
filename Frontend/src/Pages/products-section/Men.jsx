@@ -2,9 +2,10 @@ import { useState } from "react";
 // import { GetProductByType } from "../../API/GET-SWR/product";
 import { ProductSkeleton } from "./ProductSceleton";
 import { useProductContext } from "../../context/ProductContext";
+import { useNavigate } from "react-router-dom";
 
 export const Men = () => {
-  
+  const navigate = useNavigate();
   const {filteredProducts, error, isLoading} = useProductContext();
   // const [menProducts, setMenProducts] = useState([]);
   // const { products, error, isLoading } = GetProductByType("Men");
@@ -190,7 +191,13 @@ export const Men = () => {
                 </div>
 
                 <div className="card-actions justify-end mt-4">
-                  <a href={`/product-details/${product._id}`}><button className="btn btn-primary bg-blue-500 hover:bg-blue-600 border-none">
+                  <a onClick={()=>{
+                    navigate(`/product-details/${product._id}`)
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    });
+                  }}><button className="btn btn-primary bg-blue-500 hover:bg-blue-600 border-none">
                     View Details
                   </button></a>
                 </div>
