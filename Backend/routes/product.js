@@ -5,25 +5,13 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 const upload = require("../config/multer_config");
 const uploadOnCloudinary = require("../utils/cloudinaryConfig");
 const fs = require("fs");
-// const user = require("../model/user");
 
 router.post("/add-product", isLoggedIn, async(req, res)=>{
     const {productData} = req.body;
-    // console.log('formData', formData);
-    // selectedImages.map((image)=>{
-    //     console.log('image', image.filename);
-    // })
     try 
     {
-        // console.log('care', productData.care);
-        // console.log('features', productData.features);
-        // console.log('fabric', productData.fabric);
-
         if(req.user.role !== "admin") return res.status(403).json({message: "You are not authorized to add a product"});
-        
-        // Parse the JSON strings back to arrays
-        // const colors = JSON.parse(req.body.colors);
-        // const sizes = JSON.parse(req.body.sizes);
+
         const product = await productModel.create({
             name: productData.name,
             description: productData.description,
@@ -31,7 +19,6 @@ router.post("/add-product", isLoggedIn, async(req, res)=>{
             category: productData.category,
             genderType: productData.genderType,
             sizes: productData.sizes,
-            // images: selectedImages,  // Store array of filenames
             stock: parseInt(productData.stock),
             discount: parseFloat(productData.discount) || 0,
             colors: productData.colors,
@@ -58,7 +45,6 @@ router.post('/upload-images/:id', isLoggedIn, upload.array('images'), async(req 
         const images = req.files;
         const imageUploadedSuccessfully = await images.map(async(image)=>{
             const response = await uploadOnCloudinary(image.path);
-            // console.log('imgURL', response);
             return response;
         })
 
@@ -74,7 +60,6 @@ router.post('/upload-images/:id', isLoggedIn, upload.array('images'), async(req 
             const imagePaths = images.map(image => image.path);
             imagePaths.forEach(imagePath => {
                 fs.unlinkSync(imagePath);
-                // console.log(`Deleted image from local storage: ${imagePath}`);
             });
         }
             
@@ -83,7 +68,6 @@ router.post('/upload-images/:id', isLoggedIn, upload.array('images'), async(req 
             imageUrls
         })
     } catch (error) {
-        // return res.status(500).json({message: error.message});
         return res.status(500).json({message: "Error uploading images on cloudinary"});
     }
 })
@@ -91,7 +75,6 @@ router.post('/upload-images/:id', isLoggedIn, upload.array('images'), async(req 
 // get all products
 router.get('/get-products', async(req, res)=>{
     try {
-        // console.log("get-products route called");
         const products = await productModel.find();
         return res.status(200).json({
             message: "Products fetched successfully",
@@ -141,8 +124,6 @@ router.post('/update-product/:id', isLoggedIn, async(req, res)=>{
 
 // get product by type (category or genderType)
 router.get('/get-product-by-type/:type', async(req, res)=>{
-    // console.log("get-product-by-type route called");
-
     try {
         // check which one is on params category or genderType
         const type = req.params.type;

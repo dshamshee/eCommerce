@@ -51,7 +51,7 @@ router.post('/add-to-cart', isLoggedIn, async(req, res)=>{
 
 // Get cart items
 router.get('/get-cart-items', isLoggedIn, async(req, res)=>{
-
+    console.log("get-cart-items triggered");
     try {
         const userId = req.user._id;
         const cart = await cartModel.findOne({userId}).populate('products.productId');

@@ -1,18 +1,12 @@
-// import axios from "axios";
-// const baseUrl = axios.create({
-//   baseURL: import.meta.env.VITE_AXIOS_BASE_URI,
-//   headers:{
-//       'Content-Type': 'application/json',
-//       'Authorization': localStorage.getItem('token'),
-//   }
-// });
+import api from "../POST-Axios/apiConfig";
 
 export const fetcher = async (url) => {
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
     const res = await fetch(`${import.meta.env.VITE_AXIOS_BASE_URI}${url}`, {
       headers: {
-        'Authorization': token,
+        'Authorization': localStorage.getItem('token'),
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       }
     });
     // const res = await baseUrl.get(`${url}`);
@@ -26,3 +20,9 @@ export const fetcher = async (url) => {
   
     return res.json();
   };
+
+
+  export const cartFetcher = async (url)=>{
+    const res = await api.get(url);
+    return res.data;
+  }
