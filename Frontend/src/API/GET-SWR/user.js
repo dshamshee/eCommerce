@@ -1,10 +1,10 @@
 import useSWR from "swr";
-import { fetcher } from "./fetcher";
+import { userFetcher } from "./fetcher";
 
 // get user 
 export const GetUser = ()=>{
 
-    const {data, error, isLoading} = useSWR("/user/get-user", fetcher);
+    const {data, error, isLoading} = useSWR("/user/get-user", userFetcher);
     return{
         user: data?.user,
         error,
@@ -15,7 +15,8 @@ export const GetUser = ()=>{
 // Delete User 
 export const DeleteUser = ()=>{
 
-    const {data, error, isLoading} = useSWR("/user/delete-user", fetcher);
+    const {data, error, isLoading} = useSWR("/user/delete-user", userFetcher);
+    if(!isLoading) console.log(data);
     return{
         data,
         error,
@@ -25,7 +26,7 @@ export const DeleteUser = ()=>{
 
 // Logout User
 export const LogoutUser = ()=>{
-    const {data, error, isLoading} = useSWR("/user/logout", fetcher);
+    const {data, error, isLoading} = useSWR("/user/logout", userFetcher);
     return{
         logout:data,
         error,

@@ -8,7 +8,7 @@ export const MainLayout = () => {
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
           <Header />
         </div>
-        <main className="flex-grow mt-16">
+        <main className="flex-grow mt-16 dark:bg-gray-900 bg-gray-200">
           <Outlet />
         </main>
         <div>

@@ -8,9 +8,10 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 router.post('/add-delivery-address', isLoggedIn, async(req, res)=>{
 
     try {
-        const {address, city, state, zipCode, phone, isDefault} = req.body;
+        const {name, address, city, state, zipCode, phone, isDefault} = req.body;
         const deliveryAddress = await deliveryAddressModel.create({
             userId: req.user._id,
+            name,
             address,
             city,
             state,
@@ -41,8 +42,9 @@ router.get('/get-all-delivery-addresses', isLoggedIn, async(req, res)=>{
 router.post('/update-delivery-address/:id', isLoggedIn, async(req, res)=>{
 
     try {
-        const {address, city, state, zipCode, phone, isDefault} = req.body;
+        const {name, address, city, state, zipCode, phone, isDefault} = req.body;
         const deliveryAddress = await deliveryAddressModel.findByIdAndUpdate(req.params.id, {
+            name,
             address,
             city,
             state,

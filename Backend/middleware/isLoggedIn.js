@@ -5,7 +5,10 @@ dotenv.config();
 
 
 module.exports = async(req, res, next)=>{
-    const token = req.cookies.token;
+    // const token = req.cookies.token;
+    const token = req.headers.authorization || req.cookies.token;
+    // const token = req.cookies.token;
+    // console.log(token)
     // console.log(`Backend geted token: ${token}`);
     // if(!req.headers.authorization) return res.status(401).json({message: "cookie not found (Backend Error)"}); // for production mode
     // console.log(`Backend geted token: ${req.headers.authorization}`);

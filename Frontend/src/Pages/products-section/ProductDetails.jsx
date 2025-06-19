@@ -51,6 +51,7 @@ export const ProductDetails = () => {
     const [selectedSize, setSelectedSize] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
     const [quantity, setQuantity] = useState(1);
+    const [btnLoading, setBtnLoading] = useState(false);
 
     useEffect(() => {
         setSelectedSize('');
@@ -94,16 +95,22 @@ export const ProductDetails = () => {
             color: selectedColor,
         }
         // console.log(productData);
-        
-        const response = await addToCart(productData);
-        if(response.status === 200){
-            toast.success("Product added to cart");
-            setQuantity(1);
-            setSelectedSize('');
-            setSelectedColor('');
-            // navigate('/cart');
-        }else{
-            toast.error(response.data.message);
+        try {
+            setBtnLoading(true);
+            const response = await addToCart(productData);
+            if(response.status === 200){
+                toast.success("Product added to cart");
+                setQuantity(1);
+                setSelectedSize('');
+                setSelectedColor('');
+                // navigate('/cart');
+            }else{
+                toast.error(response.data.message);
+            }               
+        } catch (error) {
+            toast.error(error.response.data.message);
+        } finally {
+            setBtnLoading(false);
         }
     }
 
@@ -254,8 +261,11 @@ const handleBuyNow = ()=>{
                             <button 
                             className="btn btn-info hover:bg-rose-500 w-[45%]"
                             onClick={handleAddToCart}
+                            disabled={btnLoading}
                             >
-                                Add to Cart
+                                {
+                                    btnLoading ? <span className="loading loading-spinner loading-xs"></span> : 'Add to Cart'
+                                }
                             </button>
 
                             <button 

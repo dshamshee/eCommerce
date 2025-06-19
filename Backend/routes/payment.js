@@ -3,43 +3,88 @@ const router = express.Router();
 const cartModel = require("../model/cart");
 const orderModel = require("../model/order");
 const productModel = require("../model/product");
+const razorpay = require("razorpay");
+const isLoggedIn = require("../middleware/isLoggedIn");
+
+// razorpay instance (Admin Credentials)
+const razorpayInstance = new razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+})
+
+// router.post('/create-checkout-session', isLoggedIn, async(req, res)=>{
+
+//     try {
+//         const userId = req.user._id;
+//         const cart = await cartModel.findOne({userId}).populate('products.productId');
+//         if(!cart){
+//             return res.status(404).json({message: "Cart not found"});
+//         }
+
+//         // check if cart is empty
+//         if(cart.products.length === 0){
+//             return res.status(400).json({message: "Cart is empty"});
+//         }
+
+//         // create order
+//         const order = await orderModel.create({
+//             userId,
+//             products: cart.products,
+//             totalPrice: cart.totalPrice,
+//             status: "pending",
+//         })
+
+//         // create checkout session
+//         // const session = await stripe.checkout.sessions.create({
+//         //     payment_method_types: ['card'],
+//         //     line_items: cart.products.map(p=>({
+//         //         price_data: {
+
+//         //         }
+//         //     }))
+//         // })
+        
+//     } catch (error) {
+//         return res.status(500).json({message: error.message});
+//     }
+// })
 
 
-router.post('/create-checkout-session', isLoggedIn, async(req, res)=>{
+
+
+// create order
+router.post('/create-order', isLoggedIn, async(req, res)=>{
+
+    const options={
+        amount: req.body.amount * 100,
+        currency: "INR",
+        receipt: `order_${Date.now()}`,
+        payment_capture: 1,
+    }
 
     try {
-        const userId = req.user._id;
-        const cart = await cartModel.findOne({userId}).populate('products.productId');
-        if(!cart){
-            return res.status(404).json({message: "Cart not found"});
-        }
-
-        // check if cart is empty
-        if(cart.products.length === 0){
-            return res.status(400).json({message: "Cart is empty"});
-        }
-
-        // create order
-        const order = await orderModel.create({
-            userId,
-            products: cart.products,
-            totalPrice: cart.totalPrice,
-            status: "pending",
-        })
-
-        // create checkout session
-        // const session = await stripe.checkout.sessions.create({
-        //     payment_method_types: ['card'],
-        //     line_items: cart.products.map(p=>({
-        //         price_data: {
-
-        //         }
-        //     }))
-        // })
-        
+        const order = await razorpayInstance.orders.create(options);
+        res.status(200).json({order});
     } catch (error) {
-        return res.status(500).json({message: error.message});
+        res.status(500).json({message: "Order not created",error: error.message});
     }
 })
 
+
+// Fetch Payment Details
+router.get('/fetch-payment/:paymentID', isLoggedIn, async(req, res)=>{
+
+    const {paymentID} = req.params;
+
+    try {
+        const payment = await razorpayInstance.payments.fetch(paymentID);
+        if(!payment){
+            res.status(404).json({message: "Payment not found"});
+        }
+
+        res.status(200).json({payment});
+    } catch (error) {
+        res.status(500).json({message: "Payment not found",error: error.message});
+    }
+})
 module.exports = router;

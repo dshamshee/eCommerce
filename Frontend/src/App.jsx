@@ -15,6 +15,9 @@ import { Dashboard2 } from "./Pages/Dashboard2";
 import ProductsPage from "./Pages/ProductsPage";
 import { ProductsList } from "./admin/ProductsLIst";
 import { CartPage } from "./Pages/Cart/CartPage";
+import { CheckOut } from "./Pages/Cart/CheckOut";
+import { MakePayment } from "./Pages/Payment/MakePayment";
+
 
 function App() {
   const router = createBrowserRouter([
@@ -65,6 +68,14 @@ function App() {
         {
           path: "/cart",
           element: <CartPage />,
+        },
+        {
+          path: "/checkout",
+          element: <CheckOut />,
+        },
+        {
+          path: "/payment/:amount",
+          element: <MakePayment />,
         },
       ],
     },

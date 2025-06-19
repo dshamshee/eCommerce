@@ -10,14 +10,6 @@ export const HeaderMD = ()=>{
   const navigate = useNavigate();
   const {stateCart} = useCartContext();
 
-
-
-// if(!isLoading){
-//   console.log("cartItems", stateCart.products.length);
-// }else if(error){
-//   console.log("error", error);
-// }
-
   const handleMenToggle = () => {
     navigate("/men");
     filterByGenderType("Men");

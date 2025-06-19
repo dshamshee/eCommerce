@@ -7,6 +7,7 @@ const productRoutes = require("./routes/product");
 const deliveryAddressRoutes = require("./routes/deliveryAddress");
 const orderRoutes = require("./routes/order");
 const cartRoutes = require("./routes/cart");
+const paymentRoutes = require("./routes/payment");
 const { updateExpiredNewProducts } = require("./utils/productUtils");
 const cors = require("cors");
 require("dotenv").config();
@@ -30,6 +31,8 @@ app.use('/api/product', productRoutes);
 app.use('/api/delivery-address', deliveryAddressRoutes);
 app.use('/api/order', orderRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/payment', paymentRoutes);
+
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);

@@ -80,7 +80,7 @@ export const CartPage = () => {
                             <div className="card-body p-4">
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <h2 className="md:card-title text-sm text-wrap text-ellipsis overflow-hidden">
+                                        <h2 className="text-sm md:text-md font-bold text-wrap text-ellipsis overflow-hidden">
                                             {item && item.name ? item.name : "Product"}
                                         </h2>
                                         <p className="text-xs text-gray-600 dark:text-gray-400">

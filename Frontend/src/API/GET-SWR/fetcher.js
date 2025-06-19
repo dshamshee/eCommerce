@@ -26,3 +26,8 @@ export const fetcher = async (url) => {
     const res = await api.get(url);
     return res.data;
   }
+
+  export const userFetcher = async (url)=>{
+    const res = await api.get(url);
+    return res.data;
+  }
