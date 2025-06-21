@@ -4,13 +4,18 @@ import { GridProducts } from "./GridProducts";
 import { ProductSkeleton } from "./products-section/ProductSceleton";
 // import { GetProducts } from "../API/GET-SWR/product";
 import { useProductContext } from "../context/ProductContext";
-
+import { ErrorPage } from "./ErrorPage";
+import { useNavigate } from "react-router-dom";
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
   // const {allProducts, error, isLoading} = GetProducts();
   const {allProducts, error, isLoading} = useProductContext();
 
-  if (isLoading || !allProducts[0].images[0]) {
+  if (error){
+    navigate("/error");
+  }
+  else if (isLoading || !allProducts[0].images[0]) {
     return(
       <div className="mainContainer flex gap-10 justify-center items-center h-screen">
         <ProductSkeleton />
@@ -19,7 +24,7 @@ export const Dashboard = () => {
       </div>
     )
   }
-  if (error) return <div>Error: {error.message}</div>;
+  
 
 
   return (

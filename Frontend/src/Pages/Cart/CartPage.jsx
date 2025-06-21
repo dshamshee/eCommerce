@@ -2,11 +2,12 @@ import { useCartContext } from "../../context/CartContext";
 import { useState } from "react";
 import { RemoveCartItem } from "../../API/GET-SWR/cart";
 import api from "../../API/POST-Axios/apiConfig";
+import { useNavigate } from "react-router-dom";
 
 export const CartPage = () => {
     const { stateCart, isLoading } = useCartContext();
     const [isUpdating, setIsUpdating] = useState(false);
-
+    const navigate = useNavigate();
     // Remove item from cart
     const handleRemoveItem = async (productId) => {
         try {
@@ -150,8 +151,12 @@ export const CartPage = () => {
                             </div>
                         </div>
                         <div className="card-actions mt-4">
-                            <button className="btn btn-primary w-full">Proceed to Checkout</button>
-                            <button className="btn btn-outline w-full">Continue Shopping</button>
+                            <button className="btn btn-primary w-full"
+                            onClick={()=>navigate("/checkout")}
+                            >Proceed to Checkout</button>
+                            <button className="btn btn-outline w-full"
+                            onClick={()=>navigate("/")}
+                            >Continue Shopping</button>
                         </div>
                     </div>
                 </div>

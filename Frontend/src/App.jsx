@@ -17,9 +17,9 @@ import { ProductsList } from "./admin/ProductsLIst";
 import { CartPage } from "./Pages/Cart/CartPage";
 import { CheckOut } from "./Pages/Cart/CheckOut";
 import { MakePayment } from "./Pages/Payment/MakePayment";
-
-
+import { ErrorPage } from "./Pages/ErrorPage";
 function App() {
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -76,6 +76,10 @@ function App() {
         {
           path: "/payment/:amount",
           element: <MakePayment />,
+        },
+        {
+          path: "/error",
+          element: <ErrorPage />,
         },
       ],
     },

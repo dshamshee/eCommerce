@@ -2,12 +2,15 @@ import { useState } from "react";
 import { GetAllAddresses } from "../../API/GET-SWR/deliveryAddress";
 import { useCartContext } from "../../context/CartContext";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const CheckOut = () => {
+  const navigate = useNavigate();
   const [firstChecked, setFirstChecked] = useState(true);
   const [secondChecked, setSecondChecked] = useState(false);
   const [thirdChecked, setThirdChecked] = useState(false);
-
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState(null);
   const { stateCart, isLoading: cartLoading } = useCartContext();
   const { deliveryAddresses, error, isLoading } = GetAllAddresses();
   // if(!isLoading) console.log(deliveryAddresses);
@@ -21,6 +24,7 @@ export const CheckOut = () => {
       </div>
     );
   }
+  if(error && !cartLoading) toast.error("Error fetching data, please check your internet connection");
 
   const handleFirstClick = () => {
     console.log("First click");
@@ -36,12 +40,32 @@ export const CheckOut = () => {
     setThirdChecked(true);
   };
 
-  const handleThirdClick = () => {
-    console.log("Third click");
+  const handleBackToAddress = () => {
     setFirstChecked(true);
     setSecondChecked(false);
     setThirdChecked(false);
   };
+
+  const handlePayment = () => {
+    if (paymentMethod === "UPI" || paymentMethod === "Debit / Credit Card"){
+      navigate(`/payment/${stateCart.totalPrice}`);
+    }
+    else if (paymentMethod === "Cash on Delivery") {
+      console.log("Cash on Delivery");
+      toast.success("Order Placed Successfully");
+    } else toast.error("Please select a payment method");
+  };
+
+  // const handlePaymentMethodClick = (e) => {
+  //   setPaymentMethod(e.target.value);
+  // };
+
+
+  const handleAddressChange = (e)=>{
+    const address = deliveryAddresses.find(address => address._id === e.target.value);
+    if(address) setSelectedAddress(address);
+  }
+
   return (
     <div className="mainContainer flex flex-col md:flex-row gap-8 my-5 p-5">
       {/* Accordion */}
@@ -80,6 +104,8 @@ export const CheckOut = () => {
                           type="radio"
                           name="radio-7"
                           className="radio radio-success"
+                          value={address._id}
+                          onChange={handleAddressChange}
                         />
                         <div>
                           <p className="text-sm">{address.address}</p>
@@ -96,6 +122,7 @@ export const CheckOut = () => {
             <button
               className="btn btn-sm px-8 btn-warning text-sm ml-[80%]"
               onClick={handleFirstClick}
+              disabled={!selectedAddress}
             >
               Order Summary
             </button>
@@ -129,25 +156,46 @@ export const CheckOut = () => {
                 const item = product.productId;
 
                 return (
-                  <div className="order-summary-item w-[90%] border-b border-gray-300 pb-5" key={product._id}>
+                  <div
+                    className="order-summary-item w-[90%] border-b border-gray-300 pb-5"
+                    key={product._id}
+                  >
                     <div className="items flex gap-20 justify-between">
                       <div className="image">
                         <img
-                          src={item && item.images && item.images.length > 0 ? item.images[0] : "https://placehold.co/200"}
+                          src={
+                            item && item.images && item.images.length > 0
+                              ? item.images[0]
+                              : "https://placehold.co/200"
+                          }
                           alt="product"
                           className="w-20 h-20 rounded-md"
                         />
                       </div>
                       <div className="details flex flex-col gap-2 justify-start flex-1">
-                        <h3 className="text-lg">{item && item.name ? item.name : "Product"}</h3>
+                        <h3 className="text-lg">
+                          {item && item.name ? item.name : "Product"}
+                        </h3>
                         <p className="text-sm">Quantity: {product.quantity}</p>
-                        <p className="text-sm">Price: {item && item.price ? item.price : "0"}</p>
+                        <p className="text-sm">
+                          Price: {item && item.price ? item.price : "0"}
+                        </p>
                         {/* <p className="text-sm">Discount: {item && item.discount ? item.discount : "0"}</p> */}
                       </div>
 
                       <div className="prices flex flex-col gap-2">
-                        <p className="text-md line-through text-rose-500 ">₹{item && item.price ? item.price * product.quantity+item.discount : "0"}</p>
-                        <p className="text-md text-success">₹{item && item.price ? item.price * product.quantity-item.discount : "0"}</p>
+                        <p className="text-md line-through text-rose-500 ">
+                          ₹
+                          {item && item.price
+                            ? item.price * product.quantity + item.discount
+                            : "0"}
+                        </p>
+                        <p className="text-md text-success">
+                          ₹
+                          {item && item.price
+                            ? item.price * product.quantity - item.discount
+                            : "0"}
+                        </p>
                         {/* <p className="text-sm">₹{item && item.price ? item.price * product.quantity+item.discount : "0"}</p> */}
                       </div>
                     </div>
@@ -159,7 +207,7 @@ export const CheckOut = () => {
             <div className="flex flex-row gap-5 mt-5 ml-[60%]">
               <button
                 className="btn btn-sm px-8 btn-ghost btn-outline text-sm"
-                onClick={handleThirdClick}
+                onClick={handleBackToAddress}
               >
                 Back
               </button>
@@ -195,14 +243,35 @@ export const CheckOut = () => {
           </div>
           <div className="collapse-content text-sm">
             <div className="payment-method flex flex-col gap-3">
-              <div className="payment-method-item">
+              <div className="payment-method-item flex gap-3 my-1">
+                <input
+                  type="radio"
+                  name="radio-7"
+                  className="radio radio-success"
+                  onClick={()=>setPaymentMethod("UPI")}
+                  value="UPI"
+                />
+                <h3 className="text-lg">UPI</h3>
+              </div>
+              <div className="payment-method-item flex gap-3 my-1">
+                <input
+                  type="radio"
+                  name="radio-7"
+                  className="radio radio-success"
+                  onClick={()=>setPaymentMethod("Debit / Credit Card")}
+                  value="Debit / Credit Card"
+                />
                 <h3 className="text-lg">Debit / Credit Card</h3>
               </div>
-              <div className="payment-method-item">
-                <h3 className="text-lg">Net Banking</h3>
-              </div>
-              <div className="payment-method-item">
-                <h3 className="text-lg">UPI</h3>
+              <div className="payment-method-item flex gap-3 my-1">
+                <input
+                  type="radio"
+                  name="radio-7"
+                  className="radio radio-success"
+                  onClick={()=>setPaymentMethod("Cash on Delivery")}
+                  value="Cash on Delivery"
+                />
+                <h3 className="text-lg">Cash on Delivery</h3>
               </div>
             </div>
             <div className="flex flex-row gap-5 ml-[68%]">
@@ -213,10 +282,17 @@ export const CheckOut = () => {
                 Back
               </button>
               <button
-                className="btn btn-sm px-8 btn-warning text-sm"
-                onClick={handleThirdClick}
+                className={`btn btn-sm px-8 text-sm ${
+                  paymentMethod === "Cash on Delivery"
+                    ? "btn-success"
+                    : "btn-warning"
+                }`}
+                disabled={paymentMethod === ""}
+                onClick={handlePayment}
               >
-                Proceed to Payment
+                {paymentMethod === "Cash on Delivery"
+                  ? "Place Order"
+                  : "Proceed to Payment"}
               </button>
             </div>
           </div>
@@ -244,7 +320,9 @@ export const CheckOut = () => {
 
         <div className="summary-total flex justify-between px-8 mt-5">
           <h3 className="text-lg font-semibold text-success">Total</h3>
-          <p className="text-lg font-semibold text-success">₹{stateCart.totalPrice + (stateCart.totalPrice * 0.18)}</p>
+          <p className="text-lg font-semibold text-success">
+            ₹{stateCart.totalPrice + stateCart.totalPrice * 0.18}
+          </p>
         </div>
 
         <div className="summarybtn w-full px-5 mt-5 flex flex-col gap-5">

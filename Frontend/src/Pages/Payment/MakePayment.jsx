@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { createOrder } from "../../API/POST-Axios/payment";
 import { useParams, useNavigate } from "react-router-dom";
 
-
 export const MakePayment = () => {
   const {amount} = useParams();
   const [responseId, setResponseId] = useState("");
@@ -56,10 +55,10 @@ export const MakePayment = () => {
       description: "Payment for order",
       order_id: orderId,
       handler: function (response) {
-        alert(response.razorpay_payment_id);
+        alert("Payment Successful click ok to continue shopping");
         setResponseId(response.razorpay_payment_id);
-        navigate("/");
-        window.location.reload();
+          navigate("/cart");
+          window.location.reload();
       },
       prefill: {
         name: localStorage.getItem("userName") || "Customer Name",
