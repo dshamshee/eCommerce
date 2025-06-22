@@ -6,12 +6,16 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 // Create order
 router.post("/create-order", isLoggedIn, async(req, res)=>{
     try {
-        const {products, totalAmount, deliveryAddress} = req.body;
+        const {products, totalAmount, deliveryAddress, paymentMethod} = req.body;
         const order = await orderModel.create({
             userId: req.user._id,
-            products, // array of product ids
+            products: products.map((product)=>({
+                productId: product.productId,
+                quantity: product.quantity,
+            })), // array of product id and quantity [{productId: "123", quantity: 2}]
             totalAmount,
             deliveryAddress, // delivery address id
+            paymentMethod,
         });
         return res.status(200).json({message: "Order created successfully", order});
     } catch (error) {

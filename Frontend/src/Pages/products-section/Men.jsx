@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ProductSkeleton } from "./ProductSceleton";
 import { useProductContext } from "../../context/ProductContext";
 import { useNavigate } from "react-router-dom";
+import { ErrorPage } from "../ErrorPage";
 
 export const Men = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export const Men = () => {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <ErrorPage />;
   }
 
   return (

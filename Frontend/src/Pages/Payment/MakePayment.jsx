@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
-import { createOrder } from "../../API/POST-Axios/payment";
+import { useEffect } from "react";
+import { createOrder, setPaymentDetails } from "../../API/POST-Axios/payment";
 import { useParams, useNavigate } from "react-router-dom";
+import { useOrder } from "../../context/OrderContext";
+import { createOrder as createOrderAPI } from "../../API/POST-Axios/order";
 
 export const MakePayment = () => {
   const {amount} = useParams();
-  const [responseId, setResponseId] = useState("");
+  // const [responseId, setResponseId] = useState("");
   const navigate = useNavigate();
+
+  const {cartProducts, totalAmount, deliveryAddress} = useOrder();
+
+  // Load the Razorpay SDK
   const loadScript = async (src) => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -54,11 +60,25 @@ export const MakePayment = () => {
       name: "Wolvenstitch a clothing brand",
       description: "Payment for order",
       order_id: orderId,
-      handler: function (response) {
-        alert("Payment Successful click ok to continue shopping");
-        setResponseId(response.razorpay_payment_id);
-          navigate("/cart");
-          window.location.reload();
+      handler: async function (response) {
+        // setResponseId(response.razorpay_payment_id);
+        console.log(response);
+
+        // Create the order in the database
+        const responseOrder = await createOrderAPI(cartProducts, totalAmount, deliveryAddress._id);
+        if(responseOrder.status === 200){
+          console.log("Order created successfully");
+          const responsePayment = await setPaymentDetails(response.razorpay_payment_id, responseOrder.data.order._id);
+          if(responsePayment.status === 200){
+            console.log("Payment details set successfully");
+            navigate("/");
+            window.location.reload();
+          }else{
+            console.log("Error in setting payment details");
+          }
+        }else{
+          console.log("Error in creating order");
+        }
       },
       prefill: {
         name: localStorage.getItem("userName") || "Customer Name",
@@ -79,8 +99,8 @@ export const MakePayment = () => {
   }, [amount]);
 
   return (
-    <div className="mainContainer">
-      <h1>Payment{responseId}</h1>
+    <div className="mainContainer flex justify-center items-center h-[60vh]">
+      <span className="loading loading-infinity loading-xl"></span>
     </div>
   );
 };

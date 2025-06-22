@@ -18,6 +18,7 @@ import { CartPage } from "./Pages/Cart/CartPage";
 import { CheckOut } from "./Pages/Cart/CheckOut";
 import { MakePayment } from "./Pages/Payment/MakePayment";
 import { ErrorPage } from "./Pages/ErrorPage";
+import { InvalidRoute } from "./Pages/InvalidRoute";
 function App() {
 
   const router = createBrowserRouter([
@@ -96,6 +97,10 @@ function App() {
           path: "/signup",
           element: <Signup />,
         },
+        {
+          path: "*",
+          element: <InvalidRoute />,
+        }
       ],
     },
   ]);

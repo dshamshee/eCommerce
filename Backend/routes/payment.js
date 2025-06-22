@@ -3,6 +3,7 @@ const router = express.Router();
 const cartModel = require("../model/cart");
 const orderModel = require("../model/order");
 const productModel = require("../model/product");
+const paymentModel = require("../model/payment");
 const razorpay = require("razorpay");
 const isLoggedIn = require("../middleware/isLoggedIn");
 
@@ -72,9 +73,9 @@ router.post('/create-order', isLoggedIn, async(req, res)=>{
 
 
 // Fetch Payment Details
-router.get('/fetch-payment/:paymentID', isLoggedIn, async(req, res)=>{
+router.post('/fetch-payment', isLoggedIn, async(req, res)=>{
 
-    const {paymentID} = req.params;
+    const {paymentID, orderID} = req.body;
 
     try {
         const payment = await razorpayInstance.payments.fetch(paymentID);
@@ -82,7 +83,18 @@ router.get('/fetch-payment/:paymentID', isLoggedIn, async(req, res)=>{
             res.status(404).json({message: "Payment not found"});
         }
 
-        res.status(200).json({payment});
+        const paymentDetails = await paymentModel.create({
+            userId: req.user._id,
+            paymentID: payment.id,
+            amount: payment.amount/100,
+            currency: payment.currency,
+            status: payment.status === "captured" ? "completed" : "pending",
+            orderID: payment.order_id || "Not Found",
+            method: payment.method || "Not Found",
+            userOrderID: orderID
+        })
+
+        res.status(200).json({paymentDetails});
     } catch (error) {
         res.status(500).json({message: "Payment not found",error: error.message});
     }

@@ -6,9 +6,21 @@ const orderSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
-    products:{ // array of product ids
-        type: Array,
-        required: true,
+    products:[{
+        productId:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Product",
+            required: true,
+        },
+        quantity:{
+            type: Number,
+            required: true,
+            default: 1,
+        }
+    }],
+    paymentMethod:{
+        type: String,
+        enum: ["cash", "card", "upi"],
     },
     totalAmount:{
         type: Number,
