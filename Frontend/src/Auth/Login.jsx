@@ -22,6 +22,7 @@ export const Login = () => {
                 localStorage.setItem('userName', response.data.userName);
                 localStorage.setItem('userEmail', response.data.userEmail);
                 navigate('/');
+                window.location.reload();
             }   
         } catch (error) {
             console.log(error);

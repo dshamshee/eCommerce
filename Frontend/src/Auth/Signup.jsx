@@ -57,6 +57,7 @@ export const Signup = ()=>{
                 localStorage.setItem('userEmail', response.data.userEmail);
                 // console.log(response.data)
                 navigate('/');
+                window.location.reload();
             }
         } catch (error) {
             toast.error('Signup failed', error.response.data.message);
