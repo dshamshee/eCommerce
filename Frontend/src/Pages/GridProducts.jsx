@@ -117,7 +117,7 @@ export const GridProducts = memo(({products}) => {
           {/* Section Header */}
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold dark:text-gray-100 text-gray-900 mb-2">Our Collection</h2>
-            <p className="text-lg dark:text-gray-400 text-gray-900">Discover pieces designed for comfort and style</p>
+            <p className="text-lg dark:text-gray-400 text-gray-900">Discover pieces designed for comfort and style.</p>
           </div>
 
           {/* Product Grid */}
