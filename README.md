@@ -160,11 +160,11 @@ npm run dev
 
 ### Payment
 - `POST /api/payment` - Process payment
-
+<!-- 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) -->
 
 ## Contributors
 
-- [Your Name](https://github.com/yourusername) 
+- Danish Shamshee(https://github.com/dshamshee) 
