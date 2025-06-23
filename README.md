@@ -119,7 +119,7 @@ cd Frontend
 npm run dev
 ```
 
-3. Access the application at `http://localhost:5173`
+3. Access the application at `https://e-commerce-blush-iota-63.vercel.app/`
 
 ## Application Flow
 
