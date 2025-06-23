@@ -103,7 +103,7 @@ export const ProductDetails = () => {
                 setQuantity(1);
                 setSelectedSize('');
                 setSelectedColor('');
-                navigate('/cart');
+                navigate('/');
                 window.location.reload();
                 // navigate('/cart');
             }else{
