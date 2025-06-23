@@ -84,10 +84,10 @@ const ProductCard = memo(({ product, handleNavigate }) => (
 
       {/* Quick Actions */}
       <div className="flex gap-2 md:flex-row flex-col">
-        <button className="hidden md:block flex-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:py-2 md:px-4 border dark:border-gray-700 border-gray-300 py-1 px-2 dark:bg-gray-800 dark:text-gray-100 text-gray-900 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
+        {/* <button className="hidden md:block flex-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:py-2 md:px-4 border dark:border-gray-700 border-gray-300 py-1 px-2 dark:bg-gray-800 dark:text-gray-100 text-gray-900 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
           Cart
-        </button>
-        <a onClick={() => handleNavigate(product._id)}><button className="md:py-2 py-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:px-3 px-2 border dark:border-gray-700 border-gray-300 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
+        </button> */}
+        <a onClick={() => handleNavigate(product._id)}><button className="md:py-2 py-1 ml-[170px] md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:px-3 px-2 border dark:border-gray-700 border-gray-300 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
           Quick View
         </button>
         </a>
@@ -128,11 +128,11 @@ export const GridProducts = memo(({products}) => {
           </div>
 
           {/* View All Button */}
-          <div className="text-center mt-10">
+          {/* <div className="text-center mt-10">
             <button className="px-6 py-3 border cursor-pointer dark:border-gray-700 border-gray-300 text-sm font-medium rounded hover:bg-gray-900 hover:text-white transition-colors">
               View All Products
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

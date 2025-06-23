@@ -10,26 +10,23 @@ import { useNavigate } from "react-router-dom";
 export const Dashboard = () => {
   const navigate = useNavigate();
   // const {allProducts, error, isLoading} = GetProducts();
-  const {allProducts, error, isLoading} = useProductContext();
+  const { allProducts, error, isLoading } = useProductContext();
 
-  if (error){
+  if (error) {
     navigate("/error");
-  }
-  else if (isLoading || !allProducts[0].images[0]) {
-    return(
+  } else if (isLoading || !allProducts[0].images[0]) {
+    return (
       <div className="mainContainer flex gap-10 justify-center items-center h-screen">
         <ProductSkeleton />
         <ProductSkeleton />
         <ProductSkeleton />
       </div>
-    )
+    );
   }
-  
-
 
   return (
-    <div className="dark:bg-gray-950 bg-gray-100 dark:text-gray-100 text-gray-900 py-20 px-6">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
+    <div className="dark:bg-gray-950 bg-gray-100 dark:text-gray-100 text-gray-900 w-full md:p-10 p-5">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center md:hidden">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-5xl font-bold dark:text-gray-100 text-gray-900 mb-4">
            
@@ -53,12 +50,64 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      <hr className="mt-28 mb-5 dark:border-gray-700 border-gray-300"/>
+      <hr className="mt-28 mb-5 dark:border-gray-700 border-gray-300 md:hidden"/>
+
+      {/* Headings  */}
+      <div className="headings md:w-[90%] mx-auto md:flex flex-col items-center justify-center gap-4 hidden">
+        <div className="headings md:w-[60%] flex flex-col gap-2 items-center justify-center">
+          <h1 className="md:text-5xl text-2xl font-bold font-playfair">
+            Wear your Identity
+          </h1>
+          <h3 className="md:text-lg text-center ">
+            Discover the latest collection from Wolvenstitch - Where comfort
+            meets style. Explore our curated selection of premium apparel
+            designed for the modern lifestyle.
+          </h3>
+        </div>
+        <div className="buttons flex gap-4">
+          <button className="btn px-4 py-2 rounded-md md:text-black text-white font-semibold md:bg-white bg-gray-900">
+            Shop the Drop
+          </button>
+          <button className="px-4 py-2 rounded-md btn btn-outline">
+            View Collection
+          </button>
+        </div>
+      </div>
+
+      {/* Images */}
+      <div className="images w-[90%] mx-auto items-end justify-center mt-16 md:flex md:gap-4 gap-1 hidden">
+        <h1 className="absolute font-semibold z-10 font-playfair top-[680px] left-[190px] dark:bg-white bg-gray-200 text-gray-900 px-5 py-2 rounded-md">
+          Designed for Self Expences
+        </h1>
+        <h1 className="absolute font-semibold z-10 font-playfair top-[380px] left-[850px] dark:bg-gray-50 bg-gray-200 text-gray-900 px-5 py-2 rounded-md">
+          100% Satisfaction
+        </h1>
+        <h1 className="absolute font-semibold z-10 font-playfair top-[680px] left-[1100px] dark:bg-white bg-gray-200 text-gray-900 px-5 py-2 rounded-md">
+          Limited Edition Designs
+        </h1>
+        <img
+          className="rounded-t-full md:w-[18%] w-[36%] md:h-[500px] h-[300px] object-cover dark:opacity-85"
+          src="https://images.pexels.com/photos/2787341/pexels-photo-2787341.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          alt=""
+        />
+        <img
+          className="rounded-t-full md:w-[20%] w-[36%] md:h-[600px] h-[300px] object-cover dark:opacity-85"
+          src="https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          alt=""
+        />
+        <img
+          className="rounded-t-full md:w-[18%] w-[36%] md:h-[500px] h-[300px] object-cover dark:opacity-85"
+          src="https://images.pexels.com/photos/1340967/pexels-photo-1340967.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          alt=""
+        />
+      </div>
+
+      <hr className="mb-10 text-gray-400 hidden md:block" />
 
       {/* Collection 1 */}
       <Collection_1 products={allProducts} />
-      <GridProducts products={allProducts}/>
-      <hr className="mt-28 mb-5 dark:border-gray-700 border-gray-300"/>
+      <GridProducts products={allProducts} />
+      <hr className="mt-28 mb-5 dark:border-gray-700 border-gray-300" />
       <AboutBrand />
     </div>
   );
