@@ -4,7 +4,7 @@ import brandlogoWhite from "../assets/brand-logo-white.png"
 export const AboutBrand = () => {
   return (
     <div className="mainContainer">
-      <div className="innerContainer py-16 px-4 sm:px-6 lg:px-8 dark:bg-gray-900 bg-gray-100">
+      <div className="innerContainer py-16 px-4 sm:px-6 lg:px-8 dark:bg-gray-800 bg-gray-100">
         <div className="max-w-4xl mx-auto text-center">
           {/* Section Header */}
           <h2 className="text-3xl font-bold dark:text-gray-100 text-gray-900 mb-6">
@@ -76,7 +76,7 @@ export const AboutBrand = () => {
             ].map((item, index) => (
               <div
                 key={index}
-                className="p-4 dark:bg-gray-900 bg-gray-50 rounded-lg shadow-md"
+                className="p-4 dark:bg-gray-800 bg-gray-50 rounded-lg shadow-md"
               >
                 <div className="text-2xl mb-2 ">{item.icon}</div>
                 <h4 className="font-medium dark:text-gray-100 text-gray-900">
