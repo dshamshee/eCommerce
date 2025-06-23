@@ -1,5 +1,5 @@
 import { useProductContext } from "../../Context/ProductContext.jsx";
-import SmoothImage from 'react-smooth-image'
+import SmoothImage from 'react-smooth-image';
 export const NewArrivals = ()=>{
 
     const {allProducts, isLoading, error} = useProductContext();
