@@ -103,6 +103,7 @@ export const ProductDetails = () => {
                 setQuantity(1);
                 setSelectedSize('');
                 setSelectedColor('');
+                window.location.reload();
                 // navigate('/cart');
             }else{
                 toast.error(response.data.message);

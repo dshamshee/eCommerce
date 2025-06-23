@@ -160,6 +160,7 @@ export const HeaderMD = ()=>{
                      onClick={()=>{
                       localStorage.removeItem('token');
                       navigate('/');
+                      window.location.reload();
                     }}>Logout</a> 
 
                     : <a
