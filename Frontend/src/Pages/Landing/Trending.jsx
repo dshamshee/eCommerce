@@ -1,4 +1,4 @@
-import { useProductContext } from "../../Context/ProductContext";
+import { useProductContext } from "../../context/ProductContext";
 import { useNavigate } from "react-router-dom";
 export const Trending = () => {
   const { allProducts, isLoading, error } = useProductContext();

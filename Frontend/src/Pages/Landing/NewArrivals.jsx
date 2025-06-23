@@ -1,4 +1,4 @@
-import { useProductContext } from "../../Context/ProductContext.jsx";
+import { useProductContext } from "../../context/ProductContext.jsx";
 import SmoothImage from 'react-smooth-image';
 export const NewArrivals = ()=>{
 
