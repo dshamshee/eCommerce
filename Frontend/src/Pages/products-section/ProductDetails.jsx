@@ -76,6 +76,13 @@ export const ProductDetails = () => {
     
 
     const handleAddToCart = async ()=>{
+
+        if(!localStorage.getItem('token')){
+            toast.error("Please login to add product to cart");
+            navigate('/login');
+            return;
+        }
+
         if(!selectedSize || !selectedColor){
             toast.error("Please select size and color");
             return;
