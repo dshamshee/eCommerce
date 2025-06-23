@@ -112,7 +112,7 @@ export const GridProducts = memo(({products}) => {
 
   return (
     <div className="mainContainer">
-      <div className="innerContainer py-12 md:px-4 sm:px-6 lg:px-8 dark:bg-gray-800 bg-gray-100 mt-5">
+      <div className="innerContainer py-12 md:px-4 sm:px-6 lg:px-8 dark:bg-gray-900 bg-gray-100 mt-5">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-12">

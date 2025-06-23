@@ -4,7 +4,7 @@ import brandlogoWhite from "../assets/brand-logo-white.png"
 export const AboutBrand = () => {
   return (
     <div className="mainContainer">
-      <div className="innerContainer py-16 px-4 sm:px-6 lg:px-8 dark:bg-gray-950 bg-gray-100">
+      <div className="innerContainer py-16 px-4 sm:px-6 lg:px-8 dark:bg-gray-900 bg-gray-100">
         <div className="max-w-4xl mx-auto text-center">
           {/* Section Header */}
           <h2 className="text-3xl font-bold dark:text-gray-100 text-gray-900 mb-6">
@@ -26,7 +26,7 @@ export const AboutBrand = () => {
 
           {/* Founder's Note */}
           <div className="dark:bg-gray-900 bg-gray-50 p-8 rounded-lg border dark:border-gray-700 border-gray-200">
-            <h3 className="text-xl font-semibold dark:text-gray-100 text-gray-900 mb-4">
+            <h3 className="text-xl font-semibold dark:text-gray-100 text-gray-800 mb-4">
               The Story Behind the Seams
             </h3>
             <div className="flex items-center justify-center mb-4">
