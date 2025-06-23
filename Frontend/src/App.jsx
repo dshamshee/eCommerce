@@ -106,7 +106,7 @@ function App() {
   ]);
 
   return (
-    <div className="dark:text-gray-100 text-gray-900 bg-white">
+    <div className="dark:text-gray-100 text-gray-900">
       <RouterProvider router={router} />
       <ToastContainer />
     </div>
