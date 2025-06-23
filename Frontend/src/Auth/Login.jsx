@@ -124,7 +124,7 @@ export const Login = () => {
                             <div className="mt-6 text-center">
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
                                     Don't have an account?{' '}
-                                    <a href="/signup" className="font-semibold text-blue-600 hover:text-blue-700 transition duration-150 ease-in-out">
+                                    <a onClick={() => {navigate('/signup')}} className="font-semibold text-blue-600 hover:text-blue-700 transition duration-150 ease-in-out">
                                         Create one now
                                     </a>
                                 </p>
