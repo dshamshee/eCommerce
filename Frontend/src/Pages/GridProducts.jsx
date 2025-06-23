@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const ProductCard = memo(({ product, handleNavigate }) => (
   <div 
     key={product._id} 
-    className="group relative dark:bg-gray-900 bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300"
+    className="group relative dark:bg-gray-800 bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300"
   >
     {/* Product Badges */}
     <div className="absolute top-3 left-3 z-10 flex gap-2">
@@ -112,7 +112,7 @@ export const GridProducts = memo(({products}) => {
 
   return (
     <div className="mainContainer">
-      <div className="innerContainer py-12 md:px-4 sm:px-6 lg:px-8 dark:bg-gray-950 bg-gray-100 mt-5">
+      <div className="innerContainer py-12 md:px-4 sm:px-6 lg:px-8 dark:bg-gray-800 bg-gray-100 mt-5">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-12">

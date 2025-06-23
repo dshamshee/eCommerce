@@ -25,7 +25,7 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="dark:bg-gray-950 bg-gray-100 dark:text-gray-100 text-gray-900 w-full md:p-10 p-5">
+    <div className="dark:bg-gray-900 bg-gray-100 dark:text-gray-100 text-gray-900 w-full md:p-10 p-5">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center md:hidden">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-5xl font-bold dark:text-gray-100 text-gray-900 mb-4">
@@ -65,7 +65,7 @@ export const Dashboard = () => {
           </h3>
         </div>
         <div className="buttons flex gap-4">
-          <button className="btn px-4 py-2 rounded-md md:text-black text-white font-semibold md:bg-white bg-gray-900">
+          <button className="btn px-4 py-2 rounded-md md:text-black text-white font-semibold md:bg-white bg-gray-800">
             Shop the Drop
           </button>
           <button className="px-4 py-2 rounded-md btn btn-outline">
