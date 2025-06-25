@@ -19,6 +19,9 @@ import { CheckOut } from "./Pages/Cart/CheckOut";
 import { MakePayment } from "./Pages/Payment/MakePayment";
 import { ErrorPage } from "./Pages/ErrorPage";
 import { InvalidRoute } from "./Pages/InvalidRoute";
+import ProfilePage from "./Pages/User/ProfilePage";
+import Profile2 from "./Pages/User/Profile2";
+
 function App() {
 
   const router = createBrowserRouter([
@@ -77,6 +80,14 @@ function App() {
         {
           path: "/payment/:amount",
           element: <MakePayment />,
+        },
+        {
+          path: "/profile",
+          element: <ProfilePage />,
+        },
+        {
+          path: "/profile2",
+          element: <Profile2 />,
         },
         {
           path: "/error",

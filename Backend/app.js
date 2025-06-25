@@ -19,7 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors({
-    origin: 'https://e-commerce-blush-iota-63.vercel.app',
+    // origin: 'https://e-commerce-blush-iota-63.vercel.app', // for production
+    origin: 'http://localhost:5173', // for development
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],

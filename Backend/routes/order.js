@@ -27,7 +27,7 @@ router.post("/create-order", isLoggedIn, async(req, res)=>{
 router.get('/get-all-orders', isLoggedIn, async(req, res)=>{
 
     try {
-        const orders = await orderModel.find({userId: req.user._id}).populate("products");
+        const orders = await orderModel.find({userId: req.user._id}).populate("products.productId");
         return res.status(200).json({message: "Orders fetched successfully", orders});
     } catch (error) {
         return res.status(500).json({message: error.message});

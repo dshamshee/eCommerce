@@ -2,7 +2,8 @@ import api from "../POST-Axios/apiConfig";
 
 export const fetcher = async (url) => {
   // const token = localStorage.getItem('token');
-    const res = await fetch(`${import.meta.env.VITE_AXIOS_BASE_URI}${url}`, {
+    // const res = await fetch(`${import.meta.env.VITE_AXIOS_BASE_URI}${url}`, {  // for production
+    const res = await fetch(`${import.meta.env.VITE_AXIOS_BASE_DEV_URI}${url}`, { // for development
       headers: {
         'Authorization': localStorage.getItem('token'),
         'Content-Type': 'application/json',
