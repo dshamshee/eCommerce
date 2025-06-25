@@ -3,21 +3,38 @@ import { FaUser, FaShoppingBag, FaHeart, FaCog, FaSignOutAlt, FaEdit, FaMapMarke
 import {GetUser} from '../../API/GET-SWR/user';
 import {GetAllAddresses} from '../../API/GET-SWR/deliveryAddress';
 import {GetAllOrders} from '../../API/GET-SWR/order';
+// import axios from 'axios';
+import { addAddress, updateAddress, deleteAddress } from '../../API/POST-Axios/address';
+import { toast } from 'react-toastify';
 
 const Profile2 = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [editMode, setEditMode] = useState(false);
   const [addNewAddress, setAddNewAddress] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  // const [Country, setCountry] = useState('');
+  // const [State, setState] = useState('');
+  // const [City, setCity] = useState('');
 
   // Get User Data 
-    const {user} = GetUser();
+  const {user} = GetUser();
   const {deliveryAddresses, isLoading: isLoadingAddresses} = GetAllAddresses();
   const defaultAddress = deliveryAddresses && deliveryAddresses.find(address=> address.isDefault) || "No default address found";
   const {orders: allOrders, isLoading: isLoadingOrders} = GetAllOrders();
   const [userData, setUserData] = useState({});
   const [ordersData, setOrdersData] = useState([]);
   const [savedAddresses, setSavedAddresses] = useState([]);
+  const [addressStatus, setAddressStatus] = useState(false); // false for add new address, true for edit address
+  const [editAddress, setEditAddress] = useState({
+    _id: '',
+    name: '',
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+    zipCode: '',
+    phone: '',
+  });
 
   useEffect(()=>{
     setUserData({
@@ -127,6 +144,22 @@ const Profile2 = () => {
     }
   ];
 
+
+  // Get country 
+  // const getCountry = async ()=>{
+  //   const ckey = "abcdkey"
+  //   const response = await axios.get("https://api.countrystatecity.in/v1/countries", {
+  //     headers: {
+  //       "X-CSCAPI-KEY": ckey
+  //     }
+  //   })
+  //   console.log(response.data);
+  // }
+
+  // useEffect(()=>{
+  //   getCountry();
+  // },[]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserData(prev => ({ ...prev, [name]: value }));
@@ -137,20 +170,114 @@ const Profile2 = () => {
     // Here you would typically save the data to your backend
   };
 
-  const handleDeleteAddress = (addressID)=>{
-    console.log(addressID);
-    // Here you would typically delete the address from your backend
+  // Delete address
+  const handleDeleteAddress = async(addressID)=>{
+    const response = await deleteAddress(addressID);
+    if(response.status === 200){
+      toast.success("Address deleted successfully");
+      const updatedAddresses = savedAddresses.filter(address=> address._id !== addressID);
+      setSavedAddresses(updatedAddresses);
+    }else{
+      toast.error("Failed to delete address");
+    }
   }
 
+// Add new address
+  const handleAddNewAddress = ()=>{
+    setAddNewAddress(!addNewAddress);
+    setAddressStatus(false);
+    setEditAddress({
+      _id: '',
+      name: '',
+      address: '',
+      city: '',
+      state: '',
+      country: '',
+      zipCode: '',
+    })
+  }
+
+  // Save address
+  const handleSaveAddress = async ()=>{
+    if(addressStatus){
+      // Update address
+      console.log("Update address");
+      const response = await updateAddress(editAddress);
+      if(response.status === 200){
+        toast.success("Address updated successfully");
+        setAddNewAddress(false);
+        setAddressStatus(false);
+        setEditAddress({
+          _id: '',
+          name: '',
+          address: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          phone: '',
+        })
+        const updatedAddresses = savedAddresses.map(address=> address._id === editAddress._id ? response.data.deliveryAddress : address); // update the address in the saved addresses
+        console.log(updatedAddresses);
+        setSavedAddresses(updatedAddresses);
+      }
+    }else{
+      // Add new address
+      console.log("Add new address");
+      const response = await addAddress({
+        name: editAddress.name,
+        address: editAddress.address,
+        city: editAddress.city,
+        state: editAddress.state,
+        zipCode: editAddress.zipCode,
+        phone: editAddress.phone,
+        isDefault: false,
+      });
+      if(response.status === 200){
+        toast.success("Address added successfully");
+        setAddNewAddress(false);
+        setAddressStatus(false);
+        setEditAddress({
+          _id: '',
+          name: '',
+          address: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          phone: '',
+        })
+        setSavedAddresses([...savedAddresses, response.data]);
+      }else{
+        toast.error("Failed to add address");
+      }
+    }
+  }
+
+  // Edit address
   const handleEditAddress = (addressID)=>{
     console.log(addressID);
+    setAddNewAddress(true);
+    setAddressStatus(true);
+    const address = savedAddresses.find(address=> address._id === addressID);
+    console.log(address)
+    setEditAddress({
+      _id: address._id,
+      name: address.name,
+      address: address.address,
+      city: address.city,
+      state: address.state,
+      country: address.country,
+      zipCode: address.zipCode,
+      phone: address.phone,
+    })
     // Here you would typically edit the address in your backend
   }
 
+  // Toggle mobile sidebar
   const toggleMobileSidebar = () => {
     setMobileSidebarOpen(!mobileSidebarOpen);
   };
 
+  // Handle tab change
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setMobileSidebarOpen(false); // Close sidebar when tab is changed
@@ -522,7 +649,7 @@ const Profile2 = () => {
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                   <div className="flex items-center justify-between">
                   <h2 className="text-lg font-medium text-gray-900 dark:text-white">Saved Addresses</h2>
-                  <button onClick={()=>setAddNewAddress(!addNewAddress)} className=" text-blue-500 w-32 py-2 px-5 cursor-pointer flex items-center justify-center rounded-md hover:text-blue-700 text-sm font-medium transition-colors">
+                  <button onClick={handleAddNewAddress} className=" text-blue-500 w-32 py-2 px-5 cursor-pointer flex items-center justify-center rounded-md hover:text-blue-700 text-sm font-medium transition-colors">
                     {addNewAddress ? <FaTimes className="mr-2" /> : <FaPlus className="mr-2" />}
                         {addNewAddress ? "Cancel" : "Add New"}
                       </button>
@@ -567,10 +694,12 @@ const Profile2 = () => {
                           <div className="addAddress">
                         <h1>New Address</h1>
                         <div className="flex flex-col gap-2">
-                          <input className='w-full border rounded-md py-2 px-3 ' type="text" placeholder="Name" />
-                          <input className='w-full border rounded-md py-2 px-3 ' type="text" placeholder="Address" />
+                          <input className='w-full border rounded-md py-2 px-3 ' type="text" placeholder="Name"  value={editAddress.name} onChange={(e)=>setEditAddress({...editAddress, name: e.target.value})}/>
+                          <input className='w-full border rounded-md py-2 px-3 ' type="text" placeholder="Address"  value={editAddress.address} onChange={(e)=>setEditAddress({...editAddress, address: e.target.value})}/>
                           <div className="cityState flex gap-2">
-                            <select name="state" id="state" className='w-full border rounded-md py-2 px-3 '>
+                            
+                            <select name="state" id="state" className='w-full border rounded-md py-2 px-3 ' value={editAddress.state} onChange={(e)=>setEditAddress({...editAddress, state: e.target.value})}>
+                              <option className='dark:bg-gray-800' value="">Select State</option>
                               <option className='dark:bg-gray-800' value="Bihar">Bihar</option>
                               <option className='dark:bg-gray-800' value="Delhi">Delhi</option>
                               <option className='dark:bg-gray-800' value="Maharashtra">Maharashtra</option>
@@ -579,8 +708,10 @@ const Profile2 = () => {
                               <option className='dark:bg-gray-800' value="Karnataka">Karnataka</option>
                             </select>
 
-                            <select name="city" id="city" className='w-full border rounded-md py-2 px-3 '>
+                            <select name="city" id="city" className='w-full border rounded-md py-2 px-3 ' value={editAddress.city} onChange={(e)=>setEditAddress({...editAddress, city: e.target.value})}>
+                              <option className='dark:bg-gray-800' value="">Select City</option>
                               <option className='dark:bg-gray-800' value="Patna">Patna</option>
+                              <option className='dark:bg-gray-800' value="Gaya">Gaya</option>
                               <option className='dark:bg-gray-800' value="Delhi">Delhi</option>
                               <option className='dark:bg-gray-800' value="Mumbai">Mumbai</option>
                               <option className='dark:bg-gray-800' value="Chennai">Chennai</option>
@@ -588,9 +719,9 @@ const Profile2 = () => {
                               <option className='dark:bg-gray-800' value="Bengaluru">Bengaluru</option>
                             </select>
                           </div>
-                          <input className='w-full border rounded-md py-2 px-3 ' type="text" placeholder="Zip Code" />
-                          <input className='w-full border rounded-md py-2 px-3 ' type="text" placeholder="Country" />
-                          <button className="bg-blue-600 py-2 px-4 rounded-md hover:bg-blue-700 cursor-pointer text-lg font-medium transition-colors">Save</button>
+                          <input className='w-full border rounded-md py-2 px-3 ' type="text" placeholder="Zip Code"  value={editAddress.zipCode} onChange={(e)=>setEditAddress({...editAddress, zipCode: e.target.value})}/>
+                          <input className='w-full border rounded-md py-2 px-3 ' type="text" placeholder="Phone"  value={editAddress.phone} onChange={(e)=>setEditAddress({...editAddress, phone: e.target.value})}/>
+                          <button onClick={handleSaveAddress} className="bg-blue-600 py-2 px-4 rounded-md hover:bg-blue-700 cursor-pointer text-lg font-medium transition-colors">{addressStatus ? "Update" : "Save"}</button>
                         </div>
                       </div>
                         ):(
