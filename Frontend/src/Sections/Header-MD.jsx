@@ -30,6 +30,10 @@ export const HeaderMD = ()=>{
     navigate("/");
   }
 
+  const handleProfileToggle = () => {
+    navigate('/profile2');
+  }
+
     return(
         <div className="innerContainer hidden md:block dark:border-b dark:border-b-gray-700">
         <div className="navbar bg-white dark:bg-gray-900 shadow-sm flex justify-between px-5">
@@ -140,7 +144,7 @@ export const HeaderMD = ()=>{
               >
                 <li>
                   <a className="items-start flex flex-col">
-                    <div className="w-full">
+                    <div className="w-full" onClick={handleProfileToggle}>
                       <h1 className="dark:text-gray-100 text-gray-900 font-semibold text-lg text-center">Welcome {localStorage.getItem('userName')}</h1>
                       <p className="text-sm dark:text-gray-400 text-gray-600 text-center">{localStorage.getItem('userEmail')}</p>
                     </div>
