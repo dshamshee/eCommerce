@@ -10,3 +10,13 @@ export const userLogin = async (data) => {
     return response;
 }
 
+
+export const updateUserData = async (data)=>{
+try {
+    const response = await api.post('/user/update-user', data);
+    return response;
+} catch (error) {
+    console.log(error);
+    throw error;
+}
+}
