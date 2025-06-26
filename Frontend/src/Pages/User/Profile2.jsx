@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { FaUser, FaShoppingBag, FaHeart, FaCog, FaSignOutAlt, FaEdit, FaMapMarkerAlt, FaPhone, FaEnvelope, FaCalendarAlt, FaPlus, FaTrash, FaTimes, FaBars } from 'react-icons/fa';
+import { FaUser, FaShoppingBag, FaHeart, FaCog, FaSignOutAlt, FaEdit, FaMapMarkerAlt, FaPhone, FaEnvelope, FaCalendarAlt, FaPlus, FaTrash, FaTimes, FaBars, FaCheck } from 'react-icons/fa';
 import {GetUser} from '../../API/GET-SWR/user';
 import {GetAllAddresses} from '../../API/GET-SWR/deliveryAddress';
 import {GetAllOrders} from '../../API/GET-SWR/order';
 // import axios from 'axios';
-import { addAddress, updateAddress, deleteAddress } from '../../API/POST-Axios/address';
+import { addAddress, updateAddress, deleteAddress, setDefaultAddress } from '../../API/POST-Axios/address';
 import { toast } from 'react-toastify';
+import { updateUserData } from '../../API/POST-Axios/userApi';
+import { mutate } from 'swr';
 
 const Profile2 = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -41,17 +43,16 @@ const Profile2 = () => {
       name: user?.name,
       email: user?.email,
       phone: user?.phone,
-      address: defaultAddress && defaultAddress?.address + ", " + defaultAddress.city + ", " + defaultAddress.state + ", " + defaultAddress.zipCode,
-      joinDate: user?.createdAt.split('T')[0]
+      address: defaultAddress && defaultAddress.address ? defaultAddress?.address + ", " + defaultAddress.city + ", " + defaultAddress.state + ", " + defaultAddress.zipCode : "No default address found",
+      joinDate: user?.createdAt?.split('T')[0]
     });
 
     if(!isLoadingOrders){
-      setOrdersData(allOrders);
+      setOrdersData(allOrders || []);
     }
 
     if(!isLoadingAddresses){
-      setSavedAddresses(deliveryAddresses);
-      console.log(savedAddresses);
+      setSavedAddresses(deliveryAddresses && deliveryAddresses.length > 0 ? deliveryAddresses : []);
     }
   },[user, defaultAddress, allOrders, deliveryAddresses]);
   
@@ -160,24 +161,45 @@ const Profile2 = () => {
   //   getCountry();
   // },[]);
 
-  const handleInputChange = (e) => {
+  const handleUserDataChange = (e) => {
     const { name, value } = e.target;
     setUserData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveProfile = () => {
-    setEditMode(false);
-    // Here you would typically save the data to your backend
+  const handleSaveProfile = async () => {
+    try {
+      const response = await updateUserData(userData);
+      if(response.status === 200){
+        toast.success("Profile updated successfully");
+        setUserData((prev)=>({...prev, ...response.data.user}));
+        setEditMode(false);
+      } else {
+        toast.error("Something went wrong");
+        setUserData((prev)=>({...prev, ...user}));
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to update profile");
+      toast.error("Please fill the valid details");
+      setUserData((prev)=>({...prev, ...user}));
+    }
   };
 
   // Delete address
   const handleDeleteAddress = async(addressID)=>{
-    const response = await deleteAddress(addressID);
-    if(response.status === 200){
-      toast.success("Address deleted successfully");
-      const updatedAddresses = savedAddresses.filter(address=> address._id !== addressID);
-      setSavedAddresses(updatedAddresses);
-    }else{
+    try {
+      const response = await deleteAddress(addressID);
+      if(response.status === 200){
+        toast.success("Address deleted successfully");
+        const updatedAddresses = savedAddresses.filter(address=> address._id !== addressID);
+        setSavedAddresses(updatedAddresses);
+        // Refresh the addresses data
+        mutate("/delivery-address/get-all-delivery-addresses");
+      }else{
+        toast.error("Failed to delete address");
+      }
+    } catch (error) {
+      console.log(error);
       toast.error("Failed to delete address");
     }
   }
@@ -199,56 +221,66 @@ const Profile2 = () => {
 
   // Save address
   const handleSaveAddress = async ()=>{
-    if(addressStatus){
-      // Update address
-      console.log("Update address");
-      const response = await updateAddress(editAddress);
-      if(response.status === 200){
-        toast.success("Address updated successfully");
-        setAddNewAddress(false);
-        setAddressStatus(false);
-        setEditAddress({
-          _id: '',
-          name: '',
-          address: '',
-          city: '',
-          state: '',
-          zipCode: '',
-          phone: '',
-        })
-        const updatedAddresses = savedAddresses.map(address=> address._id === editAddress._id ? response.data.deliveryAddress : address); // update the address in the saved addresses
-        console.log(updatedAddresses);
-        setSavedAddresses(updatedAddresses);
-      }
-    }else{
-      // Add new address
-      console.log("Add new address");
-      const response = await addAddress({
-        name: editAddress.name,
-        address: editAddress.address,
-        city: editAddress.city,
-        state: editAddress.state,
-        zipCode: editAddress.zipCode,
-        phone: editAddress.phone,
-        isDefault: false,
-      });
-      if(response.status === 200){
-        toast.success("Address added successfully");
-        setAddNewAddress(false);
-        setAddressStatus(false);
-        setEditAddress({
-          _id: '',
-          name: '',
-          address: '',
-          city: '',
-          state: '',
-          zipCode: '',
-          phone: '',
-        })
-        setSavedAddresses([...savedAddresses, response.data]);
+    try {
+      if(addressStatus){
+        // Update address
+        console.log("Update address");
+        const response = await updateAddress(editAddress);
+        if(response.status === 200){
+          toast.success("Address updated successfully");
+          setAddNewAddress(false);
+          setAddressStatus(false);
+          setEditAddress({
+            _id: '',
+            name: '',
+            address: '',
+            city: '',
+            state: '',
+            zipCode: '',
+            phone: '',
+          })
+          const updatedAddresses = savedAddresses.map(address=> address._id === editAddress._id ? response.data.deliveryAddress : address); // update the address in the saved addresses
+          setSavedAddresses(updatedAddresses);
+          // Refresh the addresses data
+          mutate("/delivery-address/get-all-delivery-addresses");
+        }
       }else{
-        toast.error("Failed to add address");
+        // Add new address
+        console.log("Add new address");
+        const response = await addAddress({
+          name: editAddress.name,
+          address: editAddress.address,
+          city: editAddress.city,
+          state: editAddress.state,
+          zipCode: editAddress.zipCode,
+          phone: editAddress.phone,
+          isDefault: false,
+        });
+        if(response.status === 200){
+          toast.success("Address added successfully");
+          setAddNewAddress(false);
+          setAddressStatus(false);
+          setEditAddress({
+            _id: '',
+            name: '',
+            address: '',
+            city: '',
+            state: '',
+            zipCode: '',
+            phone: '',
+          })
+          // Make sure we're adding the correct data structure to the savedAddresses array
+          const newAddress = response.data.deliveryAddress || response.data;
+          setSavedAddresses(prev => [...prev, newAddress]);
+          // Refresh the addresses data
+          mutate("/delivery-address/get-all-delivery-addresses");
+        }else{
+          toast.error("Failed to add address");
+        }
       }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to add address");
     }
   }
 
@@ -270,6 +302,25 @@ const Profile2 = () => {
       phone: address.phone,
     })
     // Here you would typically edit the address in your backend
+  }
+
+  // Set default address
+  const handleSetDefaultAddress = async(addressID)=>{
+
+    try {
+      const response = await setDefaultAddress(addressID);
+      if(response.status === 200){
+        toast.success("Default address set successfully");
+        const updatedAddresses = savedAddresses.map(address=> address._id === addressID ? {...address, isDefault: true} : address);
+        setSavedAddresses(updatedAddresses);
+        // Refresh the addresses data
+        mutate("/delivery-address/get-all-delivery-addresses");
+      }else{
+        toast.error("Failed to set default address");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // Toggle mobile sidebar
@@ -416,7 +467,7 @@ const Profile2 = () => {
                           id="name"
                           name="name"
                           value={userData.name}
-                          onChange={handleInputChange}
+                          onChange={handleUserDataChange}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                         />
                       </div>
@@ -429,7 +480,7 @@ const Profile2 = () => {
                           id="email"
                           name="email"
                           value={userData.email}
-                          onChange={handleInputChange}
+                          onChange={handleUserDataChange}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                         />
                       </div>
@@ -442,7 +493,7 @@ const Profile2 = () => {
                           id="phone"
                           name="phone"
                           value={userData.phone}
-                          onChange={handleInputChange}
+                          onChange={handleUserDataChange}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                         />
                       </div>
@@ -455,7 +506,7 @@ const Profile2 = () => {
                           name="address"
                           rows="3"
                           value={userData.address}
-                          onChange={handleInputChange}
+                          onChange={handleUserDataChange}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                         />
                       </div>
@@ -664,13 +715,14 @@ const Profile2 = () => {
                           return(
                             <div className="flex items-center py-2" key={address._id}>
                       <FaMapMarkerAlt className="text-gray-400 mr-2 md:mr-3" />
-                      <div className="w-full md:pr-68"> 
+                      <div className="w-full md:pr-56"> 
                           <p className="text-sm text-gray-500 dark:text-gray-400">{address.name}</p>
                         <div className="flex items-center gap-5 w-full">
                         <p className="font-medium w-full text-gray-900 dark:text-white">{address.address + ", " + address.city + ", " + address.state + ", " + address.zipCode}</p>
-                        <div className="flex flex-col md:flex-row items-center gap-3">
+                        <div className="flex flex-col md:flex-row items-center gap-3 w-[120px] md:w-[300px]">
                         <FaEdit className="text-blue-500 hover:text-blue-700 text-lg cursor-pointer" onClick={()=>handleEditAddress(address._id)} />
                         <FaTrash className="text-red-500 hover:text-red-700 text-lg cursor-pointer" onClick={()=>handleDeleteAddress(address._id)} />
+                        <FaCheck className={`text-green-500 hover:text-green-700 text-lg cursor-pointer ${address.isDefault ? "hidden" : ""}`} onClick={()=>handleSetDefaultAddress(address._id)} /> <span className='md:text-sm text-xs text-gray-500 dark:text-gray-400'>{address.isDefault ? "Default" : "Set as default"}</span>
                         </div>
                         </div>
                       </div>

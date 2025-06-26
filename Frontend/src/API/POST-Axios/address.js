@@ -32,3 +32,14 @@ export const deleteAddress = async(addressID)=>{
         throw error;
     }
 }
+
+// Set default address
+export const setDefaultAddress = async(addressID)=>{
+    try {
+        const response = await api.post(`/delivery-address/set-default-address/${addressID}`, {addressId: addressID});
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
