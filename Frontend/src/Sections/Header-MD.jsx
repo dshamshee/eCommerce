@@ -1,14 +1,22 @@
-import profile from "../assets/profile.png";
+// import profile from "../assets/profile.png";
 import brandLogoWhite from "../assets/brand-logo-white.png";
 import brandLogoBlack from "../assets/brand-logo-black.png";
 import { useNavigate } from "react-router-dom";
 import { useProductContext } from "../context/ProductContext";
 import { useCartContext } from "../context/CartContext";
+import { GetUser } from "../API/GET-SWR/user";
+import { useState, useEffect } from "react";
 
 export const HeaderMD = ()=>{
   const {filterByGenderType} = useProductContext();
   const navigate = useNavigate();
   const {stateCart} = useCartContext();
+  const {user} = GetUser();
+  const [userData, setUserData] = useState(null);
+
+  useEffect(()=>{
+      setUserData(user);
+  },[user]);
 
   const handleMenToggle = () => {
     navigate("/men");
@@ -134,7 +142,7 @@ export const HeaderMD = ()=>{
                   <img
                     alt="Tailwind CSS Navbar component"
                     // src="https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                    src={profile}
+                    src={userData?.avatar}
                   />
                 </div>
               </div>
@@ -145,8 +153,8 @@ export const HeaderMD = ()=>{
                 <li>
                   <a className="items-start flex flex-col">
                     <div className="w-full" onClick={handleProfileToggle}>
-                      <h1 className="dark:text-gray-100 text-gray-900 font-semibold text-lg text-center">Welcome {localStorage.getItem('userName')}</h1>
-                      <p className="text-sm dark:text-gray-400 text-gray-600 text-center">{localStorage.getItem('userEmail')}</p>
+                      <h1 className="dark:text-gray-100 text-gray-900 font-semibold text-lg text-center">Welcome {userData?.name?.split(' ')[0]}</h1>
+                      <p className="text-sm dark:text-gray-400 text-gray-600 text-center">{userData?.email}</p>
                     </div>
                     {/* <span className="badge bg-rose-500 dark:text-gray-100 text-white">
                       New
