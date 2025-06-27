@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaUser, FaShoppingBag, FaHeart, FaCog, FaSignOutAlt, FaEdit, FaMapMarkerAlt, FaPhone, FaEnvelope, FaCalendarAlt, FaPlus, FaTrash, FaTimes, FaBars, FaCheck } from 'react-icons/fa';
 import {GetUser} from '../../API/GET-SWR/user';
 import {GetAllAddresses} from '../../API/GET-SWR/deliveryAddress';
@@ -6,7 +6,7 @@ import {GetAllOrders} from '../../API/GET-SWR/order';
 // import axios from 'axios';
 import { addAddress, updateAddress, deleteAddress, setDefaultAddress } from '../../API/POST-Axios/address';
 import { toast } from 'react-toastify';
-import { updateUserData } from '../../API/POST-Axios/userApi';
+import { updateProfile, updateUserData } from '../../API/POST-Axios/userApi';
 import { mutate } from 'swr';
 
 const Profile2 = () => {
@@ -26,6 +26,7 @@ const Profile2 = () => {
   const [userData, setUserData] = useState({});
   const [ordersData, setOrdersData] = useState([]);
   const [savedAddresses, setSavedAddresses] = useState([]);
+  // const [profileImage, setProfileImage] = useState(null);
   const [addressStatus, setAddressStatus] = useState(false); // false for add new address, true for edit address
   const [editAddress, setEditAddress] = useState({
     _id: '',
@@ -37,6 +38,7 @@ const Profile2 = () => {
     zipCode: '',
     phone: '',
   });
+  const fileInputRef = useRef(null);
 
   useEffect(()=>{
     setUserData({
@@ -56,66 +58,6 @@ const Profile2 = () => {
     }
   },[user, defaultAddress, allOrders, deliveryAddresses]);
   
-  // console.log(ordersData[0]?.products[0].productId);
-  // Static order history
-  // const orders = [
-  //   {
-  //     id: 'ORD-7845',
-  //     date: '12 May 2023',
-  //     total: '$249.99',
-  //     status: 'Delivered',
-  //     items: [
-  //       { 
-  //         id: 1, 
-  //         name: 'Premium Leather Jacket', 
-  //         price: '$199.99', 
-  //         color: 'Black', 
-  //         size: 'M',
-  //         image: 'https://via.placeholder.com/80'
-  //       },
-  //       { 
-  //         id: 2, 
-  //         name: 'Cotton T-Shirt', 
-  //         price: '$29.99', 
-  //         color: 'White', 
-  //         size: 'L',
-  //         image: 'https://via.placeholder.com/80'
-  //       },
-  //       { 
-  //         id: 3, 
-  //         name: 'Slim Fit Jeans', 
-  //         price: '$59.99', 
-  //         color: 'Blue', 
-  //         size: '32',
-  //         image: 'https://via.placeholder.com/80'
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     id: 'ORD-6532',
-  //     date: '28 Apr 2023',
-  //     total: '$159.98',
-  //     status: 'Delivered',
-  //     items: [
-  //       { 
-  //         id: 4, 
-  //         name: 'Casual Sneakers', 
-  //         price: '$89.99', 
-  //         color: 'Gray', 
-  //         size: '10',
-  //         image: 'https://via.placeholder.com/80'
-  //       },
-  //       { 
-  //         id: 5, 
-  //         name: 'Wool Beanie', 
-  //         price: '$24.99', 
-  //         color: 'Navy', 
-  //         size: 'One Size',
-  //         image: 'https://via.placeholder.com/80'
-  //       }
-  //     ]
-  //   }
-  // ];
 
   // Static wishlist items
   const wishlist = [
@@ -334,11 +276,43 @@ const Profile2 = () => {
     setMobileSidebarOpen(false); // Close sidebar when tab is changed
   };
 
+  // Handle update profile
+  const handleUpdateProfile = () => {
+    fileInputRef.current.click();
+  }
+
+
+
+const handleFileChange = async (e) => {
+  const file = e.target.files[0];
+  if(file){
+    toast.info("Updating profile...");
+    // setProfileImage(file);
+    // We need to call handleUpdateProfileOnServer after setting the profileImage
+    // Since setState is asynchronous, we should pass the file directly
+    try {
+      const response = await updateProfile(file);
+      if(response.status === 200){
+        toast.success("Profile updated successfully");
+        console.log(response.data.user.avatar);
+        setUserData((prev)=>({...prev, avatar: response.data.user.avatar}));
+        mutate("/user/get-user");
+      }else{
+        toast.error("Failed to update profile");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to update profile");
+    }
+  }
+}
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold font-playfair text-gray-900 dark:text-white">My Account</h1>
+
           {/* Mobile menu button */}
           <button 
             className="lg:hidden bg-white dark:bg-gray-800 p-2 rounded-md shadow-sm"
@@ -370,14 +344,29 @@ const Profile2 = () => {
               <div className="flex flex-col items-center mb-6">
                 <div className="relative mb-4">
                   <div className="w-24 h-24 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center overflow-hidden">
-                    <FaUser className="text-indigo-600 dark:text-indigo-300 text-4xl" />
+                    {user?.avatar ? (
+                      <img 
+                        src={user?.avatar} 
+                        alt="Profile" 
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <FaUser className="text-indigo-600 dark:text-indigo-300 text-4xl" />
+                    )}
                   </div>
                   <button 
                     className="absolute bottom-0 right-0 bg-white dark:bg-gray-700 p-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-600"
-                    onClick={() => {}}
+                    onClick={handleUpdateProfile}
                   >
                     <FaEdit className="text-gray-600 dark:text-gray-300 text-sm" />
                   </button>
+                  <input
+                    type="file" 
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
                 </div>
                 <h3 className="font-medium text-lg text-gray-900 dark:text-white">{userData.name}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Member since {userData.joinDate}</p>
