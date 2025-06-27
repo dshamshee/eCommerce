@@ -6,6 +6,9 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 const mongoose = require("mongoose");
 const Order = require("../model/order");
 const Payment = require("../model/payment");
+const upload = require("../config/multer_config");
+const uploadOnCloudinary = require("../utils/cloudinaryConfig");
+const fs = require("fs");
 const router = express.Router();
 
 // Normal Signup
@@ -175,6 +178,26 @@ router.post("/update-user", isLoggedIn, async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+router.post('/update-user-profile', isLoggedIn, upload.single('image'), async (req, res)=>{
+
+  try {
+    const image = req.file;
+    const imageUploadedUrl = await uploadOnCloudinary(image.path);
+    if(imageUploadedUrl){
+      fs.unlinkSync(image.path);
+      const updatedUser = await userModel.findByIdAndUpdate(req.user._id, {$set: {avatar: imageUploadedUrl}}, {new: true});
+      res.status(200).json({
+        message: "User profile updated successfully",
+        user: updatedUser,
+      });
+    }else{
+      return res.status(400).json({ message: "Image not uploaded on cloudinary" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Image not uploaded from the server", error: error.message });
+  }
+})
 
 router.get("/delete-User", isLoggedIn, async (req, res) => {
   // Start a new session for the transaction
