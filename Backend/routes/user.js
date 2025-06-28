@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const Order = require("../model/order");
 const Payment = require("../model/payment");
 const upload = require("../config/multer_config");
+const memoryUpload = require("../config/multer_memory.config");
 const uploadOnCloudinary = require("../utils/cloudinaryConfig");
 const fs = require("fs");
 const router = express.Router();
@@ -179,13 +180,11 @@ router.post("/update-user", isLoggedIn, async (req, res) => {
   }
 });
 
-router.post('/update-user-profile', isLoggedIn, upload.single('image'), async (req, res)=>{
-
+router.post('/update-user-profile', isLoggedIn, memoryUpload.single('image'), async (req, res)=>{
   try {
     const image = req.file;
-    const imageUploadedUrl = await uploadOnCloudinary(image.path);
+    const imageUploadedUrl = await uploadOnCloudinary(image);
     if(imageUploadedUrl){
-      fs.unlinkSync(image.path);
       const updatedUser = await userModel.findByIdAndUpdate(req.user._id, {$set: {avatar: imageUploadedUrl}}, {new: true});
       res.status(200).json({
         message: "User profile updated successfully",

@@ -2,6 +2,7 @@ const multer = require('multer'); // Import multer
 const path = require('path'); // Import path 
 const crypto = require('crypto'); // Import crypto (It is used to generate a random hash for the uploaded file)
 
+// Disk Storage for image upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, './public/images')
@@ -17,3 +18,11 @@ const storage = multer.diskStorage({
   const upload = multer({ storage: storage })
 
   module.exports = upload;
+
+
+
+  // Memory Storage for image upload
+  // const memoryStorage = multer.memoryStorage()
+  // const memoryUpload = multer({ storage: memoryStorage })
+
+  // module.exports = memoryUpload;

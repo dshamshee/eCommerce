@@ -3,6 +3,7 @@ const router = express.Router();
 const productModel = require("../model/product");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const upload = require("../config/multer_config");
+const memoryUpload = require("../config/multer_memory.config");
 const uploadOnCloudinary = require("../utils/cloudinaryConfig");
 const fs = require("fs");
 
@@ -40,27 +41,27 @@ router.post("/add-product", isLoggedIn, async(req, res)=>{
 });
 
 // Product images upload route
-router.post('/upload-images/:id', isLoggedIn, upload.array('images'), async(req , res)=>{
+router.post('/upload-images/:id', isLoggedIn, memoryUpload.array('images'), async(req , res)=>{
     try {
         const images = req.files;
         const imageUploadedSuccessfully = await images.map(async(image)=>{
-            const response = await uploadOnCloudinary(image.path);
+            const response = await uploadOnCloudinary(image);
             return response;
         })
 
         const imageUrls = await Promise.all(imageUploadedSuccessfully);
         
         if(imageUrls.length > 0){
-            const productImages = imageUrls.map(async(imagePath)=>{
-                await productModel.findOneAndUpdate({_id: req.params.id}, {$push: {images: imagePath}});
+            const productImages = imageUrls.map(async(image)=>{
+                await productModel.findOneAndUpdate({_id: req.params.id}, {$push: {images: image}});
             })
             
             // Delete images from local storage after successful Cloudinary upload
             await Promise.all(productImages);
-            const imagePaths = images.map(image => image.path);
-            imagePaths.forEach(imagePath => {
-                fs.unlinkSync(imagePath);
-            });
+            // const imagePaths = images.map(image => image.path);
+            // imagePaths.forEach(imagePath => {
+            //     fs.unlinkSync(imagePath);
+            // });
         }
             
         return res.status(200).json({
