@@ -19,9 +19,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Determine environment
+const frontend_url = process.env.FRONTENT_ORIGIN_URI
 app.use(cors({
-        origin: 'https://e-commerce-blush-iota-63.vercel.app', // for production
+        // origin: 'https://e-commerce-blush-iota-63.vercel.app', // for production
         // origin: 'http://localhost:5173', // for development
+    origin: frontend_url,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
