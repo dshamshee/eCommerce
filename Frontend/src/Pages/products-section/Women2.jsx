@@ -75,13 +75,13 @@ export const Women2 = () => {
     setActiveTab(tab);
   };
 
-  const handleProductClick = (id)=>{
+  const handleProductClick = (id) => {
     navigate(`/product-details/${id}`);
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
-  }
+  };
 
   return (
     <div className="mainContainer py-3 w-full">
@@ -178,17 +178,29 @@ export const Women2 = () => {
       <div className="hero flex md:flex-row flex-col gap-2 items-start min-h-[400px]">
         {/* Filter Section */}
         <div className="left hidden md:flex w-[20%] min-h-[400px] dark:bg-gray-800 bg-gray-300 p-3 rounded-md flex-col gap-2">
-            <Filter handleChange={handleChange} activeTab={activeTab} setWomenProducts={setWomenProducts}/>
+          <Filter
+            handleChange={handleChange}
+            activeTab={activeTab}
+            setWomenProducts={setWomenProducts}
+          />
         </div>
 
         {/* Product Section */}
-        <div className="right md:w-[80%] grid grid-cols-2 md:grid-cols-4 gap-2 px-1 md:px-2 mb-10">
+        <div className="right md:w-[80%] grid grid-cols-2 md:grid-cols-4 gap-2 px-1 md:px-2">
           {products &&
-            womenProducts.map((product) => {
+            womenProducts.slice(0, 4).map((product) => {
               return (
-                <div className="cardContainer mt-2" key={product._id} onClick={()=> handleProductClick(product._id)}>
+                <div
+                  className="cardContainer mt-2"
+                  key={product._id}
+                  onClick={() => handleProductClick(product._id)}
+                >
                   <div className="imageContainer md:w-[290px] hover:scale-102 transition-all duration-300 cursor-pointer">
-                    <img src={product.images[0]} alt={product.title} className="w-full h-[430px] object-cover object-center" />
+                    <img
+                      src={product.images[0]}
+                      alt={product.title}
+                      className="w-full md:h-[430px] object-cover object-center"
+                    />
                   </div>
                   <div className="contentContainer">
                     <p className="text-md text-gray-300 font-bold line-clamp-1 text-wrap overflow-hidden text-ellipsis">
@@ -220,112 +232,162 @@ export const Women2 = () => {
             })}
         </div>
       </div>
+
+      {/* More Products Section */}
+      <div className="moreProducts grid grid-cols-2 md:grid-cols-5 gap-2 px-1 md:px-2 mb-10">
+        {womenProducts.slice(4, womenProducts.length).map((product) => {
+          return (
+            <div
+              className="cardContainer mt-2"
+              key={product._id}
+              onClick={() => handleProductClick(product._id)}
+            >
+              <div className="imageContainer md:w-[290px] hover:scale-102 transition-all duration-300 cursor-pointer">
+                <img
+                  src={product.images[0]}
+                  alt={product.title}
+                  className="w-full md:h-[430px] object-cover object-center"
+                />
+              </div>
+              <div className="contentContainer">
+                <p className="text-md text-gray-300 font-bold line-clamp-1 text-wrap overflow-hidden text-ellipsis">
+                  {product.name}
+                </p>
+                <p className="text-sm text-gray-500 line-clamp-1 text-wrap overflow-hidden text-ellipsis">
+                  {product.description}
+                </p>
+                <div className="pricing flex items-center gap-2">
+                  <span className="text-sm text-gray-200 font-semibold">
+                    ₹{product.price}
+                  </span>
+                  <span className="text-sm text-gray-500 line-through">
+                    {product.discount
+                      ? `₹${product.price + product.discount}`
+                      : ""}
+                  </span>
+                  <span className="text-sm text-green-500">
+                    {product.discount
+                      ? `${Math.floor(
+                          (product.discount / product.price) * 100
+                        )}% off`
+                      : ""}
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
 
-
-
 // Filter Component
-const Filter = ({handleChange, activeTab, setWomenProducts})=>{
-  const {products} = GetProductByType("Women");
+const Filter = ({ handleChange, activeTab, setWomenProducts }) => {
+  const { products } = GetProductByType("Women");
 
-  const handleAll = ()=>{
+  const handleAll = () => {
     handleChange("all");
     setWomenProducts(products);
-  }
+  };
 
-  const handleShirt = ()=>{
+  const handleShirt = () => {
     handleChange("shirt");
-    setWomenProducts(products.filter((product) => product.category === "Shirt"));
+    setWomenProducts(
+      products.filter((product) => product.category === "Shirt")
+    );
     // setMenProducts(menProducts.filter((product) => product.category === "Shirt"));
-  }
+  };
 
-  const handleTShirt = ()=>{
+  const handleTShirt = () => {
     handleChange("t-shirt");
-    setWomenProducts(products.filter((product) => product.category === "T-shirt"));
+    setWomenProducts(
+      products.filter((product) => product.category === "T-shirt")
+    );
     // setMenProducts(menProducts.filter((product) => product.category === "T-shirt"));
-  }
-  const handleJeans = ()=>{
+  };
+  const handleJeans = () => {
     handleChange("jeans");
-    setWomenProducts(products.filter((product) => product.category === "Jeans"));
+    setWomenProducts(
+      products.filter((product) => product.category === "Jeans")
+    );
     // setMenProducts(menProducts.filter((product) => product.category === "Jeans"));
-  }
-  const handleShorts = ()=>{
+  };
+  const handleShorts = () => {
     handleChange("shorts");
-    setWomenProducts(products.filter((product) => product.category === "Shorts"));
+    setWomenProducts(
+      products.filter((product) => product.category === "Shorts")
+    );
     // setMenProducts(menProducts.filter((product) => product.category === "Shorts"));
-  }
-  const handlePrice = ()=>{
+  };
+  const handlePrice = () => {
     handleChange("price");
     setWomenProducts(products.sort((a, b) => a.price - b.price));
     // setMenProducts(menProducts.sort((a, b) => a.price - b.price));
-  }
+  };
 
-
-
-  return(
+  return (
     <>
-    <button
-            onClick={handleAll}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "all"
-                ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
-          >
-            All
-          </button>
-    <button
-            onClick={handleShirt}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "shirt"
-                ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
-          >
-            Shirt
-          </button>
-          <button
-            onClick={handleTShirt}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "t-shirt"
-                ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
-          >
-            T-Shirt
-          </button>
-          <button
-            onClick={handleJeans}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "jeans"
-                ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
-          >
-            Jeans
-          </button>
-          <button
-            onClick={handleShorts}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "shorts"
-                ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
-          >
-            Shorts
-          </button>
-          <button
-            onClick={handlePrice}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "price"
-                ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
-          >
-            Price
-          </button>
+      <button
+        onClick={handleAll}
+        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+          activeTab === "all"
+            ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+        }`}
+      >
+        All
+      </button>
+      <button
+        onClick={handleShirt}
+        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+          activeTab === "shirt"
+            ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+        }`}
+      >
+        Shirt
+      </button>
+      <button
+        onClick={handleTShirt}
+        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+          activeTab === "t-shirt"
+            ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+        }`}
+      >
+        T-Shirt
+      </button>
+      <button
+        onClick={handleJeans}
+        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+          activeTab === "jeans"
+            ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+        }`}
+      >
+        Jeans
+      </button>
+      <button
+        onClick={handleShorts}
+        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+          activeTab === "shorts"
+            ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+        }`}
+      >
+        Shorts
+      </button>
+      <button
+        onClick={handlePrice}
+        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+          activeTab === "price"
+            ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+        }`}
+      >
+        Price
+      </button>
     </>
-  )
-}
+  );
+};
