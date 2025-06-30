@@ -131,7 +131,7 @@ router.get('/get-product-by-type/:type', async(req, res)=>{
         let products, unisexProducts;
         if(type === "T-shirt" || type === "Jeans" || type === "Shirt" || type === "Shorts"){
             products = await productModel.find({category: type});
-        }else if(type === "Men" || type === "Women"){
+        }else if(type === "Men" || type === "Women" || type === "Kids"){
             products = await productModel.find({genderType: type});
             unisexProducts = await productModel.find({genderType: "Unisex"});
         }else{

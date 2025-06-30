@@ -21,6 +21,8 @@ import { ErrorPage } from "./Pages/ErrorPage";
 import { InvalidRoute } from "./Pages/InvalidRoute";
 import ProfilePage from "./Pages/User/ProfilePage";
 import Profile2 from "./Pages/User/Profile2";
+import { Men2 } from "./Pages/products-section/Men2";
+import { Women2 } from "./Pages/products-section/Women2";
 
 function App() {
 
@@ -39,11 +41,11 @@ function App() {
         },
         {
           path: "/men",
-          element: <Men />,
+          element: <Men2 />,
         },
         {
           path: "/women",
-          element: <Women />,
+          element: <Women2 />,
         },
         {
           path: "/kids",
