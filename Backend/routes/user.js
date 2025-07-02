@@ -1,4 +1,5 @@
 const userModel = require("../model/user");
+const OrderModel = require("../model/order");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const express = require("express");
@@ -241,18 +242,103 @@ router.get("/logout", isLoggedIn, async (req, res) => {
 });
 
 
-// Get total number of users
-router.get('/get-total-users', isLoggedIn, async (req, res)=>{
-
+// Get all users
+router.get('/get-all-users', isLoggedIn, async(req, res)=>{
   try {
     if(req.user.role !== 'admin') return res.status(403).json({ message: "You are not authorized to access this route" });
-    const totalUser = await userModel.countDocuments()
+    const users = await userModel.find({}).select('-password');
+    const orders = await OrderModel.find({userId: {$in: users.map(user => user._id)}});
+
     res.status(200).json({
-      message: "Total users fetched successfully",
-      totalUser: totalUser,
+      message: "All users fetched successfully",
+      users: users,
+      orders: orders,
     })
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 })
+
+// Get Graph data for admin dashboard
+router.get('/get-graph-data', isLoggedIn, async (req, res)=>{
+  try {
+    if(req.user.role !== 'admin') return res.status(403).json({ message: "You are not authorized to access this route" });
+
+    // Calculate date 30 days ago from today
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    // Get all users created in the last 30 days
+    const users = await userModel.find({
+      createdAt: { $gte: thirtyDaysAgo }
+    }).select('-password');
+
+    // Get all orders from the last 30 days
+    const orders = await OrderModel.find({
+      createdAt: { $gte: thirtyDaysAgo }
+    });
+
+    // Calculate total revenue
+    const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+
+    // Create daily user count for the last 30 days
+    const dailyUserCounts = [];
+    const dailyOrderCounts = [];
+    const dailyRevenue = [];
+    
+    for (let i = 0; i < 30; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      date.setHours(0, 0, 0, 0);
+      
+      const nextDate = new Date(date);
+      nextDate.setDate(nextDate.getDate() + 1);
+      
+      // Count users for this day
+      const userCount = await userModel.countDocuments({
+        createdAt: { $gte: date, $lt: nextDate }
+      });
+      
+      // Count orders for this day
+      const dayOrders = await OrderModel.find({
+        createdAt: { $gte: date, $lt: nextDate }
+      });
+      
+      const orderCount = dayOrders.length;
+      
+      // Calculate revenue for this day
+      const dayRevenue = dayOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+      
+      dailyUserCounts.unshift(userCount);
+      
+      dailyOrderCounts.unshift(orderCount);
+      
+      dailyRevenue.unshift(dayRevenue);
+    }
+
+    res.status(200).json({
+      message: "Graph data fetched successfully",
+      dailyUserCounts: dailyUserCounts,
+      dailyOrderCounts: dailyOrderCounts,
+      dailyRevenue: dailyRevenue
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+})
+
+// Get total number of users
+// router.get('/get-total-users', isLoggedIn, async (req, res)=>{
+
+//   try {
+//     if(req.user.role !== 'admin') return res.status(403).json({ message: "You are not authorized to access this route" });
+//     const totalUser = await userModel.countDocuments()
+//     res.status(200).json({
+//       message: "Total users fetched successfully",
+//       totalUser: totalUser,
+//     })
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// })
 module.exports = router;
