@@ -36,11 +36,25 @@ export const LogoutUser = ()=>{
 
 
 // Get total number of users
-export const GetTotalUsers = ()=>{
+export const GetAllUsers = ()=>{
 
-    const {data, error, isLoading} = useSWR("/user/get-total-users", userFetcher);
+    const {data, error, isLoading} = useSWR("/user/get-all-users", userFetcher);
     return{
-        totalUsers: data?.totalUser,
+        allUsers: data?.users,
+        allOrders: data?.orders,
+        error,
+        isLoading,
+    }
+}
+
+
+// Get Graph data for admin dashboard
+export const GetGraphData = ()=>{
+    const {data, error, isLoading} = useSWR("/user/get-graph-data", userFetcher);
+    return{
+        dailyUserCounts: data?.dailyUserCounts,
+        dailyOrderCounts: data?.dailyOrderCounts,
+        dailyRevenue: data?.dailyRevenue,
         error,
         isLoading,
     }

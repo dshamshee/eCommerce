@@ -10,7 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@mts-pjsc/image-optimize": "^1.2.2",
+    "@mui/material": "^7.2.0",
+    "@mui/x-charts": "^8.6.0",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
     "bson": "^6.10.4",
