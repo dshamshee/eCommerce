@@ -278,7 +278,8 @@ const handleBuyNow = ()=>{
                             </button>
 
                             <button 
-                            className="btn btn-warning hover:bg-success w-[50%]"
+                            className="btn tooltip tooltip-top tooltip-secondary btn-warning hover:bg-success w-[50%]"
+                            data-tip="Comming Soon"
                             onClick={handleBuyNow}
                             >Buy Now</button>
                         </div>

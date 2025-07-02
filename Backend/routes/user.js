@@ -240,4 +240,19 @@ router.get("/logout", isLoggedIn, async (req, res) => {
   }
 });
 
+
+// Get total number of users
+router.get('/get-total-users', isLoggedIn, async (req, res)=>{
+
+  try {
+    if(req.user.role !== 'admin') return res.status(403).json({ message: "You are not authorized to access this route" });
+    const totalUser = await userModel.countDocuments()
+    res.status(200).json({
+      message: "Total users fetched successfully",
+      totalUser: totalUser,
+    })
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+})
 module.exports = router;
