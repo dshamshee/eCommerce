@@ -33,3 +33,15 @@ export const LogoutUser = ()=>{
         isLoading,
     }
 }
+
+
+// Get total number of users
+export const GetTotalUsers = ()=>{
+
+    const {data, error, isLoading} = useSWR("/user/get-total-users", userFetcher);
+    return{
+        totalUsers: data?.totalUser,
+        error,
+        isLoading,
+    }
+}

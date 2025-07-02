@@ -23,6 +23,7 @@ import ProfilePage from "./Pages/User/ProfilePage";
 import Profile2 from "./Pages/User/Profile2";
 import { Men2 } from "./Pages/products-section/Men2";
 import { Women2 } from "./Pages/products-section/Women2";
+import { AdminDashboard } from "./admin/AdminDashboard";
 
 function App() {
 
@@ -34,6 +35,10 @@ function App() {
         {
           path: "/",
           element: <Dashboard />,
+        },
+        {
+          path: "/admin",
+          element: <AdminDashboard />,
         },
         {
           path: "/req-testing",
