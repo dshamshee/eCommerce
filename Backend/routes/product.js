@@ -161,4 +161,20 @@ router.get('/delete-product/:id', isLoggedIn, async (req, res)=>{
     }
 })
 
+// get limited products
+router.get('/get-products/:limit', async(req, res)=>{
+
+    try {
+        const limit = parseInt(req.params.limit); // eg: limit = 1 (1-10), limit = 2 (11-20), limit = 3 (21-30)
+        const products = await productModel.find().skip((limit-1)*10).limit(10);
+        return res.status(200).json({
+            message: "Products fetched successfully",
+            // products: products.length,
+            products
+        })
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+})
+
 module.exports = router;

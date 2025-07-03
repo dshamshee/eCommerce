@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout, { SimpleLayout } from "./Layout/AppLoyout";
+import { AdminLayout } from "./Layout/AdminLayout";
 import { Dashboard } from "./Pages/Dashboard";
 import { Login } from "./Auth/Login";
 import { Signup } from "./Auth/Signup";
@@ -37,10 +38,6 @@ function App() {
           element: <Dashboard />,
         },
         {
-          path: "/admin",
-          element: <AdminDashboard />,
-        },
-        {
           path: "/req-testing",
           element: <GetReqTesting />,
         },
@@ -55,14 +52,6 @@ function App() {
         {
           path: "/kids",
           element: <Kids />,
-        },
-        {
-          path: "/add-product",
-          element: <ProtectedRoute><AddProduct /></ProtectedRoute>,
-        },
-        {
-          path: "/products-list",
-          element: <ProtectedRoute><ProductsList /></ProtectedRoute>,
         },
         {
           path: "/product-details/:id",
@@ -102,7 +91,24 @@ function App() {
         },
       ],
     },
-
+    {
+      path: "/admin",
+      element: <ProtectedRoute><AdminLayout /></ProtectedRoute>,
+      children: [
+        {
+          path: "",
+          element: <AdminDashboard />,
+        },
+        {
+          path: "add-product",
+          element: <AddProduct />,
+        },
+        {
+          path: "products-list/:limit",
+          element: <ProductsList />,
+        },
+      ],
+    },
     {
       path: "/",
       element: <SimpleLayout />,

@@ -1,12 +1,28 @@
-import { GetProducts } from "../API/GET-SWR/product";
+import { GetLimitedProducts } from "../API/GET-SWR/product";
 import { DeleteProduct } from "../API/POST-Axios/productApi";
 import { toast } from "react-toastify";
 import { ProductSkeleton } from "../Pages/products-section/ProductSceleton";
-import { useProductContext } from "../context/ProductContext";
-
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 export const ProductsList = () => {
-const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
+// const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
+// const [limit, setLimit] = useState(1);
+const {limit} = useParams();
+const navigate = useNavigate();
+// const [limitNumber, setLimitNumber] = useState(limit || 1);
+const {products, error, isLoading} = GetLimitedProducts(limit)
+console.log(limit)
+const [allProducts, setAllProducts] = useState();
+// console.log(products)
   let isDesableBtn = false;
+  const [desablePreviousBtn, setDesablePreviousBtn] = useState(false);
+  // const [desableNextBtn, setDesableNextBtn] = useState(false);
+
+  useEffect(()=>{
+    if(products){
+        setAllProducts(products)
+    }
+  },[products])
 
   const handleDeleteProduct = async(id)=>{
     isDesableBtn = true;
@@ -21,6 +37,12 @@ const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
     }
   }
 
+  const handlePreviousPage = ()=>{
+    navigate(`/admin/products-list/${parseInt(limit)-1}`)
+  }
+  const handleNextPage = ()=>{
+    navigate(`/admin/products-list/${parseInt(limit)+1}`)
+  }
 
   if (isLoading) {
     return (
@@ -96,8 +118,9 @@ const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
           </div>
         </li>
 
+        {/* Products List */}
         {
-            filteredProducts.map((product, index)=>{
+           !isLoading && allProducts && allProducts.map((product, index)=>{
                 return(
                     <li className="list-row" key={product._id}>
           <div className="text-4xl font-thin opacity-30 tabular-nums hidden md:block">{index +1 < 10 ? `0${index +1}` : index +1}</div>
@@ -155,71 +178,12 @@ const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
             })
         }
 
-        {/* <li className="list-row">
-          <div className="text-4xl font-thin opacity-30 tabular-nums">02</div>
-          <div>
-            <img
-              className="size-10 rounded-box"
-              src="https://img.daisyui.com/images/profile/demo/4@94.webp"
-            />
-          </div>
-          <div className="list-col-grow">
-            <div>Ellie Beilish</div>
-            <div className="text-xs uppercase font-semibold opacity-60">
-              Bears of a fever
-            </div>
-          </div>
-          <button className="btn btn-square btn-ghost">
-            <svg
-              className="size-[1.2em]"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path d="M6 3L20 12 6 21 6 3z"></path>
-              </g>
-            </svg>
-          </button>
-        </li>
-
-        <li className="list-row">
-          <div className="text-4xl font-thin opacity-30 tabular-nums">03</div>
-          <div>
-            <img
-              className="size-10 rounded-box"
-              src="https://img.daisyui.com/images/profile/demo/3@94.webp"
-            />
-          </div>
-          <div className="list-col-grow">
-            <div>Sabrino Gardener</div>
-            <div className="text-xs uppercase font-semibold opacity-60">
-              Cappuccino
-            </div>
-          </div>
-          <button className="btn btn-square btn-ghost">
-            <svg
-              className="size-[1.2em]"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path d="M6 3L20 12 6 21 6 3z"></path>
-              </g>
-            </svg>
-          </button>
-        </li> */}
+      <div className="flex justify-center gap-5 py-4">
+      <div className="join grid grid-cols-2 gap-5">
+  <button disabled={parseInt(limit) === 1} onClick={handlePreviousPage} className="join-item btn btn-outline">Previous page</button>
+  <button disabled={!isLoading && allProducts && allProducts.length === 0} onClick={handleNextPage} className="join-item btn btn-outline">Next page</button>
+</div>
+      </div>
       </ul>
     </div>
   );
