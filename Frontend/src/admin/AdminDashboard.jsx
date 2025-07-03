@@ -24,23 +24,66 @@ import { GetAllOrders } from "../API/GET-SWR/order";
 import { GetAllUsers, GetGraphData } from "../API/GET-SWR/user";
 import { LineChart } from "@mui/x-charts/LineChart";
 
+// Format number function to handle large numbers with appropriate suffixes
+const formatNumber = (num, decimals = 2) => {
+  if (num == null) return 'Invalid input';
+
+  // Convert input to a number, removing non-numeric characters if it's a string
+  let numValue = typeof num === 'string' ? parseFloat(num.replace(/[^0-9.-]/g, '')) : Number(num);
+
+  if (isNaN(numValue)) return 'Invalid input';
+
+  // Determine if the number is negative and get its absolute value
+  const isNegative = numValue < 0;
+  const absValue = Math.abs(numValue);
+
+  // If the absolute value is below 1000, return it as is
+  if (absValue < 1000) return isNegative ? `-${absValue}` : absValue;
+
+  // Define suffixes for large numbers
+  const suffixes = [
+      { value: 1e18, symbol: 'E' },
+      { value: 1e15, symbol: 'P' },
+      { value: 1e12, symbol: 'T' },
+      { value: 1e9, symbol: 'B' },
+      { value: 1e6, symbol: 'M' },
+      { value: 1e3, symbol: 'K' }
+  ];
+
+  // Find the largest suffix that fits the number
+  const suffix = suffixes.find(({ value }) => absValue >= value);
+  if (!suffix) return numValue.toString();
+
+  // Format the number by dividing by the suffix value and fixing decimals
+  let formattedValue = (absValue / suffix.value).toFixed(decimals);
+
+  // Remove trailing zeros and unnecessary decimal points
+  formattedValue = formattedValue.replace(/\.?0+$/, '');
+
+  // Add back the negative sign if needed and append the suffix
+  return (isNegative ? '-' : '') + formattedValue + suffix.symbol;
+};
+
 export const AdminDashboard = () => {
   const { allProducts, isLoading } = GetProducts();
   const { orders, isLoading: ordersLoading } = GetAllOrders();
   const { allUsers, allOrders, isLoading: usersLoading } = GetAllUsers();
-  const { dailyUserCounts, dailyOrderCounts, dailyRevenue, isLoading: graphLoading } = GetGraphData();
+  const { dailyUserCounts, dailyOrderCounts, isLoading: graphLoading } = GetGraphData();
   // console.log(allOrders);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
   const [totalCustomers, setTotalCustomers] = useState(0);
   
   useEffect(() => {
-    if (!isLoading && allProducts)
-      setTotalRevenue(
-        allProducts.reduce((acc, product) => acc + product.price, 0)
-      );
-    if (!ordersLoading && orders) setTotalOrders(orders.length);
-    if (!usersLoading && allUsers) setTotalCustomers(allUsers.length);
+    if (!usersLoading && allOrders){
+      // Calculate total revenue from all orders
+      const totalRevenueValue = allOrders.reduce((acc, order) => acc + order.totalAmount, 0);
+      // Format the revenue using the formatNumber function
+      setTotalRevenue(formatNumber(totalRevenueValue));
+    }
+    if (!ordersLoading && orders) setTotalOrders(formatNumber(orders.length));
+
+    if (!usersLoading && allUsers) setTotalCustomers(formatNumber(allUsers.length));
   }, [
     allProducts,
     totalRevenue,
@@ -50,300 +93,138 @@ export const AdminDashboard = () => {
     orders,
     allUsers,
     usersLoading,
+    allOrders,
   ]);
 
-  const [activeTab, setActiveTab] = useState("dashboard");
-  // const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  // Handle tab change
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    // setMobileSidebarOpen(false); // Close sidebar when tab is changed
-  };
+  // Dashboard state variables removed as they're now handled in AdminLayout
 
   return (
-    <div className="mainContainer w-[100%] flex flex-row gap-4 p-4 dark:bg-gray-900 bg-gray-50">
-      {/* Menu */}
-      <div className="Menu w-[20%] p-4 dark:bg-gray-800 bg-gray-100 rounded-md shadow-md  flex flex-col gap-2">
-        {/* Dashboard */}
-        <h1 className="text-lg font-bold text-gray-700 dark:text-gray-300">
-          General
-        </h1>
-        <hr className="border-gray-300 dark:border-gray-600" />
-        <nav className="space-y-2">
-          <button
-            onClick={() => handleTabChange("dashboard")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "dashboard"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaHome className="mr-3" />
-            Dashboard
-          </button>
-          <button
-            onClick={() => handleTabChange("products")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "products"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaBox className="mr-3" />
-            Products
-          </button>
-          <button
-            onClick={() => handleTabChange("customers")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "customers"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaUser className="mr-3" />
-            Customers
-          </button>
-          <button
-            onClick={() => handleTabChange("analytics")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "analytics"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaChartLine className="mr-3" />
-            Analitics
-          </button>
-          <button
-            onClick={() => handleTabChange("marketing")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "marketing"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaBullhorn className="mr-3" />
-            Marketing
-          </button>
-          <button
-            onClick={() => handleTabChange("reviews")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "reviews"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaComment className="mr-3" />
-            Reviews
-          </button>
-        </nav>
-
-        {/* Finance */}
-        <hr className="border-gray-300 dark:border-gray-600" />
-        <h1 className="text-lg font-bold text-gray-700 dark:text-gray-300">
-          Finance
-        </h1>
-        <hr className="border-gray-300 dark:border-gray-600" />
-        <nav className="space-y-2">
-          <button
-            onClick={() => handleTabChange("payments")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "payments"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaMoneyBill className="mr-3" />
-            Payments
-          </button>
-          <button
-            onClick={() => handleTabChange("shippings")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "shippings"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaTruck className="mr-3" />
-            Shippings
-          </button>
-          <button
-            onClick={() => handleTabChange("taxes")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "taxes"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaPercentage className="mr-3" />
-            Taxes
-          </button>
-          <button
-            onClick={() => handleTabChange("refunds")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "refunds"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaChartLine className="mr-3" />
-            Refunds
-          </button>
-          <button
-            onClick={() => handleTabChange("helpCenter")}
-            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "helpCenter"
-                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FaBullhorn className="mr-3" />
-            Help Center
-          </button>
-        </nav>
+    <>
+      {/* Cards */}
+      <div className="cards flex flex-row gap-4">
+        <Cards
+          title="Total Revenue"
+          value={`₹ ${totalRevenue}`}
+          percentage={10}
+        />
+        <Cards title="Total Orders" value={totalOrders} percentage={3} />
+        <Cards
+          title="Total Customers"
+          value={totalCustomers}
+          percentage={1}
+        />
       </div>
 
-      {/* Content */}
-      <div className="Content w-[80%]">
-        {/* Cards */}
-        <div className="cards flex flex-row gap-4">
-          <Cards
-            title="Total Revenue"
-            value={`₹ ${totalRevenue}`}
-            percentage={10}
-          />
-          <Cards title="Total Orders" value={totalOrders} percentage={3} />
-          <Cards
-            title="Total Customers"
-            value={totalCustomers}
-            percentage={1}
-          />
-        </div>
+      {/* Chart */}
+      <div className=" p-4 mt-5 dark:bg-gray-800 bg-gray-100 rounded-md shadow-md">
+        <LineChart
+          xAxis={[{ data: !graphLoading ? dailyUserCounts.map((item)=>{
+            const [_, month, day] = item.date.split('-');
+            return `${day}/${month}`;
+          }) : [], scaleType: 'point' }]}
+          series={[
+            {
+              data: !graphLoading ? dailyUserCounts.map((item)=>item.count) : [],
+              label: <div className="dark:text-white text-black">Users</div>,
+              color: 'blue',
+              labelMarkType: 'circle',
+            },
+            {
+              data: !graphLoading ? dailyOrderCounts.map((item)=>item.count) : [],
+              label: <div className="dark:text-white text-black">Orders</div>,
+              color: 'yellow',
+              labelMarkType: 'circle',
+              
+            },
+          ]}
+          height={300}
+          width={1100}
+          
+          sx={{
+            '.MuiChartsAxis-tickLabel': {
+              fill: '#99a1af !important',
+            },
+            '.MuiChartsAxis-line': {
+              stroke: '#99a1af !important',
+            },
+            '.MuiChartsAxis-tick': {
+              stroke: '#99a1af !important',
+            },
+            '.MuiChartsAxis-label': {
+              fill: '#99a1af !important',
+            },
+            '.MuiChartsAxis-labelText': {
+              fill: '#99a1af !important',
+            },
+          }}
+        />
+      </div>
 
-        {/* Chart */}
-        <div className=" p-4 mt-5 dark:bg-gray-800 bg-gray-100 rounded-md shadow-md">
-          <LineChart
-            xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31], scaleType: 'point' }]}
-            // yAxis={[{ data: [0, 10, 15, 20, 25, 30], label: 'Revenue' }]}
-            series={[
-              {
-                data: !graphLoading ? dailyUserCounts : [],
-                label: 'Users',
-                color: 'yellow',
-                labelMarkType: 'circle',
-                // area: true,
-                // color: '#99a1af',
-              },
-              {
-                data: !graphLoading ? dailyOrderCounts : [],
-                label: 'Orders',
-                color: 'blue',
-                labelMarkType: 'circle',
-                
-                // area: true,
-                // color: '#99a1af',
-              },
-              // {
-              //   data: dailyRevenue,
-              //   // area: true,
-              //   // color: '#99a1af',
-              // },
-            ]}
-            height={300}
-            sx={{
-              '.MuiChartsAxis-tickLabel': {
-                fill: '#99a1af !important',
-              },
-              '.MuiChartsAxis-line': {
-                stroke: '#99a1af !important',
-              },
-              '.MuiChartsAxis-tick': {
-                stroke: '#99a1af !important',
-              },
-            }}
-          />
-        </div>
-
-
-        {/* Orders Table */}
-        <div className="OrdersTable mt-5 dark:bg-gray-800 bg-gray-100 rounded-md shadow-md p-3">
-        <div className="overflow-x-auto">
-  <table className="table">
-    {/* head */}
-    <thead>
-      <tr>
-        <th>
-          {/* <label>
-            <input type="checkbox" className="checkbox" />
-          </label> */}
-        </th>
-        <th>Customer</th>
-        <th>Contact</th>
-        <th>Orders</th>
-        <th>Revenue</th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        !usersLoading && allUsers.map((user)=>{
-          return(
-            <tr key={user._id}>
-        <th>
-          <label>
-            <input type="checkbox" className="checkbox" />
-          </label>
-        </th>
-        <td>
-          <div className="flex items-center gap-3">
-            <div className="avatar">
-              <div className="mask mask-squircle h-12 w-12">
-                <img
-                  src={user.avatar}
-                  alt="Avatar Tailwind CSS Component" />
-              </div>
-            </div>
-            <div>
-              <div className="font-bold">{user.name}</div>
-              <div className="text-sm opacity-50">Since {new Date(user.createdAt).toLocaleDateString()}</div>
+      {/* Users Records Table */}
+      <div className="UsersRecordsTable mt-5 dark:bg-gray-800 bg-gray-100 rounded-md shadow-md p-3">
+      <div className="overflow-x-auto">
+<table className="table">
+  {/* head */}
+  <thead>
+    <tr>
+      <th>
+        {/* <label>
+          <input type="checkbox" className="checkbox" />
+        </label> */}
+      </th>
+      <th>Customer</th>
+      <th>Contact</th>
+      <th>Orders</th>
+      <th>Revenue</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      !usersLoading && allUsers.map((user)=>{
+        return(
+          <tr key={user._id}>
+      <th>
+        <label>
+          <input type="checkbox" className="checkbox" />
+        </label>
+      </th>
+      <td>
+        <div className="flex items-center gap-3">
+          <div className="avatar">
+            <div className="mask mask-squircle h-12 w-12">
+              <img
+                src={user.avatar}
+                alt="Avatar Tailwind CSS Component" />
             </div>
           </div>
-        </td>
-        <td className="">
-          <span className="">{user.email}</span>
-          <br />
-          <span className="badge dark:badge-primary badge-secondary badge-sm">{user.phone}</span>
-        </td>
-        <td>{
-          allOrders.filter((order)=> order.userId.toString() === user._id.toString()).length
-          }</td>
-        <th>
-          <p className="text-sm text-gray-700 dark:text-gray-300">{
-            allOrders.filter((order)=> order.userId.toString() === user._id.toString()).reduce((acc, order)=>acc + order.totalAmount, 0)
-            }</p>
-        </th>
-      </tr>
-          )
-        })
-      }
-
-    </tbody>
-
-    {/* foot */}
-    {/* <tfoot>
-      <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Job</th>
-        <th>Favorite Color</th>
-        <th></th>
-      </tr>
-    </tfoot> */}
-
-  </table>
-</div>
+          <div>
+            <div className="font-bold">{user.name}</div>
+            <div className="text-sm opacity-50">Since {new Date(user.createdAt).toLocaleDateString()}</div>
+          </div>
         </div>
+      </td>
+      <td className="">
+        <span className="">{user.email}</span>
+        <br />
+        <span className="badge dark:badge-primary badge-secondary badge-sm">{user.phone}</span>
+      </td>
+      <td>{
+        allOrders.filter((order)=> order.userId.toString() === user._id.toString()).length
+        }</td>
+      <th>
+        <p className="text-sm text-gray-700 dark:text-gray-300">₹ {
+          formatNumber(allOrders.filter((order)=> order.userId.toString() === user._id.toString()).reduce((acc, order)=>acc + order.totalAmount, 0))
+          }</p>
+      </th>
+    </tr>
+        )
+      })
+    }
+  </tbody>
+</table>
+</div>
       </div>
-    </div>
+    </>
   );
 };
 

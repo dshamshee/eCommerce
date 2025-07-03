@@ -59,6 +59,17 @@ export const GetProductByType = (type)=>{
   }
 }
 
+
+// Get Limited Products for pagination
+export const GetLimitedProducts = (limit)=>{
+  const {data, error, isLoading} = useSWR(`/product/get-products/${limit}`, fetcher, swrConfig)
+  return{
+    products: data?.products,
+    error,
+    isLoading,
+  }
+}
+
 // Delete functionality now work with SWR
 // export const DeleteProduct = (id)=>{
 //   const {data, error, isLoading} = useSWR(

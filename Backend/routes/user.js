@@ -309,11 +309,20 @@ router.get('/get-graph-data', isLoggedIn, async (req, res)=>{
       // Calculate revenue for this day
       const dayRevenue = dayOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
       
-      dailyUserCounts.unshift(userCount);
+      dailyUserCounts.unshift({
+        date: date.toISOString().split('T')[0],
+        count: userCount
+      });
       
-      dailyOrderCounts.unshift(orderCount);
+      dailyOrderCounts.unshift({
+        date: date.toISOString().split('T')[0],
+        count: orderCount
+      });
       
-      dailyRevenue.unshift(dayRevenue);
+      dailyRevenue.unshift({
+        date: date.toISOString().split('T')[0],
+        revenue: dayRevenue
+      });
     }
 
     res.status(200).json({
