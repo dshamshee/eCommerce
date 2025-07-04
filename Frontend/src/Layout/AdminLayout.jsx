@@ -35,9 +35,9 @@ export const AdminLayout = () => {
   };
 
   return (
-    <div className="mainContainer w-[100%] flex flex-row gap-4 p-4 dark:bg-gray-900 bg-gray-50">
+    <div className="mainContainer w-[100%] flex flex-row dark:bg-gray-900 bg-gray-50">
       {/* Menu */}
-      <div className="Menu w-[20%] p-4 dark:bg-gray-800 bg-gray-100 rounded-md shadow-md  flex flex-col gap-2">
+      <div className="Menu w-[20%] p-4 dark:bg-gray-800 bg-gray-100 shadow-md  flex flex-col gap-2">
         {/* Dashboard */}
         <h1 className="text-lg font-bold text-gray-700 dark:text-gray-300">
           General
@@ -189,7 +189,7 @@ export const AdminLayout = () => {
       </div>
 
       {/* Content */}
-      <div className="Content w-[80%]">
+      <div className="Content w-[80%]  p-4">
         <Outlet />
       </div>
     </div>

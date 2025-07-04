@@ -14,7 +14,7 @@ import { ProtectedRoute } from "./Layout/ProtectedRoute";
 import { ProductDetails } from "./Pages/products-section/ProductDetails";
 import { Dashboard2 } from "./Pages/Dashboard2";
 import ProductsPage from "./Pages/ProductsPage";
-import { ProductsList } from "./admin/ProductsLIst";
+import { ProductList } from "./admin/ProductsLIst";
 import { CartPage } from "./Pages/Cart/CartPage";
 import { CheckOut } from "./Pages/Cart/CheckOut";
 import { MakePayment } from "./Pages/Payment/MakePayment";
@@ -105,7 +105,7 @@ function App() {
         },
         {
           path: "products-list/:limit",
-          element: <ProductsList />,
+          element: <ProductList />,
         },
       ],
     },
