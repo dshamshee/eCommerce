@@ -1,190 +1,255 @@
+import {
+  FaArrowDown,
+  FaArrowUp,
+  FaCheckCircle,
+  FaEdit,
+  FaFilter,
+  FaTrash,
+} from "react-icons/fa";
+import { IoArrowUpCircle } from "react-icons/io5";
+import { MdMergeType } from "react-icons/md";
 import { GetLimitedProducts } from "../API/GET-SWR/product";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { DeleteProduct } from "../API/POST-Axios/productApi";
 import { toast } from "react-toastify";
-import { ProductSkeleton } from "../Pages/products-section/ProductSceleton";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-export const ProductsList = () => {
-// const {filteredProducts, sortProducts, error, isLoading} = useProductContext();
-// const [limit, setLimit] = useState(1);
-const {limit} = useParams();
-const navigate = useNavigate();
-// const [limitNumber, setLimitNumber] = useState(limit || 1);
-const {products, error, isLoading} = GetLimitedProducts(limit)
-console.log(limit)
-const [allProducts, setAllProducts] = useState();
-// console.log(products)
-  let isDesableBtn = false;
-  const [desablePreviousBtn, setDesablePreviousBtn] = useState(false);
-  // const [desableNextBtn, setDesableNextBtn] = useState(false);
+import { mutate } from "swr";
+import {ProductSkeleton} from '../Pages/products-section/ProductSceleton'
+import {ErrorPage} from '../Pages/ErrorPage'
+export const ProductList = () => {
+  const { limit } = useParams();
+  const { products, error, isLoading } = GetLimitedProducts(limit);
+  console.log(products);
+  const [allProducts, setAllProducts] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(products){
-        setAllProducts(products)
+  useEffect(() => {
+    setAllProducts(products);
+  }, [products]);
+
+  const handlePrevious = () => {
+    if (limit > 1) {
+      navigate(`/admin/products-list/${Number(limit) - 1}`);
     }
-  },[products])
+  };
 
-  const handleDeleteProduct = async(id)=>{
-    isDesableBtn = true;
-    const response = await DeleteProduct(id) // this is axios call (SWR is not working here)
-    if(response.status === 200){
-        toast.success("Product deleted successfully");
-        isDesableBtn = false;
-        window.location.reload();
-    }else{
-        toast.error("Product not deleted");
-        isDesableBtn = false;
+  const handleNext = () => {
+    navigate(`/admin/products-list/${Number(limit) + 1}`);
+  };
+
+  const handleDeleteProduct = async (id) => {
+    // isDesableBtn = true;
+    const response = await DeleteProduct(id); // this is axios call (SWR is not working here)
+    if (response.status === 200) {
+      toast.success("Product deleted successfully");
+      // isDesableBtn = false;
+      // window.location.reload();
+      mutate(`/product/get-products/${limit}`);
+    } else {
+      toast.error("Product not deleted");
+      // isDesableBtn = false;
     }
+  };
+
+  const handleSort = (sortType) => {
+    if (sortType === "lowToHigh") {
+      const sortedProducts = [...allProducts].sort((a, b) => parseInt(a.stock) - parseInt(b.stock));
+      setAllProducts(sortedProducts);
+    } else if (sortType === "highToLow") {
+      const sortedProducts = [...allProducts].sort((a, b) => parseInt(b.stock) - parseInt(a.stock));
+      setAllProducts(sortedProducts);
+    }else if(sortType === 'all'){
+      setAllProducts(products);
+    }
+  };
+
+  const handleFilter = (filterType) => {
+    if (filterType === "all") {
+      setAllProducts(products);
+    } else if (filterType === "men") {
+      setAllProducts(products.filter((product) => product.genderType === "Men"));
+    } else if (filterType === "women") {
+      setAllProducts(products.filter((product) => product.genderType === "Women"));
+    } else if (filterType === "kids") {
+      setAllProducts(products.filter((product) => product.genderType === "Kids"));
+    }else if(filterType === 'Unisex'){
+      setAllProducts(products.filter((product) => product.genderType === "Unisex"));
+    }else if(filterType === 'newArrival'){
+      setAllProducts(products.filter((product) => product.isNewProduct));
+    }else if(filterType === 'bestSeller'){
+      setAllProducts(products.filter((product) => product.isBestSeller));
+    }
+  };
+
+  if(isLoading){
+    return(
+      <div className="mainContainer flex flex-row justify-center items-center h-screen gap-4">
+        <ProductSkeleton />
+        <ProductSkeleton />
+        <ProductSkeleton />
+      </div>
+    )
   }
 
-  const handlePreviousPage = ()=>{
-    navigate(`/admin/products-list/${parseInt(limit)-1}`)
-  }
-  const handleNextPage = ()=>{
-    navigate(`/admin/products-list/${parseInt(limit)+1}`)
-  }
-
-  if (isLoading) {
-    return (
-        <div className="mainContainer flex flex-wrap gap-10 justify-center items-center p-10">
-            <ProductSkeleton />
-            <ProductSkeleton />
-            <ProductSkeleton />
-            <ProductSkeleton />
-        </div>
-    );
-  }
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  if(error){
+    return(
+      <ErrorPage />
+    )
   }
 
   return (
-    <div className="mainContainer hidden md:block p-10 dark:bg-gray-900 bg-white">
+    <div className="mainContainer  w-full dark:bg-gray-800 bg-gray-100 shadow-lg py-4 rounded-md">
+      <h1 className="dark:text-primary text-rose-500 text-2xl font-semibold underline dark:decoration-primary decoration-rose-500 decoration-2 shadow-lg pb-2 text-center mb-4">
+        List of Products
+      </h1>
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="table">
+          {/* head */}
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Product ID</th>
+              <th>Price</th>
+              <th className="">
+                <div className="flex items-center gap-1 dropdown dropdown-bottom dropdown-left">
+                  <span>Stock</span>
+                  <IoArrowUpCircle className="dark:text-primary text-secondary text-xl cursor-pointer" tabIndex={0} role="button" />
+                  <ul tabIndex={0} className="dropdown-content dropdown-bottom menu dark:bg-gray-600 bg-gray-100 rounded-box z-1 w-36 mt-2 p-2 shadow-sm">
+                    <li onClick={() => handleSort("all")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">All</li>
+                    <li onClick={() => handleSort("lowToHigh")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">Low to High</li>
+                    <li onClick={() => handleSort("highToLow")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">High to Low</li>
+                    
+                  </ul>
+                </div>
+              </th>
+              <th>
+                <div className="flex items-center gap-1 dropdown dropdown-bottom dropdown-left">
+                  <span>Type</span>
+                  <FaFilter className="dark:text-primary text-secondary text-lg cursor-pointer" tabIndex={0} role="button"  />
+                  <ul tabIndex={0} className="dropdown-content menu dark:bg-gray-600 bg-gray-100 rounded-box z-1 w-36 mt-2 p-2 shadow-sm">
+                    <li onClick={() => handleFilter("all")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">All</li>
+                    <li onClick={() => handleFilter("men")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">Men</li>
+                    <li onClick={() => handleFilter("women")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">Women</li>
+                    <li onClick={() => handleFilter("kids")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">Kids</li>
+                    <li onClick={() => handleFilter("Unisex")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">Unisex</li>
+                  </ul>
+                </div>
+              </th>
+              <th>
+                <div className="flex items-center gap-1 dropdown dropdown-bottom dropdown-left">
+                  <span>Status</span>
+                  <FaCheckCircle className="dark:text-primary text-secondary text-lg cursor-pointer" tabIndex={0} role="button"/>
+                  <ul tabIndex={0} className="dropdown-content menu dark:bg-gray-600 bg-gray-100 rounded-box z-1 w-36 mt-2 p-2 shadow-sm">
+                    <li onClick={() => handleFilter("all")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">All</li>
+                    <li onClick={() => handleFilter("newArrival")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">New Arrival</li>
+                    <li onClick={() => handleFilter("bestSeller")} className="cursor-pointer py-1 px-2 rounded-md dark:hover:bg-gray-500">Best Seller</li>
+                  </ul>
+                </div>
+              </th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* row 1 */}
+            {!isLoading &&
+              allProducts &&
+              allProducts.map((product) => {
+                return (
+                  <tr key={product._id}>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <div className="avatar">
+                          <div className="rounded-full h-10 w-10">
+                            <img src={product.images[0]} alt={product.name} />
+                          </div>
+                        </div>
+                        <div>
+                          <h1 className="font-bold">{product.name}</h1>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{product._id}</td>
+                    <td>{product.price}</td>
+                    <td
+                      className={`${product.stock === 0 ? "text-warning" : ""}`}
+                    >
+                      {product.stock === 0 ? "Unavailable" : product.stock}
+                    </td>
+                    <td>{product.genderType}</td>
+                    <td>
+                      <div className="flex flex-col gap-2 items-start ">
+                        <span
+                          className={`font-semibold ${
+                            product.isNewProduct
+                              ? "badge badge-xs badge-outline badge-primary"
+                              : ""
+                          } `}
+                        >
+                          {product.isNewProduct ? "New Arrival" : ""}
+                        </span>
+                        <span
+                          className={`font-semibold ${
+                            product.isBestSeller
+                              ? "badge badge-xs badge-outline badge-secondary"
+                              : ""
+                          } `}
+                        >
+                          {product.isBestSeller ? "Best Seller" : ""}
+                        </span>
+                        <span
+                          className={`font-semibold ${
+                            product.isBestSeller || product.isNewProduct
+                              ? ""
+                              : "badge badge-xs badge-outline badge-warning"
+                          } `}
+                        >
+                          {product.isBestSeller || product.isNewProduct
+                            ? ""
+                            : "N/A"}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex gap-1 justify-around">
+                        <button className="">
+                          <FaEdit className="text-primary hover:text-success text-sm cursor-pointer" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(product._id)}
+                          className=""
+                        >
+                          <FaTrash className="text-red-500 hover:text-warning text-sm cursor-pointer" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
 
-
-      <ul className="list dark:bg-gray-800 bg-gray-100 rounded-box shadow-md">
-        
-        <li className="p-4 pb-2 text-2xl opacity-60 tracking-wide text-center ">
-          <div>List of Products</div>
-          <div className="shorting flex justify-center gap-5 mt-2">
-            <select onChange={(e) => sortProducts(e.target.value)} className="select select-bordered w-full max-w-xs">
-                <option value="">Sort By</option>
-                <option value="all">All</option>
-                <option value="price-low-to-high">Price: Low to High</option>
-                <option value="price-high-to-low">Price: High to Low</option>
-                <option value="newest">Newest First</option>
-                <option value="available">Available</option>
-                <option value="best seller">Best Seller</option>
-                <option value="new arrival">New Arrival</option>
-                <option value="out of stock">Out of Stock</option>
-            </select>
-
-            <select onChange={(e) => sortProducts(e.target.value)} className="select select-bordered w-full max-w-xs">
-                <option value="">Filter By</option>
-                <option value="all">All</option>
-                <option value="Men">Men</option>
-                <option value="Women">Women</option>
-                <option value="Kids">Kids</option>
-            </select>
-        </div>
-        </li>
-        {/* <li><hr className="border-gray-600 mt-8" /></li> */}
-        
-        <li className="list-row">
-          <div className="md:text-xl text-center font-thin dark:opacity-80 opacity-60 tabular-nums hidden md:block">SL</div>
-          <div className="md:text-xl text-center font-thin dark:opacity-80 opacity-60 tabular-nums hidden md:block">
-            Image
-          </div>
-          <div className="list-col-grow md:text-xl font-thin dark:opacity-80 opacity-60 tabular-nums hidden md:block">
-            Name
-          </div>
-          <div className="md:text-xl text-center font-thin mr-20 dark:opacity-80 opacity-60 tabular-nums hidden md:block">
-            Date
-          </div>
-          <div className="md:text-xl text-center font-thin mr-14 dark:opacity-80 opacity-60 tabular-nums hidden md:block">
-            Stock
-          </div>
-          {/* <div className="text-xl font-thin mr-5 dark:opacity-30 opacity-60 tabular-nums">
-            Ratings
-          </div> */}
-          <div className="md:text-xl text-center font-thin mr-8 dark:opacity-80 opacity-60 tabular-nums hidden md:block">
-            Best Seller
-          </div>
-          <div className="md:text-xl text-center font-thin mr-3  dark:opacity-80 opacity-60 tabular-nums hidden md:block">
-            New Arrival
-          </div>
-          <div className="md:text-xl text-center font-thin dark:opacity-80 opacity-60 tabular-nums hidden md:block">
-            Action
-          </div>
-        </li>
-
-        {/* Products List */}
-        {
-           !isLoading && allProducts && allProducts.map((product, index)=>{
-                return(
-                    <li className="list-row" key={product._id}>
-          <div className="text-4xl font-thin opacity-30 tabular-nums hidden md:block">{index +1 < 10 ? `0${index +1}` : index +1}</div>
-          <div className="hidden md:block">
-            <img
-              className="size-10 rounded-box"
-              src={product.images[0]}
-            />
-          </div>
-          <div className="list-col-grow">
-            <div>{product.name}</div>
-            <div className="text-xs uppercase font-semibold opacity-60">
-              {product.genderType}
-            </div>
-          </div>
-
-          <div className="text-xl text-center font-thin mr-1 dark:opacity-80 opacity-60 tabular-nums hidden md:block">
-            {new Date(product.createdAt).toLocaleDateString('en-GB')}
-          </div>
-          <div className={`text-lg tabular-nums w-34 text-center hidden md:block ${product.stock > 0 ? 'text-accent' : 'text-red-500'}`}>
-        <span>
-        {product.stock > 0 ? 'Available' : 'Out of stock'}
-        </span>
-          </div>
-          {/* <div className="text-2xl font-thin opacity-30 tabular-nums">
-            {
-              console.log(product.ratings)
-            }
-          </div> */}
-          <div className={`text-xl w-28 text-center tabular-nums hidden md:block ${product.isBestSeller ? 'text-accent' : 'text-red-500'}`}>
-            {product.isBestSeller ? "Yes" : "No"}
-          </div>
-          <div className={`text-xl w-34 text-center tabular-nums hidden md:block ${product.isNewProduct ? 'text-accent' : 'text-red-500'}`}>
-            {product.isNewProduct ? "Yes" : "No"} 
-          </div>
-          <button disabled={isDesableBtn} onClick={()=> handleDeleteProduct(product._id)} className="btn btn-square btn-outline hover:bg-red-500">
-            <svg
-              className="size-[1.2em]"
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="0 0 24 24"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14" />
-              </g>
-            </svg>
+        {/* Pagination */}
+        <div className="join w-full flex justify-center items-center mt-4 border-t-2 dark:border-gray-600 border-gray-300 pt-4">
+          <button
+            disabled={Number(limit) === 1}
+            onClick={handlePrevious}
+            className="join-item btn btn-sm btn-outline"
+          >
+            «
           </button>
-        </li>
-                )
-            })
-        }
-
-      <div className="flex justify-center gap-5 py-4">
-      <div className="join grid grid-cols-2 gap-5">
-  <button disabled={parseInt(limit) === 1} onClick={handlePreviousPage} className="join-item btn btn-outline">Previous page</button>
-  <button disabled={!isLoading && allProducts && allProducts.length === 0} onClick={handleNextPage} className="join-item btn btn-outline">Next page</button>
-</div>
+          <button className="join-item btn btn-sm btn-outline">
+            Page {Number(limit)}
+          </button>
+          <button
+            disabled={!isLoading && allProducts && allProducts.length === 0}
+            onClick={handleNext}
+            className="join-item btn btn-sm btn-outline"
+          >
+            »
+          </button>
+        </div>
       </div>
-      </ul>
     </div>
   );
 };
