@@ -31,7 +31,7 @@ export const Footer = () => {
                 <div>
                     <h4 className="text-gray-100 font-semibold mb-4">Admin</h4>
                     <ul className="space-y-2">
-                        <li><Link to="/add-product" className="hover:text-rose-400 transition">New Product</Link></li>
+                        <li><Link to="/admin" className="hover:text-rose-400 transition">Admin</Link></li>
                         <li><Link to="#" className="hover:text-rose-400 transition">Manage Products</Link></li>
                         <li><Link to="#" className="hover:text-rose-400 transition">Manage Orders</Link></li>
                     </ul>

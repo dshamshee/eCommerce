@@ -6,11 +6,21 @@ import { ProductSkeleton } from "./products-section/ProductSceleton";
 import { useProductContext } from "../context/ProductContext";
 import { ErrorPage } from "./ErrorPage";
 import { useNavigate } from "react-router-dom";
+import { GetUser } from "../API/GET-SWR/user";
+import { useEffect } from "react";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
+  const {user, isLoading: userLoading} = GetUser();
   // const {allProducts, error, isLoading} = GetProducts();
   const { allProducts, error, isLoading } = useProductContext();
+
+  // Redirect to admin page if user is admin (after login)
+  useEffect(()=>{
+    if(!userLoading && user?.role === 'admin'){
+      navigate('/admin');
+    }
+  },[user, userLoading, navigate])
 
   if (error) {
     navigate("/error");

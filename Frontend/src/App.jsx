@@ -10,7 +10,7 @@ import { Women } from "./Pages/products-section/Women";
 import { Kids } from "./Pages/products-section/Kids";
 import { AddProduct } from "./admin/AddProduct";
 import { ToastContainer } from "react-toastify";
-import { ProtectedRoute } from "./Layout/ProtectedRoute";
+import { AdminProtectedRoute, ProtectedRoute } from "./Layout/ProtectedRoute";
 import { ProductDetails } from "./Pages/products-section/ProductDetails";
 import { Dashboard2 } from "./Pages/Dashboard2";
 import ProductsPage from "./Pages/ProductsPage";
@@ -27,6 +27,7 @@ import { Women2 } from "./Pages/products-section/Women2";
 import { AdminDashboard } from "./admin/AdminDashboard";
 
 function App() {
+
 
   const router = createBrowserRouter([
     {
@@ -93,7 +94,7 @@ function App() {
     },
     {
       path: "/admin",
-      element: <ProtectedRoute><AdminLayout /></ProtectedRoute>,
+      element: <AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>,
       children: [
         {
           path: "",

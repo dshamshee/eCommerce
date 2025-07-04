@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { userFetcher } from "./fetcher";
 
-// get user 
+// get user (Logged in user)
 export const GetUser = ()=>{
 
     const {data, error, isLoading} = useSWR("/user/get-user", userFetcher);
@@ -12,7 +12,7 @@ export const GetUser = ()=>{
     }
 }
 
-// Delete User 
+// Delete User (Logged in user)
 export const DeleteUser = ()=>{
 
     const {data, error, isLoading} = useSWR("/user/delete-user", userFetcher);
@@ -24,7 +24,7 @@ export const DeleteUser = ()=>{
     }
 }
 
-// Logout User
+// Logout User (Logged in user)
 export const LogoutUser = ()=>{
     const {data, error, isLoading} = useSWR("/user/logout", userFetcher);
     return{
@@ -35,7 +35,7 @@ export const LogoutUser = ()=>{
 }
 
 
-// Get total number of users
+// Get total number of users (Admin)
 export const GetAllUsers = ()=>{
 
     const {data, error, isLoading} = useSWR("/user/get-all-users", userFetcher);
@@ -48,7 +48,7 @@ export const GetAllUsers = ()=>{
 }
 
 
-// Get Graph data for admin dashboard
+// Get Graph data for admin dashboard (Admin)
 export const GetGraphData = ()=>{
     const {data, error, isLoading} = useSWR("/user/get-graph-data", userFetcher);
     return{
