@@ -1,13 +1,10 @@
 import {
-  FaArrowDown,
-  FaArrowUp,
   FaCheckCircle,
   FaEdit,
   FaFilter,
   FaTrash,
 } from "react-icons/fa";
 import { IoArrowUpCircle } from "react-icons/io5";
-import { MdMergeType } from "react-icons/md";
 import { GetLimitedProducts } from "../API/GET-SWR/product";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -19,7 +16,6 @@ import {ErrorPage} from '../Pages/ErrorPage'
 export const ProductList = () => {
   const { limit } = useParams();
   const { products, error, isLoading } = GetLimitedProducts(limit);
-  console.log(products);
   const [allProducts, setAllProducts] = useState([]);
   const navigate = useNavigate();
 
