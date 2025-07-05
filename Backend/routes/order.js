@@ -23,7 +23,7 @@ router.post("/create-order", isLoggedIn, async(req, res)=>{
     }
 })
 
-// Get all orders
+// Get all orders (only for user)
 router.get('/get-all-orders', isLoggedIn, async(req, res)=>{
 
     try {
@@ -34,6 +34,20 @@ router.get('/get-all-orders', isLoggedIn, async(req, res)=>{
     }
 })
 
+
+// Get all orders (only for admin)
+router.get('/admin/get-all-orders', isLoggedIn, async(req ,res)=>{
+
+    try {
+        if(req.user.role !== "admin"){
+            return res.status(403).json({message: "Unauthorized"});
+        }
+        const orders = await orderModel.find().populate("products.productId");
+        return res.status(200).json({message: "Orders fetched successfully", orders});
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+})
 
 // Get order by id
 router.get('/get-order/:id', isLoggedIn, async(req, res)=>{
