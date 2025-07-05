@@ -25,6 +25,7 @@ import Profile2 from "./Pages/User/Profile2";
 import { Men2 } from "./Pages/products-section/Men2";
 import { Women2 } from "./Pages/products-section/Women2";
 import { AdminDashboard } from "./admin/AdminDashboard";
+import { EditProduct } from "./admin/EditProduct";
 
 function App() {
 
@@ -107,6 +108,10 @@ function App() {
         {
           path: "products-list/:limit",
           element: <ProductList />,
+        },
+        {
+          path: "edit-product/:id",
+          element: <EditProduct />,
         },
       ],
     },
