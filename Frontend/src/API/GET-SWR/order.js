@@ -2,9 +2,19 @@ import useSWR from "swr";
 import { fetcher } from "./fetcher";
 
 
-// Get all orders
+// Get all orders (only for user)
 export const GetAllOrders = ()=>{
     const {data, error, isLoading} = useSWR("/order/get-all-orders", fetcher);
+    return{
+        orders: data?.orders,
+        error,
+        isLoading,
+    }
+}
+
+// Get all orders (only for admin)
+export const GetAllOrdersAdmin = ()=>{
+    const {data, error, isLoading} = useSWR("/order/admin/get-all-orders", fetcher);
     return{
         orders: data?.orders,
         error,

@@ -9,6 +9,11 @@ import {
   FaPercentage,
   FaBullhorn,
   FaChartLine,
+  FaSignOutAlt,
+  FaPlus,
+  FaQuestionCircle,
+  FaMoneyBillWave,
+  FaMoneyCheck,
 } from "react-icons/fa";
 import { FaComment } from "react-icons/fa6";
 
@@ -74,7 +79,7 @@ export const AdminLayout = () => {
                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
-            <FaBox className="mr-3" />
+            <FaPlus className="mr-3" />
             Add Product
           </button>
           <button
@@ -138,7 +143,7 @@ export const AdminLayout = () => {
                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
-            <FaMoneyBill className="mr-3" />
+            <FaMoneyCheck className="mr-3" />
             Payments
           </button>
           <button
@@ -171,7 +176,7 @@ export const AdminLayout = () => {
                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
-            <FaChartLine className="mr-3" />
+            <FaMoneyBillWave className="mr-3" />
             Refunds
           </button>
           <button
@@ -182,8 +187,22 @@ export const AdminLayout = () => {
                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
-            <FaBullhorn className="mr-3" />
+            <FaQuestionCircle className="mr-3" />
             Help Center
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              handleTabChange("logout", "/login");
+            }}
+            className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "logout"
+                ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
+                : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+            }`}
+          >
+            <FaSignOutAlt className="mr-3" />
+            Logout
           </button>
         </nav>
       </div>

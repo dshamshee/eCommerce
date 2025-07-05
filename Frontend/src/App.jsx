@@ -10,7 +10,7 @@ import { Women } from "./Pages/products-section/Women";
 import { Kids } from "./Pages/products-section/Kids";
 import { AddProduct } from "./admin/AddProduct";
 import { ToastContainer } from "react-toastify";
-import { AdminProtectedRoute, ProtectedRoute } from "./Layout/ProtectedRoute";
+import { ProtectedRoute } from "./Layout/ProtectedRoute";
 import { ProductDetails } from "./Pages/products-section/ProductDetails";
 import { Dashboard2 } from "./Pages/Dashboard2";
 import ProductsPage from "./Pages/ProductsPage";
@@ -94,7 +94,7 @@ function App() {
     },
     {
       path: "/admin",
-      element: <AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>,
+      element: <ProtectedRoute><AdminLayout /></ProtectedRoute>,
       children: [
         {
           path: "",
