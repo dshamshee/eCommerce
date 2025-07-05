@@ -1,12 +1,13 @@
 import {
   FaCheckCircle,
   FaEdit,
+  FaEye,
   FaFilter,
   FaTrash,
 } from "react-icons/fa";
 import { IoArrowUpCircle } from "react-icons/io5";
 import { GetLimitedProducts } from "../API/GET-SWR/product";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { DeleteProduct } from "../API/POST-Axios/productApi";
 import { toast } from "react-toastify";
@@ -210,8 +211,11 @@ export const ProductList = () => {
                     </td>
                     <td>
                       <div className="flex gap-1 justify-around">
-                        <button className="">
-                          <FaEdit className="text-primary hover:text-success text-sm cursor-pointer" />
+                        <Link to={`/product-details/${product._id}`} className="">
+                          <FaEye className="text-success hover:text-secondary text-sm cursor-pointer" />
+                        </Link>
+                        <button onClick={() => navigate(`/admin/edit-product/${product._id}`)} className="">
+                          <FaEdit className="text-primary hover:text-info text-sm cursor-pointer" />
                         </button>
                         <button
                           onClick={() => handleDeleteProduct(product._id)}

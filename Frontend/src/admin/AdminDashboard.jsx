@@ -1,24 +1,10 @@
 import { useEffect, useState } from "react";
 import {
-  FaUser,
-  FaShoppingBag,
-  FaHeart,
-  FaMapMarkerAlt,
-  FaCog,
-  FaSignOutAlt,
-  FaHome,
-  FaShoppingCart,
-  FaTruck,
-  FaMoneyBill,
-  FaPercentage,
   FaArrowUp,
   FaCalendar,
   FaArrowDown,
-  FaBox,
 } from "react-icons/fa";
 import { FaChartLine } from "react-icons/fa6";
-import { FaBullhorn } from "react-icons/fa";
-import { FaComment } from "react-icons/fa6";
 import { GetProducts } from "../API/GET-SWR/product";
 import { GetAllOrders, GetAllOrdersAdmin } from "../API/GET-SWR/order";
 import { GetAllUsers, GetGraphData } from "../API/GET-SWR/user";
@@ -193,16 +179,19 @@ export const AdminDashboard = () => {
                 ? dailyUserCounts.map((item) => item.count)
                 : [],
               label: <div className="dark:text-white text-black">Users</div>,
-              color: "blue",
+              color: "#00ceff",
               labelMarkType: "circle",
+              area: true,
+              areaOpacity: 0.5,
             },
             {
               data: !graphLoading
                 ? dailyOrderCounts.map((item) => item.count)
                 : [],
               label: <div className="dark:text-white text-black">Orders</div>,
-              color: "yellow",
+              color: "#3dd486",
               labelMarkType: "circle",
+              area: true,
             },
           ]}
           height={300}
@@ -223,6 +212,7 @@ export const AdminDashboard = () => {
             ".MuiChartsAxis-labelText": {
               fill: "#99a1af !important",
             },
+            
           }}
         />
       </div>
@@ -234,11 +224,11 @@ export const AdminDashboard = () => {
             {/* head */}
             <thead>
               <tr>
-                <th>
-                  {/* <label>
+                {/* <th>
+                  <label>
           <input type="checkbox" className="checkbox" />
-        </label> */}
-                </th>
+        </label>
+                </th> */}
                 <th>Customer</th>
                 <th>Contact</th>
                 <th>Orders</th>
@@ -250,11 +240,11 @@ export const AdminDashboard = () => {
                 allUsers.map((user) => {
                   return (
                     <tr key={user._id}>
-                      <th>
+                      {/* <th>
                         <label>
                           <input type="checkbox" className="checkbox" />
                         </label>
-                      </th>
+                      </th> */}
                       <td>
                         <div className="flex items-center gap-3">
                           <div className="avatar">
