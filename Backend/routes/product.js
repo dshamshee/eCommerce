@@ -104,21 +104,59 @@ router.get('/get-product/:id', async (req, res)=>{
 router.post('/update-product/:id', isLoggedIn, async(req, res)=>{
     
     try {
-        const {name, description, price, category, image, stock} = req.body;
+        const {name, description, price, category, images, stock, isNewProduct, isBestSeller, fabric, care, features, sizes, colors, discount} = req.body;
+        
+        // Parse JSON strings back to arrays if they exist
+        const parsedSizes = sizes ? JSON.parse(sizes) : [];
+        const parsedColors = colors ? JSON.parse(colors) : [];
+        const parsedCare = care ? JSON.parse(care) : [];
+        const parsedFeatures = features ? JSON.parse(features) : [];
+        
+        // Handle images array - ensure it's a flat array of strings
+        let parsedImages = [];
+        if (images) {
+            try {
+                const parsed = JSON.parse(images);
+                // Flatten the array in case we have nested arrays
+                parsedImages = Array.isArray(parsed) ? 
+                    parsed.flat().filter(img => typeof img === 'string') : 
+                    [];
+                console.log("Parsed images:", parsedImages);
+            } catch (err) {
+                console.error("Error parsing images:", err);
+                parsedImages = [];
+            }
+        }
+        
         if(req.user.role !== "admin") return res.status(403).json({message: "You are not authorized to update a product"});
-        const product = await productModel.findOneAndUpdate({_id: req.params.id}, {
-            name,
-            description,
-            price,
-            category,
-            image,
-            stock
-        })
+        
+        const product = await productModel.findOneAndUpdate(
+            {_id: req.params.id}, 
+            {
+                name,
+                description,
+                price,
+                category,
+                images: parsedImages,
+                stock,
+                isNewProduct,
+                isBestSeller,
+                fabric,
+                care: parsedCare,
+                features: parsedFeatures,
+                sizes: parsedSizes,
+                colors: parsedColors,
+                discount
+            }, 
+            { new: true }
+        );
+        
         return res.status(200).json({
             message: "Product updated successfully",
             product
-        })
+        });
     } catch (error) {
+        console.error('Error updating product:', error);
         return res.status(500).json({message: error.message});
     }
 })
@@ -177,4 +215,27 @@ router.get('/get-products/:limit', async(req, res)=>{
     }
 })
 
+
+
+// Direct upload images to cloudinary (for edit product page)
+router.post('/direct-upload-images', isLoggedIn, memoryUpload.array('images'), async(req ,res)=>{
+
+    try {
+        const images = req.files;
+        const imageUploadedSuccessfully = await images.map(async(image)=>{
+            const response = await uploadOnCloudinary(image);
+            return response;
+        })
+
+        const imageUrls = await Promise.all(imageUploadedSuccessfully);
+        
+
+        return res.status(200).json({
+            message: "Images uploaded successfully",
+            imageUrls
+        })
+    } catch (error) {
+        return res.status(500).json({message: "Error uploading images on cloudinary"});
+    }
+})
 module.exports = router;
