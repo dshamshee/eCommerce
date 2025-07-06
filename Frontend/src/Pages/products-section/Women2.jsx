@@ -2,10 +2,16 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { GetProductByType } from "../../API/GET-SWR/product";
 import { ProductSkeleton } from "./ProductSceleton";
 import { ErrorPage } from "../ErrorPage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { PiPantsFill, PiShirtFoldedFill } from "react-icons/pi";
+import { FaHome, FaRupeeSign, FaTshirt } from "react-icons/fa";
+import { GiUnderwearShorts } from "react-icons/gi";
+
+
 export const Women2 = () => {
+  const { limit } = useParams();
   const [activeSlide, setActiveSlide] = useState(1);
-  const { products, error, isLoading } = GetProductByType("Women");
+  const { products, error, isLoading } = GetProductByType("Women", limit);
   const carouselRef = useRef(null);
   const [activeTab, setActiveTab] = useState("all");
   const [womenProducts, setWomenProducts] = useState([]);
@@ -86,6 +92,8 @@ export const Women2 = () => {
   return (
     <div className="mainContainer py-3 w-full">
       {/* Carousel Section */}
+      {
+        products && products.length === 0 ? '' :
       <div className="relative py-2">
         <div
           ref={carouselRef}
@@ -173,19 +181,27 @@ export const Women2 = () => {
             })}
         </div>
       </div>
+      }
 
       {/* Hero Section */}
       <div className="hero flex md:flex-row flex-col gap-2 items-start min-h-[400px]">
         {/* Filter Section */}
-        <div className="left hidden md:flex w-[20%] min-h-[400px] dark:bg-gray-800 bg-gray-300 p-3 rounded-md flex-col gap-2">
+        {
+          products && womenProducts.length === 0 ? '' :
+        <div className="left hidden md:flex w-[20%] min-h-[500px] dark:bg-gray-800 bg-gray-300 p-3 rounded-md flex-col gap-2">
+          <span className="text-lg font-semibold">Filter by</span>
+          <hr />
           <Filter
             handleChange={handleChange}
             activeTab={activeTab}
             setWomenProducts={setWomenProducts}
           />
         </div>
+        }
 
         {/* Product Section */}
+        {
+          products && womenProducts.length === 0 ? '' :
         <div className="right md:w-[80%] grid grid-cols-2 md:grid-cols-4 gap-2 px-1 md:px-2">
           {products &&
             womenProducts.slice(0, 4).map((product) => {
@@ -231,9 +247,13 @@ export const Women2 = () => {
               );
             })}
         </div>
+        }
       </div>
 
+
       {/* More Products Section */}
+      {
+        womenProducts.length === 0 ? <div className="col-span-full text-center text-gray-500 mb-5">No products found</div> :
       <div className="moreProducts grid grid-cols-2 md:grid-cols-5 gap-2 px-1 md:px-2 mb-10">
         {womenProducts.slice(4, womenProducts.length).map((product) => {
           return (
@@ -278,51 +298,52 @@ export const Women2 = () => {
           );
         })}
       </div>
+      }
+      {/* Pagination */}
+      <div className="join flex justify-center items-center gap-2 mb-10">
+          <button disabled={parseInt(limit) === 1} className="join-item btn btn-outline hover:btn-warning hover:text-white" onClick={()=>{navigate(`/women/${parseInt(limit)-1}`) ; window.scrollTo({top: 0, behavior: "smooth"})}}>«</button>
+          <button className="join-item btn btn-outline btn-primary">{limit}</button>
+          <button disabled={womenProducts.length === 0} className="join-item btn btn-outline hover:btn-warning hover:text-white" onClick={()=>{navigate(`/women/${parseInt(limit)+1}`) ; window.scrollTo({top: 0, behavior: "smooth"})}}>»</button> 
+        </div>
     </div>
   );
 };
 
 // Filter Component
-const Filter = ({ handleChange, activeTab, setWomenProducts }) => {
-  const { products } = GetProductByType("Women");
+const Filter = ({ handleChange, activeTab, setMenProducts }) => {
+  const { products } = GetProductByType("Men");
 
   const handleAll = () => {
     handleChange("all");
-    setWomenProducts(products);
+    setMenProducts(products);
   };
 
   const handleShirt = () => {
     handleChange("shirt");
-    setWomenProducts(
-      products.filter((product) => product.category === "Shirt")
-    );
+    setMenProducts(products.filter((product) => product.category === "Shirt"));
     // setMenProducts(menProducts.filter((product) => product.category === "Shirt"));
   };
 
   const handleTShirt = () => {
     handleChange("t-shirt");
-    setWomenProducts(
+    setMenProducts(
       products.filter((product) => product.category === "T-shirt")
     );
     // setMenProducts(menProducts.filter((product) => product.category === "T-shirt"));
   };
   const handleJeans = () => {
     handleChange("jeans");
-    setWomenProducts(
-      products.filter((product) => product.category === "Jeans")
-    );
+    setMenProducts(products.filter((product) => product.category === "Jeans"));
     // setMenProducts(menProducts.filter((product) => product.category === "Jeans"));
   };
   const handleShorts = () => {
     handleChange("shorts");
-    setWomenProducts(
-      products.filter((product) => product.category === "Shorts")
-    );
+    setMenProducts(products.filter((product) => product.category === "Shorts"));
     // setMenProducts(menProducts.filter((product) => product.category === "Shorts"));
   };
   const handlePrice = () => {
     handleChange("price");
-    setWomenProducts(products.sort((a, b) => a.price - b.price));
+    setMenProducts(products.sort((a, b) => a.price - b.price));
     // setMenProducts(menProducts.sort((a, b) => a.price - b.price));
   };
 
@@ -330,62 +351,68 @@ const Filter = ({ handleChange, activeTab, setWomenProducts }) => {
     <>
       <button
         onClick={handleAll}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "all"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <FaHome className="text-2xl" />
         All
       </button>
       <button
         onClick={handleShirt}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "shirt"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <PiShirtFoldedFill className="text-2xl" />
         Shirt
       </button>
       <button
         onClick={handleTShirt}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "t-shirt"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <FaTshirt className="text-2xl" />
         T-Shirt
       </button>
       <button
         onClick={handleJeans}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "jeans"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <PiPantsFill className="text-2xl" />
         Jeans
       </button>
       <button
         onClick={handleShorts}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "shorts"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <GiUnderwearShorts className="text-2xl" />
         Shorts
       </button>
       <button
         onClick={handlePrice}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "price"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <FaRupeeSign className="text-2xl" />
         Price
       </button>
     </>

@@ -89,11 +89,11 @@ export const HeaderSM = () => {
           <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
             navigate('/');
           }}>Home</a></li>
-          <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/men' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
-            navigate('/men');
+          <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/men/1' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
+            navigate('/men/1');
           }}>Men</a></li>
-          <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/women' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
-            navigate('/women');
+          <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/women/1' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
+            navigate('/women/1');
           }}>Women</a></li>
           <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/kids' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
             navigate('/kids');

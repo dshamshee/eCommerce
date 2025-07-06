@@ -44,11 +44,11 @@ function App() {
           element: <GetReqTesting />,
         },
         {
-          path: "/men",
+          path: "/men/:limit",
           element: <Men2 />,
         },
         {
-          path: "/women",
+          path: "/women/:limit",
           element: <Women2 />,
         },
         {
