@@ -19,12 +19,12 @@ export const HeaderMD = ()=>{
   },[user]);
 
   const handleMenToggle = () => {
-    navigate("/men");
+    navigate("/men/1");
     filterByGenderType("Men");
   }
 
   const handleWomenToggle = () => {
-    navigate("/women");
+    navigate("/women/1");
     filterByGenderType("Women");
   }
 
@@ -65,10 +65,10 @@ export const HeaderMD = ()=>{
               <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/' ? 'text-rose-600 dark:text-rose-500' : ''}`}>
                 <a onClick={handleHomeToggle}>Home</a>
               </li>
-              <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/men' ? 'text-rose-600 dark:text-rose-500' : ''}`}>
+              <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/men/1' ? 'text-rose-600 dark:text-rose-500' : ''}`}>
                 <a onClick={handleMenToggle}>Men</a>
               </li>
-              <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/women' ? 'text-rose-600 dark:text-rose-500' : ''}`}>
+              <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/women/1' ? 'text-rose-600 dark:text-rose-500' : ''}`}>
                 <a onClick={handleWomenToggle}>Women</a>
               </li>
               <li data-tip="Coming Soon" className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 tooltip tooltip-bottom tooltip-secondary cursor-pointer ${window.location.pathname === '/kids' ? 'text-rose-600 dark:text-rose-500' : ''}`}>

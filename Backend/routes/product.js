@@ -162,16 +162,17 @@ router.post('/update-product/:id', isLoggedIn, async(req, res)=>{
 })
 
 // get product by type (category or genderType)
-router.get('/get-product-by-type/:type', async(req, res)=>{
+router.get('/get-product-by-type/:type/:limit', async(req, res)=>{
     try {
         // check which one is on params category or genderType
         const type = req.params.type;
+        const limit = parseInt(req.params.limit);
         let products, unisexProducts;
         if(type === "T-shirt" || type === "Jeans" || type === "Shirt" || type === "Shorts"){
-            products = await productModel.find({category: type});
+            products = await productModel.find({category: type}).skip((limit-1)*10).limit(10);
         }else if(type === "Men" || type === "Women" || type === "Kids"){
-            products = await productModel.find({genderType: type});
-            unisexProducts = await productModel.find({genderType: "Unisex"});
+            products = await productModel.find({genderType: type}).skip((limit-1)*10).limit(20);
+            unisexProducts = await productModel.find({genderType: "Unisex"}).skip((limit-1)*10).limit(20);
         }else{
             return res.status(400).json({message: "Invalid type"});
         }

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { GetProductById } from '../API/GET-SWR/product';
 import { directUploadImages, updateProduct } from '../API/POST-Axios/productApi';
 import { toast } from 'react-toastify';
+import { mutate } from 'swr';
 
 export const EditProduct = () => {
 
@@ -133,6 +134,7 @@ export const EditProduct = () => {
 
       const response = await updateProduct(productDataToUpdate, id);
       if(response.status === 200){
+        mutate('/admin/get-products')
         navigate(-1)
         toast.success("Product updated successfully");
       }

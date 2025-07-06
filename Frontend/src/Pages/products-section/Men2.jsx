@@ -2,14 +2,21 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { GetProductByType } from "../../API/GET-SWR/product";
 import { ProductSkeleton } from "./ProductSceleton";
 import { ErrorPage } from "../ErrorPage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { PiPantsFill, PiShirtFoldedFill } from "react-icons/pi";
+import { FaHome, FaRupeeSign, FaTshirt } from "react-icons/fa";
+import { GiUnderwearShorts } from "react-icons/gi";
+
+
 export const Men2 = () => {
+  const { limit } = useParams();
   const [activeSlide, setActiveSlide] = useState(1);
-  const { products, error, isLoading } = GetProductByType("Men");
+  const { products, error, isLoading } = GetProductByType("Men", limit);
   const carouselRef = useRef(null);
   const [activeTab, setActiveTab] = useState("all");
   const [menProducts, setMenProducts] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     if (products) {
       setMenProducts(products);
@@ -84,8 +91,10 @@ export const Men2 = () => {
   };
 
   return (
-    <div className="mainContainer py-3 w-full">
+    <div className="mainContainer w-full">
       {/* Carousel Section */}
+      {
+        menProducts.length === 0 ? '':
       <div className="relative py-2">
         <div
           ref={carouselRef}
@@ -173,21 +182,30 @@ export const Men2 = () => {
             })}
         </div>
       </div>
+      }
 
       {/* Hero Section */}
       <div className="hero flex md:flex-row flex-col gap-2 items-start min-h-[400px]">
         {/* Filter Section */}
-        <div className="left hidden md:flex w-[20%] min-h-[400px] dark:bg-gray-800 bg-gray-300 p-3 rounded-md flex-col gap-2">
+        {
+          menProducts.length === 0 ? '':
+        <div className="left hidden md:flex w-[20%] min-h-[500px] dark:bg-gray-800 bg-gray-300 p-3 rounded-md flex-col gap-2">
+          <span className="text-lg font-semibold">Filter by</span>
+          <hr />
           <Filter
             handleChange={handleChange}
             activeTab={activeTab}
             setMenProducts={setMenProducts}
-          />
+            />
         </div>
+          }
 
         {/* Product Section */}
         <div className="right md:w-[80%] grid grid-cols-2 md:grid-cols-4 gap-2 px-1 md:px-2">
-          {products &&
+          {
+          products && menProducts.length === 0 ? '':
+
+          products &&
             menProducts.slice(0, 4).map((product) => {
               return (
                 <div
@@ -235,7 +253,10 @@ export const Men2 = () => {
 
       {/* More Products Section */}
       <div className="moreProducts grid grid-cols-2 md:grid-cols-5 gap-2 px-1 md:px-2 mb-10">
-        {menProducts.slice(4, menProducts.length).map((product) => {
+        {
+        menProducts.length === 0 ? <div className="col-span-full text-center text-gray-500">No products found</div> :
+        
+        menProducts.slice(4, menProducts.length).map((product) => {
           return (
             <div
               className="cardContainer mt-2"
@@ -278,8 +299,12 @@ export const Men2 = () => {
           );
         })}
       </div>
-
-
+        {/* Pagination */}
+        <div className="join flex justify-center items-center gap-2 mb-10">
+          <button disabled={parseInt(limit) === 1} className="join-item btn btn-outline hover:btn-warning hover:text-white" onClick={()=>{navigate(`/men/${parseInt(limit)-1}`) ; window.scrollTo({top: 0, behavior: "smooth"})}}>«</button>
+          <button className="join-item btn btn-outline btn-primary">{limit}</button>
+          <button disabled={menProducts.length === 0} className="join-item btn btn-outline hover:btn-warning hover:text-white" onClick={()=>{navigate(`/men/${parseInt(limit)+1}`) ; window.scrollTo({top: 0, behavior: "smooth"})}}>»</button> 
+        </div>
     </div>
   );
 };
@@ -326,62 +351,68 @@ const Filter = ({ handleChange, activeTab, setMenProducts }) => {
     <>
       <button
         onClick={handleAll}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "all"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <FaHome className="text-2xl" />
         All
       </button>
       <button
         onClick={handleShirt}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "shirt"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <PiShirtFoldedFill className="text-2xl" />
         Shirt
       </button>
       <button
         onClick={handleTShirt}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "t-shirt"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <FaTshirt className="text-2xl" />
         T-Shirt
       </button>
       <button
         onClick={handleJeans}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "jeans"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <PiPantsFill className="text-2xl" />
         Jeans
       </button>
       <button
         onClick={handleShorts}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "shorts"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <GiUnderwearShorts className="text-2xl" />
         Shorts
       </button>
       <button
         onClick={handlePrice}
-        className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
           activeTab === "price"
             ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
       >
+        <FaRupeeSign className="text-2xl" />
         Price
       </button>
     </>

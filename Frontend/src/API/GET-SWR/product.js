@@ -45,9 +45,9 @@ export const GetProducts = () => {
   }
 
   // get product by type (category or genderType)
-export const GetProductByType = (type)=>{
+export const GetProductByType = (type, limit)=>{
   const {data, error, isLoading} = useSWR(
-    `/product/get-product-by-type/${type}`, 
+    `/product/get-product-by-type/${type}/${limit}`, 
     fetcher,
     swrConfig
   );
