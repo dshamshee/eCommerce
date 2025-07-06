@@ -38,7 +38,15 @@ export const addProduct = async (productData) => {
   }
 };
 
-
+// update product
+export const updateProduct = async(productData, id)=>{
+  try {
+    const response = await api.post(`/product/update-product/${id}`, productData);
+    return response;
+  } catch (error) {
+    throw error.response?.data?.message || 'Error updating product';
+  }
+}
 
 // upload images
 export const uploadImages = async(images, id)=>{
@@ -59,5 +67,15 @@ export const DeleteProduct = async(id)=>{
     return response;
   } catch (error) {
     throw error.response?.data?.message || 'Error deleting product';
+  }
+}
+
+// direct upload images to cloudinary (for edit product page)
+export const directUploadImages = async(formData)=>{
+  try {
+    const response = await apiForAddProduct.post('/product/direct-upload-images', formData);
+    return response;
+  } catch (error) {
+    throw error.response?.data?.message || 'Error uploading images';
   }
 }

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Save, ArrowLeft, Upload, X, Plus, Trash2 } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { GetProductById } from '../API/GET-SWR/product';
+import { directUploadImages, updateProduct } from '../API/POST-Axios/productApi';
+import { toast } from 'react-toastify';
 
 export const EditProduct = () => {
 
     const id = useParams().id
-
+    const navigate = useNavigate()
     const {product: productData, isLoading, error} = GetProductById(id)
 
   // Initialize product state with empty values to avoid uncontrolled to controlled warning
@@ -105,49 +107,89 @@ export const EditProduct = () => {
     e.preventDefault();
     
     if (!validateForm()) return;
-    
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      console.log('Product updated:', product);
-      alert('Product updated successfully!');
-      
+      // Create a product data object with proper handling for arrays and objects
+      const productDataToUpdate = {
+        name: product.name,
+        description: product.description,
+        price: parseFloat(product.price),
+        category: product.category,
+        genderType: product.genderType,
+        stock: parseInt(product.stock),
+        discount: parseFloat(product.discount) || 0,
+        fabric: product.fabric,
+        isNewProduct: product.isNewProduct,
+        isBestSeller: product.isBestSeller,
+        // Convert arrays to JSON strings
+        sizes: JSON.stringify(product.sizes),
+        colors: JSON.stringify(product.colors),
+        care: JSON.stringify(product.care),
+        features: JSON.stringify(product.features),
+        // Handle images array properly
+        images: JSON.stringify(product.images)
+      };
+
+      const response = await updateProduct(productDataToUpdate, id);
+      if(response.status === 200){
+        navigate(-1)
+        toast.success("Product updated successfully");
+      }
     } catch (error) {
       console.error('Error updating product:', error);
-      alert('Error updating product. Please try again.');
+      toast.error("Error updating product. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async(e) => {
     const files = Array.from(e.target.files);
-    // In real app, you would upload to your server/cloud storage
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setProduct(prev => ({
-          ...prev,
-          images: [...prev.images, event.target.result]
-        }));
-      };
-      reader.readAsDataURL(file);
-    });
+    toast.loading("Uploading images...");
+    
+    try {
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('images', file);
+        
+        const response = await directUploadImages(formData);
+        
+        if (response.status === 200) {
+          // The server returns an array of image URLs in imageUrls
+          const uploadedImageUrls = response.data.imageUrls;
+          
+          // Add each image URL to the product state
+          if (uploadedImageUrls && uploadedImageUrls.length > 0) {
+            setProduct(prev => ({
+              ...prev,
+              images: [...prev.images, ...uploadedImageUrls]
+            }));
+          }
+        }
+      }
+      
+      toast.dismiss();
+      toast.success("Images uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      toast.dismiss();
+      toast.error("Failed to upload images");
+    }
   };
 
   return (
     <div className="min-h-screen dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+
         {/* Header */}
         <div className="mb-8 bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg shadow-lg">
           <h1 className="text-3xl font-bold text-white">Edit Product</h1>
           <p className="text-blue-100 mt-2">Update your product information</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8" encType="multipart/form-data">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left Column */}
             <div className="space-y-6">
@@ -215,12 +257,10 @@ export const EditProduct = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-500 mb-2">
-                        Discount (%)
+                        Discount (₹)
                       </label>
                       <input
                         type="number"
-                        min="0"
-                        max="100"
                         value={product.discount}
                         onChange={(e) => handleInputChange('discount', parseInt(e.target.value) || 0)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -445,7 +485,7 @@ export const EditProduct = () => {
                       </div>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="images/*"
                         multiple
                         onChange={handleImageUpload}
                         className="hidden"
@@ -618,6 +658,7 @@ export const EditProduct = () => {
           {/* Submit Button */}
           <div className="flex justify-end space-x-4 mt-8">
             <button
+              onClick={() => navigate(-1)}
               type="button"
               className="px-6 py-3 border dark:bg-gray-800 border-gray-300 rounded-md dark:text-gray-400 text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
             >
