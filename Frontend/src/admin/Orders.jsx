@@ -3,17 +3,20 @@ import { GoGraph } from "react-icons/go";
 import { BsStack } from "react-icons/bs";
 import { FaShippingFast } from "react-icons/fa";
 import { MdCancel, MdFileDownloadDone } from "react-icons/md";
+import { TiCancel } from "react-icons/ti";
 
 import { MdCloudDone } from "react-icons/md";
 import { RiMoneyRupeeCircleFill } from "react-icons/ri";
 import { GetLimitedOrdersAdmin } from "../API/GET-SWR/order";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import {UpdateOrderStatus} from '../API/POST-Axios/order'
+import { toast } from "react-toastify";
+import { mutate } from "swr";
 
 export const Orders = () => {
-
   const navigate = useNavigate();
-  const {limit} = useParams();
+  const { limit } = useParams();
   const { orders, error, isLoading } = GetLimitedOrdersAdmin(limit);
   const [ordersData, setOrdersData] = useState([]);
   useEffect(() => {
@@ -22,6 +25,48 @@ export const Orders = () => {
       setOrdersData(orders);
     }
   }, [orders, isLoading]);
+
+  if (error) {
+    return (
+      <div className="mainContainer px-4">
+        <div className="flex justify-center items-center h-screen">
+          <h1 className="text-2xl font-bold">Error: {error.message}</h1>
+        </div>
+      </div>
+    );
+  }
+
+
+  const handleShipping = async(id)=>{
+    const response = await UpdateOrderStatus(id, "Shipped")
+    if(response.status === 200){
+      toast.info("Order Shipped Successfully")
+      mutate(`/admin/orders/${limit}`) // it is not working properly (Todo: fix it)
+    }else{
+      toast.error("Failed to update order status")
+    }
+  }
+
+  const handleDelevered = async(id)=>{
+    const response = await UpdateOrderStatus(id, "Delevered")
+    if(response.status === 200){
+      toast.success("Order Delevered Successfully")
+      mutate(`/admin/orders/${limit}`) // it is not working properly (Todo: fix it)
+    }else{
+      toast.error("Failed to update order status")
+    }
+  }
+
+  const handleCancel = async(id)=>{
+    const response = await UpdateOrderStatus(id, "Cancelled")
+    if(response.status === 200){
+      toast.warning("Order Cancelled Successfully")
+      mutate(`/admin/orders/${limit}`) // it is not working properly (Todo: fix it)
+    }else{
+      toast.error("Failed to update order status")
+    }
+  }
+
 
   return (
     <div className="mainContainer px-4">
@@ -108,12 +153,27 @@ export const Orders = () => {
                         </td>
                         <td>{order.totalAmount}</td>
                         <td className="flex gap-2 items-center text-lg">
-                          
-                            <FaShippingFast />
-                            <MdFileDownloadDone />
-                            <MdCancel />
-                            
-                          
+                          {order.status === "Confirmed" ? (
+                            <>
+                              <FaShippingFast className="text-info cursor-pointer" onClick={()=>handleShipping(order._id)}/>
+                              <MdFileDownloadDone className="text-success cursor-pointer" onClick={()=>handleDelevered(order._id)}/>
+                              <MdCancel className="text-warning cursor-pointer" onClick={()=>handleCancel(order._id)}/>
+                            </>
+                          ) : order.status === "Shipped" ? (
+                            <>
+                              <FaShippingFast className="text-info opacity-20" />  {/* Hidden button */}
+                              <MdFileDownloadDone className="text-success cursor-pointer" onClick={()=>handleDelevered(order._id)}/>
+                              <MdCancel className="text-warning cursor-pointer" onClick={()=>handleCancel(order._id)}/>
+                            </>
+                          ) : order.status === "Delevered" ? (
+                            <>
+                            <FaShippingFast className="text-info opacity-20" /> {/* Hidden button */}
+                              <MdFileDownloadDone className="text-success opacity-30" /> {/* Hidden button */}
+                              <MdCancel className="text-warning cursor-pointer opacity-20"/>
+                            </>
+                          ) : (
+                            <TiCancel className="text-error" />
+                          )}
                         </td>
                       </tr>
                     );
@@ -125,13 +185,25 @@ export const Orders = () => {
 
         {/* Pagination */}
         <div className="join mt-8 flex justify-center gap-4">
-          <button disabled={parseInt(limit) === 1} className="join-item btn btn-outline btn-sm hover:btn-warning" onClick={()=>{
-            navigate(`/admin/orders/${parseInt(limit)-1}`);
-          }}>«</button>
+          <button
+            disabled={parseInt(limit) === 1}
+            className="join-item btn btn-outline btn-sm hover:btn-warning"
+            onClick={() => {
+              navigate(`/admin/orders/${parseInt(limit) - 1}`);
+            }}
+          >
+            «
+          </button>
           <button className="join-item btn btn-sm btn-primary">{limit}</button>
-          <button disabled={ordersData.length ===0} className="join-item btn btn-outline btn-sm hover:btn-success" onClick={()=>{
-            navigate(`/admin/orders/${parseInt(limit)+1}`);
-          }}>»</button>
+          <button
+            disabled={ordersData.length === 0}
+            className="join-item btn btn-outline btn-sm hover:btn-success"
+            onClick={() => {
+              navigate(`/admin/orders/${parseInt(limit) + 1}`);
+            }}
+          >
+            »
+          </button>
         </div>
       </div>
     </div>

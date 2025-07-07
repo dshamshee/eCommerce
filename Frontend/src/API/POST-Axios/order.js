@@ -11,3 +11,15 @@ export const createOrder = async(products, totalAmount, deliveryAddress)=>{
         throw error;
     }
 }
+
+
+// Update Order Status 
+export const UpdateOrderStatus = async(id, status)=>{
+
+    try {
+        const response = await api.post(`/order/update-order-status/${id}`, {status});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

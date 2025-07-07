@@ -84,7 +84,10 @@ router.post('/update-order-status/:id', isLoggedIn, async(req, res)=>{
 
     try {
         const {status} = req.body;
-        const order = await orderModel.findOneAndUpdate({_id: req.params.id, userId: req.user._id}, {status}, {new: true});
+        if(req.user.role !== "admin" && req.user.role !== 'deleveryBoy'){
+            return res.status(403).json({message: "You are not authorized to update order status"});
+        }
+        const order = await orderModel.findOneAndUpdate({_id: req.params.id}, {status}, {new: true});
         if(!order){
             return res.status(404).json({message: "Order not found"});
         }
