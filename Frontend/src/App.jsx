@@ -26,6 +26,7 @@ import { Men2 } from "./Pages/products-section/Men2";
 import { Women2 } from "./Pages/products-section/Women2";
 import { AdminDashboard } from "./admin/AdminDashboard";
 import { EditProduct } from "./admin/EditProduct";
+import { Orders } from "./admin/Orders";
 
 function App() {
 
@@ -113,6 +114,10 @@ function App() {
           path: "edit-product/:id",
           element: <EditProduct />,
         },
+        {
+          path: 'orders/:limit',
+          element: <Orders />
+        }
       ],
     },
     {

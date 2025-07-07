@@ -22,6 +22,16 @@ export const GetAllOrdersAdmin = ()=>{
     }
 }
 
+// Get limited orders (only for admin)
+export const GetLimitedOrdersAdmin = (limit)=>{
+    const {data, error, isLoading} = useSWR(`/order/admin/get-all-orders/${limit}`, fetcher);
+    return{
+        orders: data?.orders,
+        error,
+        isLoading,
+    }
+}
+
 // Get order by id
 export const GetOrderById = (id)=>{
     const {data, error, isLoading} = useSWR(`/order/get-order/${id}`, fetcher);
