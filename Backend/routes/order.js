@@ -16,6 +16,7 @@ router.post("/create-order", isLoggedIn, async(req, res)=>{
             totalAmount,
             deliveryAddress, // delivery address id
             paymentMethod,
+            status: "Confirmed"
         });
         return res.status(200).json({message: "Order created successfully", order});
     } catch (error) {
@@ -42,8 +43,23 @@ router.get('/admin/get-all-orders', isLoggedIn, async(req ,res)=>{
         if(req.user.role !== "admin"){
             return res.status(403).json({message: "Unauthorized"});
         }
-        const orders = await orderModel.find().populate("products.productId");
-        return res.status(200).json({message: "Orders fetched successfully", orders});
+        const orders = await orderModel.find().populate("products.productId").populate("userId");
+        return res.status(200).json({message: "Orders fetched successfully", orders });
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
+})
+
+// Get limited orders (only for admin)
+router.get('/admin/get-all-orders/:limit', isLoggedIn, async(req ,res)=>{
+
+    try {
+        const {limit} = req.params;
+        if(req.user.role !== "admin"){
+            return res.status(403).json({message: "Unauthorized"});
+        }
+        const orders = await orderModel.find().populate("products.productId").populate("userId").skip((limit-1)*15).limit(15);
+        return res.status(200).json({message: "Orders fetched successfully", orders });
     } catch (error) {
         return res.status(500).json({message: error.message});
     }

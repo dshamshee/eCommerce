@@ -14,6 +14,7 @@ import {
   FaQuestionCircle,
   FaMoneyBillWave,
   FaMoneyCheck,
+  FaFirstOrder,
 } from "react-icons/fa";
 import { FaComment } from "react-icons/fa6";
 
@@ -27,6 +28,7 @@ export const AdminLayout = () => {
     if (currentPath === "/admin") return "dashboard";
     if (currentPath === "/admin/products-list") return "products";
     if (currentPath === "/admin/add-product") return "add-product";
+    if (currentPath === "/admin/orders/1") return 'orders';
     // Add more path mappings as needed
     return "";
   };
@@ -83,15 +85,15 @@ export const AdminLayout = () => {
             Add Product
           </button>
           <button
-            onClick={() => handleTabChange("customers", "#")}
+            onClick={() => handleTabChange("customers", "/admin/orders/1")}
             className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
               activeTab === "customers"
                 ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
-            <FaUser className="mr-3" />
-            Customers
+            <FaFirstOrder className="mr-3" />
+            Orders
           </button>
           <button
             onClick={() => handleTabChange("analytics", "#")}
