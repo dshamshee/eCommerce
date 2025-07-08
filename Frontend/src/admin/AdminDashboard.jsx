@@ -56,8 +56,7 @@ const formatNumber = (num, decimals = 2) => {
 export const AdminDashboard = () => {
   const { allProducts, isLoading } = GetProducts();
   const { orders, isLoading: ordersLoading } = GetAllOrders();
-  const { orders: adminOrders, isLoading: adminOrdersLoading } =
-    GetAllOrdersAdmin();
+  const { orders: adminOrders, isLoading: adminOrdersLoading } = GetAllOrdersAdmin();
   const { allUsers, allOrders, isLoading: usersLoading } = GetAllUsers();
   const {
     dailyUserCounts,

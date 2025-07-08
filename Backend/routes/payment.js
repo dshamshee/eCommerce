@@ -99,4 +99,19 @@ router.post('/fetch-payment', isLoggedIn, async(req, res)=>{
         res.status(500).json({message: "Payment not found",error: error.message});
     }
 })
+
+// Get all Payments 
+router.get('/get-all-payments', isLoggedIn, async (req, res)=>{
+
+    try {
+        if(req.user.role === "admin"){
+            const payments = await paymentModel.find()
+            res.status(200).json({payments})
+        }else{
+            res.status(403).json({message: "You are not authorized to access this resource"})
+        }
+    } catch (error) {
+        
+    }
+})
 module.exports = router;
