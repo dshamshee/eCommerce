@@ -1,7 +1,7 @@
 import { AiFillProduct } from "react-icons/ai";
 import { GoGraph } from "react-icons/go";
 import { BsStack } from "react-icons/bs";
-import { FaShippingFast } from "react-icons/fa";
+import { FaFilter, FaShippingFast } from "react-icons/fa";
 import { MdCancel, MdFileDownloadDone } from "react-icons/md";
 import { TiCancel } from "react-icons/ti";
 
@@ -10,7 +10,7 @@ import { RiMoneyRupeeCircleFill } from "react-icons/ri";
 import { GetLimitedOrdersAdmin } from "../API/GET-SWR/order";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {UpdateOrderStatus} from '../API/POST-Axios/order'
+import { UpdateOrderStatus } from "../API/POST-Axios/order";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
 
@@ -36,37 +36,52 @@ export const Orders = () => {
     );
   }
 
+  const handleShipping = async (id) => {
+    const response = await UpdateOrderStatus(id, "Shipped");
+    if (response.status === 200) {
+      toast.info("Order Shipped Successfully");
+      mutate(`/admin/orders/${limit}`); // it is not working properly (Todo: fix it)
+    } else {
+      toast.error("Failed to update order status");
+    }
+  };
 
-  const handleShipping = async(id)=>{
-    const response = await UpdateOrderStatus(id, "Shipped")
-    if(response.status === 200){
-      toast.info("Order Shipped Successfully")
-      mutate(`/admin/orders/${limit}`) // it is not working properly (Todo: fix it)
-    }else{
-      toast.error("Failed to update order status")
+  const handleDelevered = async (id) => {
+    const response = await UpdateOrderStatus(id, "Delevered");
+    if (response.status === 200) {
+      toast.success("Order Delevered Successfully");
+      mutate(`/admin/orders/${limit}`); // it is not working properly (Todo: fix it)
+    } else {
+      toast.error("Failed to update order status");
+    }
+  };
+
+  const handleCancel = async (id) => {
+    const response = await UpdateOrderStatus(id, "Cancelled");
+    if (response.status === 200) {
+      toast.warning("Order Cancelled Successfully");
+      mutate(`/admin/orders/${limit}`); // it is not working properly (Todo: fix it)
+    } else {
+      toast.error("Failed to update order status");
+    }
+  };
+
+  const handleStatusFilter = (status)=>{
+
+    if(status === 'All'){
+      return setOrdersData(orders)
+    }else if(status === 'Pending'){
+      return setOrdersData(orders.filter(order => order.status === 'Pending'))
+    }else if(status === 'Confirmed'){
+      return setOrdersData(orders.filter(order => order.status === 'Confirmed'))
+    }else if(status === 'Shipped'){
+      return setOrdersData(orders.filter(order => order.status === 'Shipped'))
+    }else if(status === 'Delevered'){
+      return setOrdersData(orders.filter(order => order.status === 'Delevered'))
+    }else if(status === 'Cancelled'){
+      return setOrdersData(orders.filter(order => order.status === 'Cancelled'))
     }
   }
-
-  const handleDelevered = async(id)=>{
-    const response = await UpdateOrderStatus(id, "Delevered")
-    if(response.status === 200){
-      toast.success("Order Delevered Successfully")
-      mutate(`/admin/orders/${limit}`) // it is not working properly (Todo: fix it)
-    }else{
-      toast.error("Failed to update order status")
-    }
-  }
-
-  const handleCancel = async(id)=>{
-    const response = await UpdateOrderStatus(id, "Cancelled")
-    if(response.status === 200){
-      toast.warning("Order Cancelled Successfully")
-      mutate(`/admin/orders/${limit}`) // it is not working properly (Todo: fix it)
-    }else{
-      toast.error("Failed to update order status")
-    }
-  }
-
 
   return (
     <div className="mainContainer px-4">
@@ -109,7 +124,42 @@ export const Orders = () => {
               more
             </p>
           </div>
-          <button className="btn btn-primary">Filter</button>
+          <button
+            className="btn btn-sm btn-warning font-semibold text-lg px-5"
+            popoverTarget="popover-1"
+            style={{ anchorName: "--anchor-1" } /* as React.CSSProperties */}
+          >
+            <FaFilter />
+            Filter
+          </button>
+
+          <ul
+            className="dropdown menu w-36 rounded-box dark:bg-gray-700 bg-gray-100 shadow-sm"
+            popover="auto"
+            id="popover-1"
+            style={
+              { positionAnchor: "--anchor-1" } /* as React.CSSProperties */
+            }
+          >
+            <li onClick={()=> handleStatusFilter('All')}>
+              <p className="text-sm font-semibold">All</p>
+            </li>
+            <li onClick={()=> handleStatusFilter('Pending')}>
+              <p className="text-sm font-semibold">Pending</p>
+            </li>
+            <li onClick={()=> handleStatusFilter('Confirmed')}>
+              <p className="text-sm font-semibold">Confirmed</p>
+            </li>
+            <li onClick={()=> handleStatusFilter('Shipped')}>
+              <p className="text-sm font-semibold">Shipped</p>
+            </li>
+            <li onClick={()=> handleStatusFilter('Delevered')}>
+              <p className="text-sm font-semibold">Delevered</p>
+            </li>
+            <li onClick={()=> handleStatusFilter('Cancelled')}>
+              <p className="text-sm font-semibold">Cancelled</p>
+            </li>
+          </ul>
         </div>
 
         {/* Table */}
@@ -155,21 +205,39 @@ export const Orders = () => {
                         <td className="flex gap-2 items-center text-lg">
                           {order.status === "Confirmed" ? (
                             <>
-                              <FaShippingFast className="text-info cursor-pointer" onClick={()=>handleShipping(order._id)}/>
-                              <MdFileDownloadDone className="text-success cursor-pointer" onClick={()=>handleDelevered(order._id)}/>
-                              <MdCancel className="text-warning cursor-pointer" onClick={()=>handleCancel(order._id)}/>
+                              <FaShippingFast
+                                className="text-info cursor-pointer"
+                                onClick={() => handleShipping(order._id)}
+                              />
+                              <MdFileDownloadDone
+                                className="text-success cursor-pointer"
+                                onClick={() => handleDelevered(order._id)}
+                              />
+                              <MdCancel
+                                className="text-warning cursor-pointer"
+                                onClick={() => handleCancel(order._id)}
+                              />
                             </>
                           ) : order.status === "Shipped" ? (
                             <>
-                              <FaShippingFast className="text-info opacity-20" />  {/* Hidden button */}
-                              <MdFileDownloadDone className="text-success cursor-pointer" onClick={()=>handleDelevered(order._id)}/>
-                              <MdCancel className="text-warning cursor-pointer" onClick={()=>handleCancel(order._id)}/>
+                              <FaShippingFast className="text-info opacity-20" />{" "}
+                              {/* Hidden button */}
+                              <MdFileDownloadDone
+                                className="text-success cursor-pointer"
+                                onClick={() => handleDelevered(order._id)}
+                              />
+                              <MdCancel
+                                className="text-warning cursor-pointer"
+                                onClick={() => handleCancel(order._id)}
+                              />
                             </>
                           ) : order.status === "Delevered" ? (
                             <>
-                            <FaShippingFast className="text-info opacity-20" /> {/* Hidden button */}
-                              <MdFileDownloadDone className="text-success opacity-30" /> {/* Hidden button */}
-                              <MdCancel className="text-warning cursor-pointer opacity-20"/>
+                              <FaShippingFast className="text-info opacity-20" />{" "}
+                              {/* Hidden button */}
+                              <MdFileDownloadDone className="text-success opacity-30" />{" "}
+                              {/* Hidden button */}
+                              <MdCancel className="text-warning cursor-pointer opacity-20" />
                             </>
                           ) : (
                             <TiCancel className="text-error" />
