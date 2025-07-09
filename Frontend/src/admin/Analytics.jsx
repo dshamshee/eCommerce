@@ -90,6 +90,8 @@ export const Analytics = () => {
         acc[method] = (acc[method] || 0) + 1;
         return acc;
       }, {});
+      const cashOnDelivery = orders?.filter((order)=> order.paymentMethod === "Cash on Delivery").length || 0;
+      paymentMethodCounts["Cash on Delivery"] = cashOnDelivery;
       setPaymentPieData(Object.entries(paymentMethodCounts).map(([method, count]) => ({
         name: method,
         value: count,
@@ -225,7 +227,7 @@ export const Analytics = () => {
             >
               <CartesianGrid strokeDasharray="0.5 0.5" stroke="gray" />
               <XAxis dataKey="date" stroke="gray" />
-              <YAxis stroke="gray" tickCount={10} domain={[0, 50]} />
+              <YAxis stroke="gray" tickCount={10} domain={[0, 40]} />
               <Tooltip
                 wrapperStyle={{
                   width: 150,
@@ -247,13 +249,13 @@ export const Analytics = () => {
                 fill="#82ca9d"
                 fillOpacity={0.3}
               />
-              <Area
+              {/* <Area
                 type="monotone"
                 dataKey="revenue"
                 stroke="#ffc658"
                 fill="#ffc658"
                 fillOpacity={0.3}
-              />
+              /> */}
             </AreaChart>
           </ResponsiveContainer>
         )}
