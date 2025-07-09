@@ -29,6 +29,7 @@ export const AdminLayout = () => {
     if (currentPath === "/admin/products-list") return "products";
     if (currentPath === "/admin/add-product") return "add-product";
     if (currentPath === "/admin/orders/1") return 'orders';
+    if (currentPath === "/admin/analytics") return 'analytics';
     // Add more path mappings as needed
     return "";
   };
@@ -42,7 +43,7 @@ export const AdminLayout = () => {
   };
 
   return (
-    <div className="mainContainer w-[100%] flex flex-row dark:bg-gray-900 bg-gray-50">
+    <div className="mainContainer w-[100%] h-[100vh] fixed flex flex-row dark:bg-gray-900 bg-gray-50">
       {/* Menu */}
       <div className="Menu w-[20%] p-4 dark:bg-gray-800 bg-gray-100 shadow-md  flex flex-col gap-2">
         {/* Dashboard */}
@@ -96,7 +97,7 @@ export const AdminLayout = () => {
             Orders
           </button>
           <button
-            onClick={() => handleTabChange("analytics", "#")}
+            onClick={() => handleTabChange("analytics", "/admin/analytics")}
             className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
               activeTab === "analytics"
                 ? "bg-rose-500 dark:bg-indigo-900/40 text-white dark:text-indigo-300"
@@ -106,7 +107,7 @@ export const AdminLayout = () => {
             <FaChartLine className="mr-3" />
             Analitics
           </button>
-          <button
+          {/* <button
             onClick={() => handleTabChange("marketing", "#")}
             className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
               activeTab === "marketing"
@@ -116,7 +117,7 @@ export const AdminLayout = () => {
           >
             <FaBullhorn className="mr-3" />
             Marketing
-          </button>
+          </button> */}
           <button
             onClick={() => handleTabChange("reviews", "#")}
             className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
@@ -148,7 +149,7 @@ export const AdminLayout = () => {
             <FaMoneyCheck className="mr-3" />
             Payments
           </button>
-          <button
+          {/* <button
             onClick={() => handleTabChange("shippings", "#")}
             className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
               activeTab === "shippings"
@@ -158,7 +159,7 @@ export const AdminLayout = () => {
           >
             <FaTruck className="mr-3" />
             Shippings
-          </button>
+          </button> */}
           <button
             onClick={() => handleTabChange("taxes", "#")}
             className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-md transition-colors ${
@@ -210,7 +211,7 @@ export const AdminLayout = () => {
       </div>
 
       {/* Content */}
-      <div className="Content w-[80%]  p-4">
+      <div className="Content w-[80%] p-4 overflow-y-auto">
         <Outlet />
       </div>
     </div>

@@ -4,7 +4,8 @@ import { useCartContext } from "../../context/CartContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
-// import { createOrder } from "../../API/POST-Axios/order";
+import { createOrder } from "../../API/POST-Axios/order";
+import { mutate } from "swr";
 
 // Address Component
 const AddressSection = ({
@@ -252,8 +253,15 @@ export const CheckOut = () => {
     if (paymentMethod === "UPI" || paymentMethod === "Debit / Credit Card") {
       navigate(`/payment/${totalAmount}`);
     } else if (paymentMethod === "Cash on Delivery") {
-      console.log("Cash on Delivery");
-      toast.success("Order Placed Successfully");
+      console.log("Payment Method", paymentMethod);
+      const responseOrder = await createOrder(products, totalAmount, selectedAddress._id, paymentMethod);
+      if(responseOrder.status === 200){
+        toast.success("Order Placed Successfully");
+        navigate("/");
+        mutate("/cart");
+      }else{
+        toast.error("Error in placing order");
+      }
     } else toast.error("Please select a payment method");
   };
 

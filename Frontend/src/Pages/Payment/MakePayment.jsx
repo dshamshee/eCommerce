@@ -9,7 +9,7 @@ export const MakePayment = () => {
   // const [responseId, setResponseId] = useState("");
   const navigate = useNavigate();
 
-  const {cartProducts, totalAmount, deliveryAddress} = useOrder();
+  const {cartProducts, totalAmount, deliveryAddress, paymentMethod} = useOrder();
 
   // Load the Razorpay SDK
   const loadScript = async (src) => {
@@ -65,7 +65,7 @@ export const MakePayment = () => {
         console.log(response);
 
         // Create the order in the database
-        const responseOrder = await createOrderAPI(cartProducts, totalAmount, deliveryAddress._id);
+        const responseOrder = await createOrderAPI(cartProducts, totalAmount, deliveryAddress._id, paymentMethod);
         if(responseOrder.status === 200){
           console.log("Order created successfully");
           const responsePayment = await setPaymentDetails(response.razorpay_payment_id, responseOrder.data.order._id);

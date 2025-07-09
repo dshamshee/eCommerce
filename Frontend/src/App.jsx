@@ -27,6 +27,7 @@ import { Women2 } from "./Pages/products-section/Women2";
 import { AdminDashboard } from "./admin/AdminDashboard";
 import { EditProduct } from "./admin/EditProduct";
 import { Orders } from "./admin/Orders";
+import { Analytics } from "./admin/Analytics";
 
 function App() {
 
@@ -117,6 +118,10 @@ function App() {
         {
           path: 'orders/:limit',
           element: <Orders />
+        },
+        {
+          path: "analytics",
+          element: <Analytics />,
         }
       ],
     },
