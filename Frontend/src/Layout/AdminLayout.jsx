@@ -16,6 +16,7 @@ import {
   FaMoneyCheck,
   FaFirstOrder,
 } from "react-icons/fa";
+import { AiFillProduct } from "react-icons/ai";
 import { FaComment } from "react-icons/fa6";
 
 export const AdminLayout = () => {
@@ -93,7 +94,7 @@ export const AdminLayout = () => {
                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
-            <FaFirstOrder className="mr-3" />
+            <AiFillProduct className="mr-3" />
             Orders
           </button>
           <button

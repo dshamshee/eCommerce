@@ -36,6 +36,7 @@ export const Dashboard = () => {
 
   return (
     <div className="dark:bg-gray-900 bg-gray-100 dark:text-gray-100 text-gray-900 w-full md:p-10 p-5">
+      {/* Heading Section for Mobile */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center md:hidden">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-5xl font-bold dark:text-gray-100 text-gray-900 mb-4">
@@ -62,7 +63,7 @@ export const Dashboard = () => {
 
       <hr className="mt-28 mb-5 dark:border-gray-700 border-gray-300 md:hidden"/>
 
-      {/* Headings  */}
+      {/* Headings for Desktop */}
       <div className="headings md:w-[90%] mx-auto md:flex flex-col items-center justify-center gap-4 hidden">
         <div className="headings md:w-[60%] flex flex-col gap-2 items-center justify-center">
           <h1 className="md:text-5xl text-2xl font-bold font-playfair">
@@ -84,7 +85,7 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* Images */}
+      {/* Images for Desktop */}
       <div className="images w-[90%] mx-auto items-end justify-center mt-16 md:flex md:gap-4 gap-1 hidden">
         <h1 className="absolute font-semibold z-10 font-playfair top-[680px] left-[190px] dark:bg-white bg-gray-200 text-gray-900 px-5 py-2 rounded-md">
           Designed for Self Expences

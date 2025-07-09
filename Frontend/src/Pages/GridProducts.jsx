@@ -42,11 +42,11 @@ const ProductCard = memo(({ product, handleNavigate }) => (
       {/* Price */}
       <div className="flex items-center gap-2 mb-3">
         <span className="md:text-lg text-sm font-bold dark:text-gray-100 text-gray-900">
-          ${product.price.toFixed(2)}
+          ₹{product.price.toFixed(2)}
         </span>
         {product.discount && (
           <span className="text-sm dark:text-gray-400 text-gray-900 line-through">
-            ${product.discount.toFixed(2)}
+            {/* ₹{parseInt(product.discount) !== 0 ? product.discount + product.price : 'abc'} */}
           </span>
         )}
       </div>

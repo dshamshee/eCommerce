@@ -111,7 +111,14 @@ export const Analytics = () => {
   ]);
 
 
-  const COLORS = ["#00C49F", "#FF8042", "#0088FE", "#FFBB28"];
+  // Order status colors - Green for delivered, Orange for cancelled, Blue for confirmed, Yellow for shipped
+  const OrderStatusColors = ["#4CAF50", "#FF5722", "#2196F3", "#FFC107"];
+  
+  // Product category colors - Various vibrant colors for different product categories
+  const ProductCategoryColors = ["#9C27B0", "#E91E63", "#3F51B5", "#009688", "#FF9800", "#607D8B"];
+  
+  // Payment method colors - Financial/payment related colors
+  const PaymentMethodColors = ["#00BCD4", "#F44336", "#8BC34A", "#795548"];
 
   return (
     <div className="w-full">
@@ -135,7 +142,7 @@ export const Analytics = () => {
               {orderPieData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
+                  fill={OrderStatusColors[index % OrderStatusColors.length]}
                 />
               ))}
             </Pie>
@@ -162,7 +169,7 @@ export const Analytics = () => {
               {productPieData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
+                  fill={ProductCategoryColors[index % ProductCategoryColors.length]}
                 />
               ))}
             </Pie>
@@ -189,7 +196,7 @@ export const Analytics = () => {
               {paymentPieData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
+                  fill={PaymentMethodColors[index % PaymentMethodColors.length]}
                 />
               ))}
             </Pie>

@@ -13,18 +13,80 @@ import { useNavigate, useParams } from "react-router-dom";
 import { UpdateOrderStatus } from "../API/POST-Axios/order";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
+import {ProductSkeleton} from '../Pages/products-section/ProductSceleton'
+
+
+// Format number function to handle large numbers with appropriate suffixes
+const formatNumber = (num, decimals = 2) => {
+  if (num == null) return "Invalid input";
+
+  // Convert input to a number, removing non-numeric characters if it's a string
+  let numValue =
+    typeof num === "string"
+      ? parseFloat(num.replace(/[^0-9.-]/g, ""))
+      : Number(num);
+
+  if (isNaN(numValue)) return "Invalid input";
+
+  // Determine if the number is negative and get its absolute value
+  const isNegative = numValue < 0;
+  const absValue = Math.abs(numValue);
+
+  // If the absolute value is below 1000, return it as is
+  if (absValue < 1000) return isNegative ? `-${absValue}` : absValue;
+
+  // Define suffixes for large numbers
+  const suffixes = [
+    { value: 1e18, symbol: "E" },
+    { value: 1e15, symbol: "P" },
+    { value: 1e12, symbol: "T" },
+    { value: 1e9, symbol: "B" },
+    { value: 1e6, symbol: "M" },
+    { value: 1e3, symbol: "K" },
+  ];
+
+  // Find the largest suffix that fits the number
+  const suffix = suffixes.find(({ value }) => absValue >= value);
+  if (!suffix) return numValue.toString();
+
+  // Format the number by dividing by the suffix value and fixing decimals
+  let formattedValue = (absValue / suffix.value).toFixed(decimals);
+
+  // Remove trailing zeros and unnecessary decimal points
+  formattedValue = formattedValue.replace(/\.?0+$/, "");
+
+  // Add back the negative sign if needed and append the suffix
+  return (isNegative ? "-" : "") + formattedValue + suffix.symbol;
+};
 
 export const Orders = () => {
   const navigate = useNavigate();
   const { limit } = useParams();
   const { orders, error, isLoading } = GetLimitedOrdersAdmin(limit);
   const [ordersData, setOrdersData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   useEffect(() => {
     if (!isLoading && orders) {
       // console.log(orders[0].userId.name)
       setOrdersData(orders);
+      setStartDate(new Date(orders[0].createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+      setEndDate(new Date(orders[orders.length - 1].createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
     }
   }, [orders, isLoading]);
+
+  console.log(ordersData)
+
+  if(isLoading){
+    return(
+      <div className="mainContainer flex gap-4 w-full h-full justify-center items-center">
+        <ProductSkeleton />
+        <ProductSkeleton />
+        <ProductSkeleton />
+      </div>
+    )
+  }
 
   if (error) {
     return (
@@ -40,7 +102,7 @@ export const Orders = () => {
     const response = await UpdateOrderStatus(id, "Shipped");
     if (response.status === 200) {
       toast.info("Order Shipped Successfully");
-      mutate(`/admin/orders/${limit}`); // it is not working properly (Todo: fix it)
+      mutate(`/order/admin/get-all-orders/${limit}`); 
     } else {
       toast.error("Failed to update order status");
     }
@@ -50,7 +112,7 @@ export const Orders = () => {
     const response = await UpdateOrderStatus(id, "Delevered");
     if (response.status === 200) {
       toast.success("Order Delevered Successfully");
-      mutate(`/admin/orders/${limit}`); // it is not working properly (Todo: fix it)
+      mutate(`/order/admin/get-all-orders/${limit}`); 
     } else {
       toast.error("Failed to update order status");
     }
@@ -60,7 +122,7 @@ export const Orders = () => {
     const response = await UpdateOrderStatus(id, "Cancelled");
     if (response.status === 200) {
       toast.warning("Order Cancelled Successfully");
-      mutate(`/admin/orders/${limit}`); // it is not working properly (Todo: fix it)
+      mutate(`/order/admin/get-all-orders/${limit}`); 
     } else {
       toast.error("Failed to update order status");
     }
@@ -88,27 +150,27 @@ export const Orders = () => {
       {/* Cards */}
       <div className="Cards flex gap-8">
         <OrderCard
-          value={148}
+          value={ordersData.length}
           title={"Total Orders"}
-          percentage={14}
+          footer={`${startDate} To ${endDate}`}
           icon={"order"}
         />
         <OrderCard
-          value={20}
+          value={ordersData.filter(order => order.status !== 'Delevered').length}
           title={"Orders on Process"}
-          percentage={8}
-          icon={"pending"}
+          footer={`${startDate} To ${endDate}`}
+          icon={"Confirmed"}
         />
         <OrderCard
-          value={60}
+          value={ordersData.filter(order => order.status === 'Delevered').length}
           title={"Orders Done"}
-          percentage={15}
+          footer={`${startDate} To ${endDate}`}
           icon={"done"}
         />
         <OrderCard
-          value={20000}
+          value={formatNumber(ordersData.reduce((acc, order) => acc + order.totalAmount, 0))}
           title={"Total Revenue"}
-          percentage={18}
+          footer={`${startDate} To ${endDate}`}
           icon={"revenue"}
         />
       </div>
@@ -125,7 +187,7 @@ export const Orders = () => {
             </p>
           </div>
           <button
-            className="btn btn-sm btn-warning font-semibold text-lg px-5"
+            className="btn btn-sm btn-primary font-semibold text-lg px-5"
             popoverTarget="popover-1"
             style={{ anchorName: "--anchor-1" } /* as React.CSSProperties */}
           >
@@ -184,7 +246,7 @@ export const Orders = () => {
                       <tr key={order._id}>
                         <th>{index + 1}</th>
                         <td>{order._id}</td>
-                        <td>{order.createdAt.split("T")[0]}</td>
+                        <td>{new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
                         <td>{order.userId.name}</td>
                         <td
                           className={`${
@@ -278,13 +340,13 @@ export const Orders = () => {
   );
 };
 
-const OrderCard = ({ value, title, percentage, icon }) => {
+const OrderCard = ({ value, title, icon, footer }) => {
   return (
     <div
       className={`CardContainer shadow-lg rounded-lg p-5 dark:bg-gray-800 bg-gray-100 mt-5 w-[310px] border-t-5 ${
         icon === "order"
           ? "border-t-primary"
-          : icon === "pending"
+          : icon === "Confirmed"
           ? "border-t-warning"
           : icon === "done"
           ? "border-t-success"
@@ -295,7 +357,7 @@ const OrderCard = ({ value, title, percentage, icon }) => {
         <div className="icon text-6xl dark:text-gray-300 text-gray-700">
           {icon === "order" ? (
             <AiFillProduct />
-          ) : icon === "pending" ? (
+          ) : icon === "Confirmed" ? (
             <BsStack />
           ) : icon === "done" ? (
             <MdCloudDone />
@@ -315,13 +377,13 @@ const OrderCard = ({ value, title, percentage, icon }) => {
 
       <hr className="mt-5 dark:text-gray-600 text-gray-400" />
       <div className="foot flex justify-between items-center mt-3 px-2">
-        <h1 className="text-sm dark:text-gray-300 text-gray-500">
-          Compare to yesterday
+        <h1 className="text-xs dark:text-gray-500 text-gray-500">
+          {footer} 
         </h1>
-        <div className="graph badge dark:badge-info badge-secondary badge-outline badge-xs py-2 pr-3 flex items-center justify-start gap-1">
+        {/* <div className="graph badge dark:badge-info badge-secondary badge-outline badge-xs py-2 pr-3 flex items-center justify-start gap-1">
           <GoGraph />
           <span className="text-xs">{percentage}%</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );
