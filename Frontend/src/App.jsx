@@ -74,7 +74,7 @@ function App() {
           element: <CartPage />,
         },
         {
-          path: "/checkout",
+          path: "/checkout/:source",
           element: <CheckOut />,
         },
         {

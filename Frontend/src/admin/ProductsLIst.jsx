@@ -97,10 +97,11 @@ export const ProductList = () => {
   }
 
   return (
-    <div className="mainContainer  w-full dark:bg-gray-800 bg-gray-100 shadow-lg py-4 rounded-md">
-      <h1 className="dark:text-primary text-rose-500 text-2xl font-semibold underline dark:decoration-primary decoration-rose-500 decoration-2 shadow-lg pb-2 text-center mb-4">
-        List of Products
-      </h1>
+    <div className="mainContainer  w-full dark:bg-gray-800 bg-gray-100 shadow-lg  rounded-md">
+              <div className="mb-8 bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg shadow-lg">
+          <h1 className="text-3xl text-center font-bold text-white">List of Products</h1>
+          <p className="text-blue-100 mt-2 text-center">Here you can manage your products, update their information and delete them if needed</p>
+        </div>
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="table">
@@ -159,7 +160,7 @@ export const ProductList = () => {
                     <td>
                       <div className="flex items-center gap-2">
                         <div className="avatar">
-                          <div className="rounded-full h-10 w-10">
+                          <div className="rounded-md h-10 w-10">
                             <img src={product.images[0]} alt={product.name} />
                           </div>
                         </div>
@@ -232,7 +233,7 @@ export const ProductList = () => {
         </table>
 
         {/* Pagination */}
-        <div className="join w-full flex justify-center items-center mt-4 border-t-2 dark:border-gray-600 border-gray-300 pt-4">
+        <div className="join w-full flex justify-center items-center gap-4 mb-4 mt-4 border-t-2 dark:border-gray-600 border-gray-300 pt-4">
           <button
             disabled={Number(limit) === 1}
             onClick={handlePrevious}
@@ -240,7 +241,7 @@ export const ProductList = () => {
           >
             «
           </button>
-          <button className="join-item btn btn-sm btn-outline">
+          <button className="join-item btn btn-sm btn-primary">
             Page {Number(limit)}
           </button>
           <button

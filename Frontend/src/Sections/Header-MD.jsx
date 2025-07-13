@@ -119,7 +119,7 @@ export const HeaderMD = ()=>{
                     } Items</span>
                   <span className="dark:text-gray-400 text-gray-600">
                     {
-                      stateCart && stateCart.products ? `Subtotal: $${stateCart.totalPrice}` : 'Subtotal: $0'
+                      stateCart && stateCart.products ? `Subtotal: ₹${stateCart.totalPrice}` : 'Subtotal: ₹0'
                     }
                   </span>
                   <div className="card-actions">

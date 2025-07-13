@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GetAllAddresses } from "../../API/GET-SWR/deliveryAddress";
 import { useCartContext } from "../../context/CartContext";
 import { toast } from "react-toastify";
@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
 import { createOrder } from "../../API/POST-Axios/order";
 import { mutate } from "swr";
-
+import { useParams } from "react-router-dom";
+import api from "../../API/POST-Axios/apiConfig";
 // Address Component
 const AddressSection = ({
   deliveryAddresses,
@@ -100,7 +101,7 @@ const OrderSummarySection = ({ stateCart, onBack, onNext }) => {
                   <p className="text-md line-through text-rose-500 ">
                     ₹
                     {item && item.price
-                      ? item.price * product.quantity + item.discount
+                      ? item.price * product.quantity
                       : "0"}
                   </p>
                   <p className="text-md text-success">
@@ -204,7 +205,11 @@ const PaymentMethodSection = ({
 
 // Checkout Page (Main Component)
 export const CheckOut = () => {
+  const { source } = useParams();
   const navigate = useNavigate();
+
+  const [checkoutProducts, setCheckoutProducts] = useState({});
+
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -218,14 +223,53 @@ export const CheckOut = () => {
 
   } = useOrder();
 
-  // console.log("Address", selectedAddress, "Payment Method", paymentMethod, "Current Step", currentStep);
+  useEffect(() => {
+    if (!cartLoading && stateCart) {
+      if (source && source !== "cart") {
+        // Make sure stateCart.products exists and is an array before using find
+        if (stateCart.products && Array.isArray(stateCart.products)) {
+          const product = stateCart.products.find((product) => 
+            // Add null checks to prevent errors when accessing nested properties
+            product && product.productId && product.productId._id === source
+          );
+          
+          if (product && product.productId) {
+            setCheckoutProducts({
+              products: [product],
+              totalPrice: (product.productId.price * product.quantity) - (product.productId.discount * product.quantity),
+              userId: stateCart.userId,
+            });
+          } else {
+            // If product not found, use entire cart as fallback
+            setCheckoutProducts(stateCart);
+            console.log("Product not found for source:", source);
+          }
+        } else {
+          setCheckoutProducts(stateCart);
+        }
+      } else {
+        setCheckoutProducts(stateCart);
+      }
+    }
+  }, [source, stateCart, cartLoading]);
+  // console.log("checkoutProducts", checkoutProducts);
+
+  // If cart is loading, show a loading indicator
+  if (cartLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <span className="loading loading-spinner loading-lg"></span>
+        <p className="mt-4">Loading cart data...</p>
+      </div>
+    );
+  }
 
   // If cart is empty, show a message
   if (!stateCart || !stateCart.products || stateCart.products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
-        <button className="btn btn-primary">Continue Shopping</button>
+        <button className="btn btn-primary" onClick={() => navigate("/")}>Continue Shopping</button>
       </div>
     );
   }
@@ -236,33 +280,61 @@ export const CheckOut = () => {
 
   // Handle payment
   const handlePlaceOrder = async () => {
-    const totalAmount = stateCart.totalPrice + stateCart.totalPrice * 0.18 + 10;
+    try {
+      if (!selectedAddress) {
+        toast.error("Please select a delivery address");
+        setCurrentStep(1);
+        return;
+      }
 
-    const products = stateCart.products.map((product) => ({
-      productId: product.productId._id,
-      quantity: product.quantity,
-    }));
+      if (!paymentMethod) {
+        toast.error("Please select a payment method");
+        return;
+      }
 
-    // Set the order data in the context state
+      const totalAmount = checkoutProducts.totalPrice + checkoutProducts.totalPrice * 0.18 + 10;
+
+      const products = checkoutProducts.products.map((product) => {
+        if (!product || !product.productId) {
+          console.error("Invalid product in cart:", product);
+          throw new Error("Invalid product in cart");
+        }
+        
+        return {
+          productId: product.productId._id,
+          quantity: product.quantity,
+        };
+      });
+
+      // Set the order data in the context state
       setCartProducts(products);
       setTotalAmount(totalAmount);
       setDeliveryAddress(selectedAddress);
       setPaymentMethodContext(paymentMethod);
 
-    // Navigate to payment page
-    if (paymentMethod === "UPI" || paymentMethod === "Debit / Credit Card") {
-      navigate(`/payment/${totalAmount}`);
-    } else if (paymentMethod === "Cash on Delivery") {
-      console.log("Payment Method", paymentMethod);
-      const responseOrder = await createOrder(products, totalAmount, selectedAddress._id, paymentMethod);
-      if(responseOrder.status === 200){
-        toast.success("Order Placed Successfully");
-        navigate("/");
-        mutate("/cart");
-      }else{
-        toast.error("Error in placing order");
+      // Navigate to payment page
+      if (paymentMethod === "UPI" || paymentMethod === "Debit / Credit Card") {
+        navigate(`/payment/${totalAmount}`);
+      } else if (paymentMethod === "Cash on Delivery") {
+        console.log("Payment Method", paymentMethod);
+        const responseOrder = await createOrder(products, totalAmount, selectedAddress._id, paymentMethod);
+        if (responseOrder && responseOrder.status === 200) {
+          toast.success("Order Placed Successfully");
+          if(checkoutProducts.products.length === 1){
+            await api.get(`/cart/remove-cart-item/${checkoutProducts.products[0].productId._id}`);
+          }
+            mutate("/cart/get-cart-items");
+            navigate("/");
+        } else {
+          toast.error("Error in placing order");
+        }
+      } else {
+        toast.error("Please select a valid payment method");
       }
-    } else toast.error("Please select a payment method");
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast.error("An error occurred while placing your order. Please try again.");
+    }
   };
 
   // Render the checkout page
@@ -315,7 +387,7 @@ export const CheckOut = () => {
 
         {currentStep === 2 && (
           <OrderSummarySection
-            stateCart={stateCart}
+            stateCart={checkoutProducts}
             onBack={() => setCurrentStep(1)}
             onNext={() => setCurrentStep(3)}
           />
@@ -337,7 +409,7 @@ export const CheckOut = () => {
         <div className="pricecontent flex flex-col gap-3 text-lg mt-5">
           <div className="summary-item flex justify-between px-8">
             <h3 className="">Subtotal</h3>
-            <p className="text-sm">₹{stateCart.totalPrice}</p>
+            <p className="text-sm">₹{checkoutProducts.totalPrice}</p>
           </div>
           <div className="summary-item flex justify-between px-8">
             <h3 className="">Shipping</h3>
@@ -345,7 +417,7 @@ export const CheckOut = () => {
           </div>
           <div className="summary-item flex justify-between px-8 mb-5">
             <h3 className="">GST (18%)</h3>
-            <p className="text-sm">₹{stateCart.totalPrice * 0.18}</p>
+            <p className="text-sm">₹{(checkoutProducts.totalPrice * 0.18).toFixed(2)}</p>
           </div>
           <hr />
         </div>
@@ -353,7 +425,7 @@ export const CheckOut = () => {
         <div className="summary-total flex justify-between px-8 mt-5">
           <h3 className="text-lg font-semibold text-success">Total</h3>
           <p className="text-lg font-semibold text-success">
-            ₹{stateCart.totalPrice + stateCart.totalPrice * 0.18}
+            ₹{(checkoutProducts.totalPrice + checkoutProducts.totalPrice * 0.18 + 10).toFixed(2)}
           </p>
         </div>
 
