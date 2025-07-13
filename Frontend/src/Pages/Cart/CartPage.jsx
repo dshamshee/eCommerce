@@ -48,7 +48,7 @@ export const CartPage = () => {
         productId,
         quantity: newQuantity,
       });
-      mutate("/cart/get-cart-items"); // Check if this is correct
+      mutate("/cart/get-cart-items");
       // The cart will be updated automatically through SWR
     } catch (error) {
       console.error("Error updating quantity:", error);
@@ -330,7 +330,7 @@ export const CartPage = () => {
                 <div className="pt-4 sm:pt-6 space-y-3">
                   <button
                     className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-md hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition-all duration-200 font-medium flex items-center justify-center"
-                    onClick={() => navigate("/checkout")}
+                    onClick={() => navigate("/checkout/cart")}
                   >
                     Proceed to Checkout
                     <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
