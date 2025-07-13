@@ -345,7 +345,7 @@ export const CheckOut = () => {
           </div>
           <div className="summary-item flex justify-between px-8 mb-5">
             <h3 className="">GST (18%)</h3>
-            <p className="text-sm">₹{stateCart.totalPrice * 0.18}</p>
+            <p className="text-sm">₹{(stateCart.totalPrice * 0.18).toFixed(2)}</p>
           </div>
           <hr />
         </div>
@@ -353,7 +353,7 @@ export const CheckOut = () => {
         <div className="summary-total flex justify-between px-8 mt-5">
           <h3 className="text-lg font-semibold text-success">Total</h3>
           <p className="text-lg font-semibold text-success">
-            ₹{stateCart.totalPrice + stateCart.totalPrice * 0.18}
+            ₹{(stateCart.totalPrice + stateCart.totalPrice * 0.18).toFixed(2)}
           </p>
         </div>
 
