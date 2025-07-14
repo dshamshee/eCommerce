@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export const Footer = () => {
     return (
         <footer className="w-full dark:bg-gray-900 bg-gray-100 dark:text-gray-400 text-gray-900 py-3 px-6 border-t dark:border-gray-800 border-gray-200">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
                     <h3 className="dark:text-gray-100 text-gray-900 text-lg font-bold mb-4 font-playfair">WOLVE<i className="text-2xl">N</i><span className="text-rose-600 dark:text-rose-500">STITCH</span></h3>
                     <p className="mb-4">Redefining luxury fashion with timeless elegance.</p>
@@ -11,6 +11,7 @@ export const Footer = () => {
                         <a href="#" className="text-gray-400 hover:text-rose-400">Instagram</a>
                         <a href="#" className="text-gray-400 hover:text-rose-400">Twitter</a>
                     </div>
+                    <span className="text-gray-500 dark:text-gray-400 hover:text-rose-400 transition cursor-pointer underline underline-offset-4 text-xs">Danish Shamshee</span>
                 </div>
                 <div>
                     <h4 className="text-gray-100 font-semibold mb-4">Shop</h4>
@@ -28,14 +29,14 @@ export const Footer = () => {
                         <li><a href="#" className="hover:text-rose-400 transition">Shipping</a></li>
                     </ul>
                 </div>
-                <div>
+                {/* <div>
                     <h4 className="text-gray-100 font-semibold mb-4">Admin</h4>
                     <ul className="space-y-2">
                         <li><Link to="/admin" className="hover:text-rose-400 transition">Admin</Link></li>
                         <li><Link to="#" className="hover:text-rose-400 transition">Manage Products</Link></li>
                         <li><Link to="#" className="hover:text-rose-400 transition">Manage Orders</Link></li>
                     </ul>
-                </div>
+                </div> */}
                 <div>
                     <h4 className="text-gray-100 font-semibold mb-4">Newsletter</h4>
                     <p className="mb-4">Subscribe for exclusive drops and styling tips.</p>
@@ -48,8 +49,8 @@ export const Footer = () => {
                 </div>
             </div>
             <div className="flex justify-center items-center gap-5 mt-8">
-                <p className="text-gray-900 dark:text-gray-100 text-center text-sm">All Rights Reserved &copy; 2025</p>
-                <h1 className="text-gray-900 dark:text-gray-100 text-center text-md">Developed by <span className="text-rose-600 dark:text-rose-500">Danish</span></h1>
+                <p className="text-gray-900 dark:text-gray-400 text-center text-sm">&copy; 2025 Wolvenstitch. All Rights Reserved.</p>
+                {/* <h1 className="text-gray-900 dark:text-gray-100 text-center text-md"><span className="text-rose-600 dark:text-rose-500 underline underline-offset-4">@Danish Shamshee</span></h1> */}
             </div>
         </footer>
     );
