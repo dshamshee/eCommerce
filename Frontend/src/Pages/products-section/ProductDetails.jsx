@@ -236,7 +236,7 @@ export const ProductDetails = () => {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold">{product.name}</h1>
-              <p className="text-xl font-semibold mt-2">${product.price}</p>
+              <p className="text-xl font-semibold mt-2">₹{product.price}</p>
               <div className="flex items-center mt-2">
                 <div className="rating rating-sm">
                   {[...Array(5)].map((_, i) => (
@@ -406,7 +406,7 @@ export const ProductDetails = () => {
           <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {similarProducts.map((item) => (
-              <div key={item._id} className="card bg-base-100 shadow-xl">
+              <div key={item._id} className="card dark:bg-gray-800 bg-gray-100 shadow-xl">
                 <figure>
                   <img
                     src={item.images[0]}
@@ -415,7 +415,7 @@ export const ProductDetails = () => {
                   />
                 </figure>
                 <div className="card-body">
-                  <h3 className="card-title text-lg">{item.name}</h3>
+                  <h3 className="card-title text-lg text-wrap line-clamp-1 text-ellipsis overflow-hidden">{item.name}</h3>
                   <div className="flex items-center">
                     <div className="rating rating-sm">
                       {[...Array(5)].map((_, i) => (
@@ -425,15 +425,15 @@ export const ProductDetails = () => {
                           name={`rating-${item.id}`}
                           className={`mask mask-star-2 ${
                             i < Math.floor(item.ratings?.$numberDecimal)
-                              ? "bg-orange-400"
-                              : "bg-gray-300"
+                              ? "bg-orange-500"
+                              : "bg-gray-400"
                           }`}
                           disabled
                         />
                       ))}
                     </div>
                   </div>
-                  <p className="text-lg font-semibold">${item.price}</p>
+                  <p className="text-lg font-semibold">₹{item.price}</p>
                   <div className="card-actions justify-end">
                     <button
                       className="btn btn-primary btn-sm"
