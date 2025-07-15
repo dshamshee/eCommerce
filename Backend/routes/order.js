@@ -36,6 +36,7 @@ router.get('/get-all-orders', isLoggedIn, async(req, res)=>{
 })
 
 
+
 // Get all orders (only for admin)
 router.get('/admin/get-all-orders', isLoggedIn, async(req ,res)=>{
 
@@ -69,7 +70,7 @@ router.get('/admin/get-all-orders/:limit', isLoggedIn, async(req ,res)=>{
 router.get('/get-order/:id', isLoggedIn, async(req, res)=>{
 
     try {
-        const order = await orderModel.findOne({_id: req.params.id, userId: req.user._id}).populate("products");
+        const order = await orderModel.findOne({_id: req.params.id}).populate("products.productId");
         if(!order){
             return res.status(404).json({message: "Order not found"});
         }
