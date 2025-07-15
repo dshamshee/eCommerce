@@ -6,6 +6,7 @@ import { useProductContext } from "../context/ProductContext";
 import { useCartContext } from "../context/CartContext";
 import { GetUser } from "../API/GET-SWR/user";
 import { useState, useEffect } from "react";
+import profile from "../assets/profile.png";
 
 export const HeaderMD = ()=>{
   const {filterByGenderType} = useProductContext();
@@ -140,9 +141,9 @@ export const HeaderMD = ()=>{
               >
                 <div className="w-10 rounded-full">
                   <img
-                    alt="Tailwind CSS Navbar component"
+                    alt="Wolvenstitch"
                     // src="https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                    src={userData?.avatar}
+                    src={userData?.avatar || profile}
                   />
                 </div>
               </div>
