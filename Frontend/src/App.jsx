@@ -28,6 +28,7 @@ import { AdminDashboard } from "./admin/AdminDashboard";
 import { EditProduct } from "./admin/EditProduct";
 import { Orders } from "./admin/Orders";
 import { Analytics } from "./admin/Analytics";
+import { ViewOrder } from "./admin/ViewOrder";
 
 function App() {
 
@@ -122,6 +123,10 @@ function App() {
         {
           path: "analytics",
           element: <Analytics />,
+        },
+        {
+          path: "view-order/:id",
+          element: <ViewOrder />,
         }
       ],
     },

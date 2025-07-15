@@ -1,7 +1,7 @@
 import { AiFillProduct } from "react-icons/ai";
 import { GoGraph } from "react-icons/go";
-import { BsStack } from "react-icons/bs";
-import { FaFilter, FaShippingFast } from "react-icons/fa";
+import { BsEye, BsStack } from "react-icons/bs";
+import { FaEye, FaFilter, FaShippingFast } from "react-icons/fa";
 import { MdCancel, MdFileDownloadDone } from "react-icons/md";
 import { TiCancel } from "react-icons/ti";
 
@@ -145,6 +145,10 @@ export const Orders = () => {
     }
   }
 
+  const handleView = (id)=>{
+    navigate(`/admin/view-order/${id}`);
+  }
+
   return (
     <div className="mainContainer px-4">
       {/* Cards */}
@@ -235,8 +239,8 @@ export const Orders = () => {
                   <th>Date</th>
                   <th>Customer</th>
                   <th>Status</th>
-                  <th>Payment</th>
-                  <th>Action</th>
+                  <th>Amount</th>
+                  <th className="w-[100px]">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -279,6 +283,7 @@ export const Orders = () => {
                                 className="text-warning cursor-pointer"
                                 onClick={() => handleCancel(order._id)}
                               />
+                              <FaEye onClick={()=> handleView(order._id)} className="text-success text-sm cursor-pointer" />
                             </>
                           ) : order.status === "Shipped" ? (
                             <>
@@ -292,6 +297,7 @@ export const Orders = () => {
                                 className="text-warning cursor-pointer"
                                 onClick={() => handleCancel(order._id)}
                               />
+                              <FaEye onClick={()=> handleView(order._id)} className="text-success text-sm cursor-pointer" />
                             </>
                           ) : order.status === "Delevered" ? (
                             <>
@@ -300,6 +306,7 @@ export const Orders = () => {
                               <MdFileDownloadDone className="text-success opacity-30" />{" "}
                               {/* Hidden button */}
                               <MdCancel className="text-warning cursor-pointer opacity-20" />
+                              <FaEye onClick={()=> handleView(order._id)} className="text-success text-sm cursor-pointer" />
                             </>
                           ) : (
                             <TiCancel className="text-error" />
