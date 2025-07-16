@@ -1,8 +1,11 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { GetOrderById } from "../API/GET-SWR/order";
 import { useState, useEffect } from "react";
+import { FaRupeeSign } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export const ViewOrder = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { order, isLoading, error } = GetOrderById(id);
   const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -57,7 +60,7 @@ export const ViewOrder = () => {
       description: "Order shipped, in transit",
       nextActions: ["Mark as Delivered", "Track Shipment"]
     },
-    "Delivered": { 
+    "Delevered": { 
       color: "bg-emerald-500", 
       icon: "📦", 
       description: "Order successfully delivered",
@@ -153,21 +156,21 @@ export const ViewOrder = () => {
   const currentStatus = statusConfig[order.status] || statusConfig["Pending"];
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-700'}`}>
       {/* Admin Header */}
-      <div className={`${isDarkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border-b sticky top-0 z-40 backdrop-blur-sm bg-opacity-95`}>
+      <div className={`${isDarkMode ? 'bg-gray-800 border-gray-800' : 'bg-gray-100 border-gray-200'} rounded-md shadow-md border-b sticky top-0 z-40 backdrop-blur-sm bg-opacity-95`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <Link to="/admin/orders" className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} transition-colors`}>
+              <button onClick={() => navigate(-1)} className={`p-2 rounded-lg cursor-pointer ${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} transition-colors`}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-              </Link>
+              </button>
               <div>
                 <h1 className="text-2xl font-bold">Order Management</h1>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  Order #{order._id?.substring(order._id.length - 8).toUpperCase()}
+                  Order #{order._id.toUpperCase()}
                 </p>
               </div>
             </div>
@@ -177,7 +180,7 @@ export const ViewOrder = () => {
                 <span className="mr-2">{currentStatus.icon}</span>
                 {order.status}
               </span>
-              <button 
+              {/* <button 
                 onClick={() => setShowStatusModal(true)}
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center space-x-2"
               >
@@ -185,7 +188,7 @@ export const ViewOrder = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 <span>Update Status</span>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -194,21 +197,19 @@ export const ViewOrder = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl p-6 shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl p-6 shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Order Value</p>
-                <p className="text-2xl font-bold text-green-600">${metrics.total?.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-green-600">₹{metrics.total?.toFixed(2)}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-full">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
+              <FaRupeeSign className="text-green-600 text-lg" />
               </div>
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl p-6 shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl p-6 shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Items</p>
@@ -222,11 +223,11 @@ export const ViewOrder = () => {
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl p-6 shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl p-6 shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Order Date</p>
-                <p className="text-lg font-semibold">{new Date(order.createdAt).toLocaleDateString()}</p>
+                <p className="text-lg font-semibold">{new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-full">
                 <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,7 +237,7 @@ export const ViewOrder = () => {
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl p-6 shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl p-6 shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Status</p>
@@ -253,7 +254,7 @@ export const ViewOrder = () => {
           {/* Main Content */}
           <div className="xl:col-span-2 space-y-8">
             {/* Order Timeline */}
-            <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-xl font-bold flex items-center">
                   <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,7 +317,7 @@ export const ViewOrder = () => {
             </div>
 
             {/* Order Items */}
-            <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-xl font-bold flex items-center">
                   <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -328,7 +329,7 @@ export const ViewOrder = () => {
               
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className={isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}>
+                  <thead className={isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}>
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Product</th>
                       <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">SKU</th>
@@ -339,29 +340,29 @@ export const ViewOrder = () => {
                   </thead>
                   <tbody className={`divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
                     {order.products?.map((item, index) => (
-                      <tr key={index} className={`${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'} transition-colors`}>
+                      <tr key={index} className={`${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'} transition-colors`}>
                         <td className="px-6 py-4">
                           <div className="flex items-center">
-                            <div className={`h-16 w-16 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} flex-shrink-0 flex items-center justify-center`}>
-                              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className={`h-16 w-16 rounded-lg ${isDarkMode ? 'bg-gray-900' : 'bg-gray-300'} flex-shrink-0 flex items-center justify-center`}>
+                              <svg className="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                               </svg>
                             </div>
                             <div className="ml-4">
-                              <div className="font-medium text-lg">{item.productId?.name || "Product Name"}</div>
+                              <div className="font-medium text-lg">{item.productId?.name || "Unavailable"}</div>
                               <div className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>
-                                Category: {item.productId?.category || "N/A"}
+                                Category: {item.productId?.category || ""}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-1 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded text-sm font-mono`}>
-                            {item.productId?._id?.substring(0, 8).toUpperCase() || "N/A"}
+                          <span className={`px-2 py-1 badge badge-outline badge-dash ${isDarkMode ? 'badge-error' : 'badge-error'} rounded-full text-sm font-mono`}>
+                            {item.productId?._id?.substring(0, 8).toUpperCase() || "Unavailable"}
                           </span>
                         </td>
                         <td className="px-6 py-4 font-semibold">
-                          ${item.productId?.price?.toFixed(2) || "0.00"}
+                          ₹{item.productId?.price?.toFixed(2) || "0.00"}
                         </td>
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isDarkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'}`}>
@@ -369,7 +370,7 @@ export const ViewOrder = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4 font-bold text-lg">
-                          ${(((item.productId?.price - item.productId?.discount) || 0) * item.quantity).toFixed(2)}
+                          ₹{(((item.productId?.price - item.productId?.discount) || 0) * item.quantity).toFixed(2)}
                         </td>
                       </tr>
                     ))}
@@ -382,7 +383,7 @@ export const ViewOrder = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Customer Information */}
-            <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-lg font-bold flex items-center">
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -406,10 +407,10 @@ export const ViewOrder = () => {
                     <p>{order.userId?.phone || "N/A"}</p>
                   </div>
                   <div className="flex space-x-2 pt-2">
-                    <button className={`flex-1 px-3 py-2 ${isDarkMode ? 'bg-blue-900 hover:bg-blue-800' : 'bg-blue-100 hover:bg-blue-200'} text-blue-600 rounded-lg transition-colors text-sm`}>
+                    <button className={`flex-1 px-3 py-2 cursor-pointer ${isDarkMode ? 'bg-blue-900 hover:bg-blue-800' : 'bg-blue-100 hover:bg-blue-200'} text-blue-600 rounded-lg transition-colors text-sm`}>
                       Contact
                     </button>
-                    <button className={`flex-1 px-3 py-2 ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} rounded-lg transition-colors text-sm`}>
+                    <button className={`flex-1 px-3 py-2 cursor-pointer ${isDarkMode ? 'bg-gray-700 hover:bg-gray-900' : 'bg-gray-200 hover:bg-gray-300'} rounded-lg transition-colors text-sm`}>
                       Profile
                     </button>
                   </div>
@@ -418,7 +419,7 @@ export const ViewOrder = () => {
             </div>
 
             {/* Delivery Address */}
-            <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-lg font-bold flex items-center">
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -435,7 +436,7 @@ export const ViewOrder = () => {
                   <p>{order.deliveryAddress?.zipCode || "12345"}</p>
                   <p>{order.deliveryAddress?.country || "Country"}</p>
                 </div>
-                <button className={`w-full mt-3 px-4 py-2 ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} rounded-lg transition-colors text-sm flex items-center justify-center`}>
+                <button className={`w-full mt-3 px-4 py-2 cursor-pointer ${isDarkMode ? 'bg-gray-700 hover:bg-gray-900' : 'bg-gray-200 hover:bg-gray-300'} rounded-lg transition-colors text-sm flex items-center justify-center`}>
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3" />
                   </svg>
@@ -445,7 +446,7 @@ export const ViewOrder = () => {
             </div>
 
             {/* Order Financial Summary */}
-            <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-lg font-bold flex items-center">
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -458,19 +459,19 @@ export const ViewOrder = () => {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span className="font-semibold">${metrics.subtotal?.toFixed(2) || "0.00"}</span>
+                    <span className="font-semibold">₹{metrics.subtotal?.toFixed(2) || "0.00"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Tax (18%)</span>
-                    <span className="font-semibold">${metrics.tax?.toFixed(2) || "0.00"}</span>
+                    <span>GST (18%)</span>
+                    <span className="font-semibold">₹{metrics.tax?.toFixed(2) || "0.00"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span className="font-semibold">${metrics.shipping?.toFixed(2) || "0.00"}</span>
+                    <span className="font-semibold">₹{metrics.shipping?.toFixed(2) || "0.00"}</span>
                   </div>
                   <div className={`flex justify-between pt-3 border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} text-lg font-bold`}>
                     <span>Total</span>
-                    <span className="text-green-600">${metrics.total?.toFixed(2) || "0.00"}</span>
+                    <span className="text-green-600">₹{metrics.total?.toFixed(2) || "0.00"}</span>
                   </div>
                 </div>
                 
@@ -489,7 +490,7 @@ export const ViewOrder = () => {
             </div>
 
             {/* Admin Actions */}
-            <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+            <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-lg font-bold flex items-center">
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -502,7 +503,7 @@ export const ViewOrder = () => {
               <div className="p-6 space-y-3">
                 <button 
                   onClick={() => setShowNotesModal(true)}
-                  className={`w-full px-4 py-3 ${isDarkMode ? 'bg-blue-900 hover:bg-blue-800' : 'bg-blue-50 hover:bg-blue-100'} text-blue-600 rounded-lg transition-colors flex items-center justify-center font-medium`}
+                  className={`w-full px-4 py-3 cursor-pointer ${isDarkMode ? 'bg-blue-900 hover:bg-blue-800' : 'bg-blue-50 hover:bg-blue-100'} text-blue-600 rounded-lg transition-colors flex items-center justify-center font-medium`}
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -510,14 +511,14 @@ export const ViewOrder = () => {
                   Add Admin Notes
                 </button>
                 
-                <button className={`w-full px-4 py-3 ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-50 hover:bg-gray-100'} rounded-lg transition-colors flex items-center justify-center font-medium`}>
+                <button className={`w-full px-4 py-3 cursor-pointer ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} rounded-lg transition-colors flex items-center justify-center font-medium`}>
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                   </svg>
                   Print Invoice
                 </button>
                 
-                <button className={`w-full px-4 py-3 ${isDarkMode ? 'bg-purple-900 hover:bg-purple-800' : 'bg-purple-50 hover:bg-purple-100'} text-purple-600 rounded-lg transition-colors flex items-center justify-center font-medium`}>
+                <button className={`w-full px-4 py-3 cursor-pointer ${isDarkMode ? 'bg-purple-900 hover:bg-purple-800' : 'bg-purple-50 hover:bg-purple-100'} text-purple-600 rounded-lg transition-colors flex items-center justify-center font-medium`}>
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
@@ -525,7 +526,7 @@ export const ViewOrder = () => {
                 </button>
 
                 {order.status !== "Cancelled" && order.status !== "Delivered" && (
-                  <button className="w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors flex items-center justify-center font-medium">
+                  <button className="w-full px-4 cursor-pointer py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors flex items-center justify-center font-medium">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -540,8 +541,8 @@ export const ViewOrder = () => {
 
       {/* Status Update Modal */}
       {showStatusModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-xl max-w-md w-full`}>
+        <div className="fixed inset-0 bg-gray-900 opacity-95 flex items-center justify-center z-50 p-4">
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl shadow-xl max-w-md w-full`}>
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-bold">Update Order Status</h3>
               <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -588,8 +589,8 @@ export const ViewOrder = () => {
 
       {/* Admin Notes Modal */}
       {showNotesModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-xl shadow-xl max-w-lg w-full`}>
+        <div className="fixed inset-0 bg-gray-900 opacity-95 flex items-center justify-center z-50 p-4">
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl shadow-xl max-w-lg w-full`}>
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-bold">Add Admin Notes</h3>
               <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
