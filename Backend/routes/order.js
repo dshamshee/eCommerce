@@ -66,14 +66,20 @@ router.get('/admin/get-all-orders/:limit', isLoggedIn, async(req ,res)=>{
     }
 })
 
-// Get order by id
+// Get order by id (only for admin)
 router.get('/get-order/:id', isLoggedIn, async(req, res)=>{
-
     try {
-        const order = await orderModel.findOne({_id: req.params.id}).populate("products.productId");
+        
+        const order = await orderModel.findOne({_id: req.params.id})
+            .populate("products.productId")
+            .populate("deliveryAddress")
+            .populate("userId");
+        
+        
         if(!order){
             return res.status(404).json({message: "Order not found"});
         }
+        
         return res.status(200).json({message: "Order fetched successfully", order});
     } catch (error) {
         return res.status(500).json({message: error.message});
