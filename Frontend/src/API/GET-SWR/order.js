@@ -34,7 +34,18 @@ export const GetLimitedOrdersAdmin = (limit)=>{
 
 // Get order by id
 export const GetOrderById = (id)=>{
-    const {data, error, isLoading} = useSWR(`/order/get-order/${id}`, fetcher);
+    const {data, error, isLoading} = useSWR(`/order/get-order/${id}`, fetcher, {
+        // onSuccess: (data) => {
+        //     console.log("SWR success - Order data received:", data);
+        //     if (!data.order) {
+        //         console.error("No order data in response:", data);
+        //     }
+        // },
+        // onError: (err) => {
+        //     console.error("SWR error fetching order:", err);
+        // }
+    });
+    
     return{
         order: data?.order,
         error,
