@@ -1,12 +1,21 @@
 import { toast } from "react-toastify";
-import {userSignup} from "../API/POST-Axios/userApi";
+import {userSignup, generateOTP} from "../API/POST-Axios/userApi";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 export const Signup = ()=>{
 
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [verificationStatus, setVerificationStatus] = useState(false);
+    const [otpLoading, setOtpLoading] = useState(false);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [otp, setOtp] = useState('');
+    const [verified, setVerified] = useState(false);
 
     const handleSignup = async (e)=>{
         e.preventDefault();
+        setLoading(true);
         const formData = new FormData(e.target);
         const data = {
             name: formData.get('name'),
@@ -61,7 +70,57 @@ export const Signup = ()=>{
             }
         } catch (error) {
             toast.error('Signup failed', error.response.data.message);
+        } finally {
+            setLoading(false);
         }
+    }
+
+    const handleGenerateOTP = async (e)=>{
+        e.preventDefault();
+        if(!name || !email){
+            toast.error('Please enter your name and email');
+            return;
+        }
+
+        try {
+            setOtpLoading(true);
+            const response = await generateOTP(name, email);
+            if(response.status === 200){
+                toast.success('OTP sent successfully');
+                localStorage.setItem('otp', response.data.otp);
+                setVerificationStatus(true);
+                setOtpLoading(false);
+            }else{
+                toast.error('OTP not sent');
+                setOtpLoading(false);
+            }
+        } catch (error) {
+            toast.error('OTP not sent');
+            console.log(error);
+            setOtpLoading(false);
+        }
+        
+    }
+
+    const handleVerifyOTP = async (e)=>{
+        e.preventDefault();
+        if(!otp){
+            toast.error('Please enter your OTP');
+            return;
+        }
+        if(otp.length !== 6){
+            toast.error('Please enter a valid OTP');
+            return;
+        }
+        if(otp !== localStorage.getItem('otp')){
+            toast.error('Invalid OTP');
+            return;
+        }
+        toast.success('OTP verified successfully');
+        setVerified(true);
+        setVerificationStatus(false);
+        setOtpLoading(false);
+        setOtp('');
     }
 
     return(
@@ -102,6 +161,7 @@ export const Signup = ()=>{
                                         Full Name
                                     </label>
                                     <input
+                                    onChange={(e) => setName(e.target.value)}
                                         id="name"
                                         name="name"
                                         type="text"
@@ -111,17 +171,34 @@ export const Signup = ()=>{
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Email address
+                                    <div className="flex justify-between items-center">
+                                    <label onClick={() => setVerified(false)} htmlFor="email" className="block cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        {verified ? 'Back to Email' : 'Email address'}
                                     </label>
+                                    <span className={`text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 cursor-pointer ${verificationStatus ? 'hidden' : 'block'}`} onClick={(e) => handleGenerateOTP(e)}>{otpLoading ? 'Sending OTP...' : 'Please Verify'}</span>
+                                    <span className={`text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 cursor-pointer ${verificationStatus ? 'block' : 'hidden'}`} onClick={handleVerifyOTP}>Verify OTP</span>
+                                    </div>
                                     <input
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={email}
                                         id="email"
                                         name="email"
                                         type="email"
                                         required
-                                        className="block w-full px-4 py-3 rounded-lg border dark:border-gray-700 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out dark:bg-gray-800 dark:text-white text-base"
+                                        className={`block w-full px-4 py-3 rounded-lg border dark:border-gray-700 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out dark:bg-gray-800 dark:text-white text-base ${verificationStatus ? 'hidden' : ''}`}
                                         placeholder="Enter your email"
                                     />
+
+                                    <input
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    value={otp}
+                                        // id="otp"
+                                        // name="otp"
+                                        type="text"
+                                        className={`w-full px-4 py-3 rounded-lg border dark:border-gray-700 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out dark:bg-gray-800 dark:text-white text-base ${verificationStatus ? 'block' : 'hidden'}`}
+                                        placeholder="Enter 6 digit OTP"
+                                    />
+                                    
                                 </div>
                                 <div>
                                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -210,10 +287,11 @@ export const Signup = ()=>{
 
                             <div className="mt-8">
                                 <button
+                                    disabled={!verified || loading}
                                     type="submit"
-                                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out text-base font-semibold shadow-sm"
+                                    className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out text-base font-semibold shadow-sm ${!verified ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
-                                    Create Account
+                                    {loading ? <span className="loading loading-spinner text-info"></span> : 'Create Account'}
                                 </button>
                             </div>
 

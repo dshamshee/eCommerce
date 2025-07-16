@@ -38,3 +38,14 @@ export const updateProfile = async (image)=>{
         throw error;
     }
 }
+
+// Generate OTP
+export const generateOTP = async (name, email)=>{
+    try {
+        const response = await api.post('/user/generate-otp', {name, email});
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}

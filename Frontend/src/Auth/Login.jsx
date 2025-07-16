@@ -1,12 +1,15 @@
 import { userLogin } from "../API/POST-Axios/userApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export const Login = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async(e)=>{
         e.preventDefault();
+        setLoading(true);
         const formData = new FormData(e.target);
         const data = {
             email: formData.get('email'),
@@ -27,6 +30,8 @@ export const Login = () => {
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
+        } finally {
+            setLoading(false);
         }   
     }
 
@@ -114,18 +119,19 @@ export const Login = () => {
 
                             <div className="mt-8">
                                 <button
+                                    disabled={loading}
                                     type="submit"
                                     className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out text-base font-semibold shadow-sm"
                                 >
-                                    Sign in
+                                    {loading ? <span className="loading loading-spinner text-info"></span> : 'Sign in'}
                                 </button>
                             </div>
 
                             <div className="mt-6 text-center">
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
                                     Don't have an account?{' '}
-                                    <a onClick={() => {navigate('/signup')}} className="font-semibold text-blue-600 hover:text-blue-700 transition duration-150 ease-in-out">
-                                        Create one now
+                                    <a onClick={() => {navigate('/signup')}} className="font-semibold cursor-pointer text-blue-600 hover:text-blue-700 transition duration-150 ease-in-out">
+                                        Create one now 
                                     </a>
                                 </p>
                             </div>
