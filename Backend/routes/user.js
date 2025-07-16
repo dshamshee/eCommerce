@@ -12,6 +12,7 @@ const memoryUpload = require("../config/multer_memory.config");
 const uploadOnCloudinary = require("../utils/cloudinaryConfig");
 const fs = require("fs");
 const router = express.Router();
+const nodemailer = require("nodemailer");
 
 // Normal Signup
 router.post("/signup", async (req, res) => {
@@ -39,10 +40,10 @@ router.post("/signup", async (req, res) => {
             { id: newUser._id, email: newUser.email },
             process.env.JWT_SECRET_KEY
           );
-          res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-          }); // for development mode
+          // res.cookie("token", token, {
+          //   httpOnly: true,
+          //   secure: true,
+          // }); // for development mode
           res.status(201).json({
             message: "User created successfully",
             token: token,
@@ -57,6 +58,40 @@ router.post("/signup", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+// Generate OTP
+router.post('/generate-otp', async (req ,res)=>{
+  const {name, email} = req.body;
+
+  try {
+    const transporter=nodemailer.createTransport({
+      service:'gmail',
+      auth:{
+        user:'danishshamshee@gmail.com',
+        pass:'xbah udob vkvp queq' // gmail app passcode 
+      }
+    })
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const sendedOTP = await transporter.sendMail({
+      from:"danishshamshee@gmail.com",
+      to:email,
+      subject:"Wolvenstitch - OTP Verification",
+      html:`Hello ${name} !! Your Otp is ${otp} . Kindly Don't Share it to any One`
+    })
+
+    if(sendedOTP){
+      res.status(200).json({
+        message: "OTP sent successfully",
+        otp: otp,
+      })
+    }else{
+      return res.status(400).json({ message: "OTP not sent" });
+    }
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+})
 
 // Google login/Signup
 router.post("/google-login", async (req, res) => {

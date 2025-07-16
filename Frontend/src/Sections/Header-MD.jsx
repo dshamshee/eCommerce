@@ -151,11 +151,11 @@ export const HeaderMD = ()=>{
                 tabIndex={0}
                 className="menu menu-sm dropdown-content dark:bg-gray-800 dark:text-gray-100 text-gray-900 bg-gray-50 rounded-lg rounded-box z-1 mt-3 w-52 p-2 shadow"
               >
-                <li>
-                  <a className="items-start flex flex-col">
-                    <div className="w-full" onClick={handleProfileToggle}>
+                <li className="w-full">
+                  <a className="items-start w-full flex flex-col">
+                    <div className="w-full text-center" onClick={handleProfileToggle}>
                       <h1 className="dark:text-gray-100 text-gray-900 font-semibold text-lg text-center">Welcome {userData?.name?.split(' ')[0]}</h1>
-                      <p className="text-sm dark:text-gray-400 text-gray-600 text-center">{userData?.email}</p>
+                      <p className="text-sm dark:text-gray-400 text-gray-600 text-center text-wrap overflow-hidden text-ellipsis whitespace-nowrap">{userData?.email}</p>
                     </div>
                     {/* <span className="badge bg-rose-500 dark:text-gray-100 text-white">
                       New

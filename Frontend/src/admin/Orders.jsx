@@ -267,7 +267,7 @@ export const Orders = () => {
                         >
                           {order.status}
                         </td>
-                        <td>{order.totalAmount}</td>
+                        <td>{order.totalAmount.toFixed(2)}</td>
                         <td className="flex gap-2 items-center text-lg">
                           {order.status === "Confirmed" ? (
                             <>
