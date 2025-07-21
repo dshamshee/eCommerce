@@ -332,7 +332,7 @@ export const ViewOrder = () => {
                   <thead className={isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}>
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Product</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">SKU</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Product ID</th>
                       <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Price</th>
                       <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Qty</th>
                       <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Total</th>
@@ -410,9 +410,9 @@ export const ViewOrder = () => {
                     <button className={`flex-1 px-3 py-2 cursor-pointer ${isDarkMode ? 'bg-blue-900 hover:bg-blue-800' : 'bg-blue-100 hover:bg-blue-200'} text-blue-600 rounded-lg transition-colors text-sm`}>
                       Contact
                     </button>
-                    <button className={`flex-1 px-3 py-2 cursor-pointer ${isDarkMode ? 'bg-gray-700 hover:bg-gray-900' : 'bg-gray-200 hover:bg-gray-300'} rounded-lg transition-colors text-sm`}>
+                    {/* <button className={`flex-1 px-3 py-2 cursor-pointer ${isDarkMode ? 'bg-gray-700 hover:bg-gray-900' : 'bg-gray-200 hover:bg-gray-300'} rounded-lg transition-colors text-sm`}>
                       Profile
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -436,7 +436,7 @@ export const ViewOrder = () => {
                   <p>{order.deliveryAddress?.zipCode || "12345"}</p>
                   <p>{order.deliveryAddress?.country || "Country"}</p>
                 </div>
-                <button className={`w-full mt-3 px-4 py-2 cursor-pointer ${isDarkMode ? 'bg-gray-700 hover:bg-gray-900' : 'bg-gray-200 hover:bg-gray-300'} rounded-lg transition-colors text-sm flex items-center justify-center`}>
+                <button data-tip="Comming Soon" className={`w-full tooltip tooltip-top tooltip-secondary mt-3 px-4 py-2 cursor-pointer ${isDarkMode ? 'bg-gray-700 hover:bg-gray-900' : 'bg-gray-200 hover:bg-gray-300'} rounded-lg transition-colors text-sm flex items-center justify-center`}>
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3" />
                   </svg>
@@ -449,9 +449,7 @@ export const ViewOrder = () => {
             <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-lg font-bold flex items-center">
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                  </svg>
+                  <FaRupeeSign className="w-5 h-5 mr-2" />
                   Financial Summary
                 </h2>
               </div>
@@ -511,21 +509,21 @@ export const ViewOrder = () => {
                   Add Admin Notes
                 </button>
                 
-                <button className={`w-full px-4 py-3 cursor-pointer ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} rounded-lg transition-colors flex items-center justify-center font-medium`}>
+                {/* <button className={`w-full px-4 py-3 cursor-pointer ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} rounded-lg transition-colors flex items-center justify-center font-medium`}>
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                   </svg>
                   Print Invoice
-                </button>
+                </button> */}
                 
-                <button className={`w-full px-4 py-3 cursor-pointer ${isDarkMode ? 'bg-purple-900 hover:bg-purple-800' : 'bg-purple-50 hover:bg-purple-100'} text-purple-600 rounded-lg transition-colors flex items-center justify-center font-medium`}>
+                <button data-tip="Comming Soon" className={`w-full tooltip tooltip-top tooltip-secondary px-4 py-3 cursor-pointer ${isDarkMode ? 'bg-purple-900 hover:bg-purple-800' : 'bg-purple-50 hover:bg-purple-100'} text-purple-600 rounded-lg transition-colors flex items-center justify-center font-medium`}>
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                   Generate Report
                 </button>
 
-                {order.status !== "Cancelled" && order.status !== "Delivered" && (
+                {order.status !== "Cancelled" && order.status !== "Delevered" && (
                   <button className="w-full px-4 cursor-pointer py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors flex items-center justify-center font-medium">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
