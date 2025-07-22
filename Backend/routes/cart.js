@@ -24,17 +24,17 @@ router.post('/add-to-cart', isLoggedIn, async(req, res)=>{
             cart = await cartModel.create({
                 userId,
                 products: [{productId, quantity, size, color}],
-                totalPrice: product.price * quantity,
+                totalPrice: (parseInt(product.price) - parseInt(product.discount)) * quantity,
             })
         }else{
             // check if product already in cart
             const existingProduct = cart.products.find(p=>p.productId.toString() === productId);
             if(existingProduct){
                 existingProduct.quantity += parseInt(quantity);
-                cart.totalPrice += product.price * parseInt(quantity);
+                cart.totalPrice += (parseInt(product.price) - parseInt(product.discount)) * parseInt(quantity);
             }else{
                 cart.products.push({productId, quantity, size, color});
-                cart.totalPrice += product.price * parseInt(quantity);
+                cart.totalPrice += (parseInt(product.price) - parseInt(product.discount)) * parseInt(quantity);
             }
         }
         await cart.save();
@@ -100,7 +100,7 @@ router.post('/update-cart-item', isLoggedIn, async(req, res)=>{
         let totalPrice = 0;
         for (const item of cart.products) {
             const productDetails = await productModel.findById(item.productId);
-            totalPrice += productDetails.price * item.quantity;
+            totalPrice += (parseInt(productDetails.price) - parseInt(productDetails.discount)) * item.quantity;
         }
         cart.totalPrice = totalPrice;
         
@@ -143,7 +143,7 @@ router.get('/remove-cart-item/:id', isLoggedIn, async(req, res)=>{
 
         // remove product from cart
         cart.products = cart.products.filter(p=>p.productId.toString() !== id);
-        cart.totalPrice -= product.price * existingProduct.quantity;
+        cart.totalPrice -= (parseInt(product.price) - parseInt(product.discount)) * existingProduct.quantity;
         await cart.save();
 
         return res.status(200).json({

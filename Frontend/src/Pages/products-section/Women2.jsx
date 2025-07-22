@@ -227,16 +227,16 @@ export const Women2 = () => {
                     </p>
                     <div className="pricing flex items-center gap-2">
                       <span className="text-sm text-gray-200 font-semibold">
-                        ₹{product.price}
+                        ₹{product.price - product.discount}
                       </span>
                       <span className="text-sm text-gray-500 line-through">
                         {product.discount
-                          ? `₹${product.price + product.discount}`
+                          ? `₹${product.price}`
                           : ""}
                       </span>
                       <span className="text-sm text-green-500">
                         {product.discount
-                          ? `${Math.floor(
+                          ? `${Math.round(
                               (product.discount / product.price) * 100
                             )}% off`
                           : ""}
@@ -278,16 +278,16 @@ export const Women2 = () => {
                 </p>
                 <div className="pricing flex items-center gap-2">
                   <span className="text-sm text-gray-200 font-semibold">
-                    ₹{product.price}
+                    ₹{product.price - product.discount}
                   </span>
                   <span className="text-sm text-gray-500 line-through">
                     {product.discount
-                      ? `₹${product.price + product.discount}`
+                      ? `₹${product.price}`
                       : ""}
                   </span>
                   <span className="text-sm text-green-500">
                     {product.discount
-                      ? `${Math.floor(
+                      ? `${Math.round(
                           (product.discount / product.price) * 100
                         )}% off`
                       : ""}
