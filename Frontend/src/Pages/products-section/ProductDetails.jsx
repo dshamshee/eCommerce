@@ -236,7 +236,11 @@ export const ProductDetails = () => {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold">{product.name}</h1>
-              <p className="text-xl font-semibold mt-2">₹{product.price}</p>
+              <p className="text-xl font-semibold mt-2">₹{product.price - product.discount}</p>
+              <div className="flex items-center gap-2">
+              <p className="text-lg font-semibold mt-2 text-gray-500 line-through">{product.discount ? `₹${product.price}` : ''}</p>
+              <p className="text-lg font-semibold mt-2 text-green-500">{product.discount ? `${Math.round((product.discount / product.price) * 100)}% off` : ''}</p>
+              </div>
               <div className="flex items-center mt-2">
                 <div className="rating rating-sm">
                   {[...Array(5)].map((_, i) => (
@@ -394,7 +398,7 @@ export const ProductDetails = () => {
                     product.stock > 0 ? "text-green-500" : "text-red-500"
                   }
                 >
-                  {product.stock > 0 ? "In Stock" : "Out of Stock"}
+                  {product.stock > 0 ? "Available" : "Out of Stock"}
                 </span>
               </div>
             </div>
