@@ -145,7 +145,7 @@ export const ProductDetails = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+      <div className="max-w-8xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {/* Main Product Section */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl overflow-hidden mb-8 sm:mb-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
@@ -256,16 +256,16 @@ export const ProductDetails = () => {
                   <span className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white">
                     ₹{product.discount && parseInt(product.discount) > 0 ? product.price - parseInt(product.discount) : product.price}
                   </span>
-                  {product.discount && parseInt(product.discount) > 0 && (
+              
                     <>
                       <span className="text-lg sm:text-xl text-gray-500 line-through">
-                        ₹{product.price}
+                        {product.discount && parseInt(product.discount) > 0 ? `₹${product.price}` : ''}
                       </span>
-                      <span className="bg-gradient-to-r from-green-500 to-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold">
+                      <span className={`bg-gradient-to-r from-green-500 to-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold ${product.discount && parseInt(product.discount) > 0 ? 'block' : 'hidden'}`}>
                         {Math.round((parseInt(product.discount) / product.price) * 100)}% OFF
                       </span>
                     </>
-                  )}
+             
                 </div>
 
                 {/* Description */}
@@ -493,13 +493,13 @@ export const ProductDetails = () => {
                     className="w-full h-32 sm:h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   {/* Discount Badge */}
-                  {item.discount && parseInt(item.discount) > 0 && (
+                  {/* {item.discount && parseInt(item.discount) > 0 && ( */}
                     <div className="absolute top-2 left-2">
-                      <span className="bg-gradient-to-r from-red-500 to-red-600 text-white px-2 py-1 rounded-full text-xs font-bold">
+                      <span className={`bg-gradient-to-r from-red-500 to-red-600 text-white px-2 py-1 rounded-full text-xs font-bold ${item.discount && parseInt(item.discount) > 0 ? 'block' : 'hidden'}`}>
                         {Math.round((parseInt(item.discount) / item.price) * 100)}% OFF
                       </span>
                     </div>
-                  )}
+                  {/* )} */}
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <button
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105 text-xs sm:text-sm"
@@ -539,11 +539,11 @@ export const ProductDetails = () => {
                       <span className="text-sm sm:text-xl font-bold text-gray-900 dark:text-white">
                         ₹{item.discount && parseInt(item.discount) > 0 ? item.price - parseInt(item.discount) : item.price}
                       </span>
-                      {item.discount && parseInt(item.discount) > 0 && (
-                        <span className="text-xs sm:text-sm text-gray-500 line-through">
+                 
+                        <span className={`text-xs sm:text-sm text-gray-500 line-through ${item.discount && parseInt(item.discount) > 0 ? 'block' : 'hidden'}`}>
                           ₹{item.price}
                         </span>
-                      )}
+                
                     </div>
                     <div className="hidden sm:flex items-center justify-between">
                       <span className="text-xs text-gray-500 dark:text-gray-400">

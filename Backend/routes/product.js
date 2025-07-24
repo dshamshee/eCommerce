@@ -170,10 +170,14 @@ router.get('/get-product-by-type/:type/:limit', async(req, res)=>{
         let products, unisexProducts;
         if(type === "T-shirt" || type === "Jeans" || type === "Shirt" || type === "Shorts"){
             products = await productModel.find({category: type}).skip((limit-1)*10).limit(10);
-        }else if(type === "Men" || type === "Women" || type === "Kids"){
+        }else if(type === "Men" || type === "Women"){
             products = await productModel.find({genderType: type}).skip((limit-1)*10).limit(20);
             unisexProducts = await productModel.find({genderType: "Unisex"}).skip((limit-1)*10).limit(20);
-        }else{
+        }else if(type === 'Kids'){
+            products = await productModel.find({genderType: type}).skip((limit-1)*10).limit(20);
+            unisexProducts = []
+        }
+        else{
             return res.status(400).json({message: "Invalid type"});
         }
         return res.status(200).json({

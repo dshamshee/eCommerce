@@ -1,9 +1,422 @@
+import { useEffect, useState, useCallback, useRef } from "react";
+import { GetProductByType } from "../../API/GET-SWR/product";
+import { ProductSkeleton } from "./ProductSceleton";
+import { ErrorPage } from "../ErrorPage";
+import { useNavigate, useParams } from "react-router-dom";
+import { PiPantsFill, PiShirtFoldedFill } from "react-icons/pi";
+import { FaHome, FaRupeeSign, FaTshirt } from "react-icons/fa";
+import { GiUnderwearShorts } from "react-icons/gi";
+
 
 export const Kids = ()=>{
 
-    return(
-        <div className="mainContainer">
-            <h1>Kids Section</h1>
+    const { limit } = useParams();
+    const [activeSlide, setActiveSlide] = useState(1);
+    const { products, error, isLoading } = GetProductByType("Kids", limit);
+    const carouselRef = useRef(null);
+    const [activeTab, setActiveTab] = useState("all");
+    const [kidsProducts, setKidsProducts] = useState([]);
+    const navigate = useNavigate();
+    useEffect(() => {
+      if (products) {
+        setKidsProducts(products);
+      }
+    }, [products]);
+  
+    // Function to go to a specific slide
+    const goToSlide = useCallback(
+      (slideNumber) => {
+        setActiveSlide(slideNumber);
+        // Only try to scroll if products are loaded
+        if (products && products.length > 0 && carouselRef.current) {
+          const slideElement = document.getElementById(
+            `product-slide-${slideNumber}`
+          );
+          if (slideElement) {
+            // Calculate the scroll position within the carousel container
+            const scrollPosition = slideElement.offsetLeft;
+            // Scroll the carousel container horizontally without affecting page scroll
+            carouselRef.current.scrollTo({
+              left: scrollPosition,
+              behavior: "smooth",
+            });
+          }
+        }
+      },
+      [products]
+    );
+  
+    // Function to change slide every 5 seconds using useEffect
+    useEffect(() => {
+      // Only set up auto-sliding if we have products
+      if (products && products.length > 0) {
+        const maxSlide = Math.min(products.length, 4);
+        const interval = setInterval(() => {
+          const nextSlide = activeSlide >= maxSlide ? 1 : activeSlide + 1;
+          goToSlide(nextSlide);
+        }, 5000); // Change slide every 5 seconds
+  
+        return () => clearInterval(interval);
+      }
+    }, [activeSlide, goToSlide]);
+  
+    if (isLoading) {
+      return (
+        <div className="mainContainer pt-3 w-full md:h-screen flex md:flex-row flex-col justify-center items-center md:gap-4 gap-2">
+          <ProductSkeleton />
+          <ProductSkeleton />
+          <ProductSkeleton />
         </div>
-    )
-}
+      );
+    }
+  
+    if (error) {
+      return (
+        <div className="mainContainer pt-3 w-full">
+          <ErrorPage />
+        </div>
+      );
+    }
+  
+    const handleChange = (tab) => {
+      setActiveTab(tab);
+    };
+  
+    const handleProductClick = (id) => {
+      navigate(`/product-details/${id}`);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    };
+  
+    return (
+      <div className="mainContainer py-3 w-full">
+        {/* Carousel Section */}
+        {
+          products && products.length === 0 ? '' :
+        <div className="relative py-2">
+          <div
+            ref={carouselRef}
+            className="carousel overflow-hidden shadow-lg md:h-[400px] h-[200px] w-full scroll-smooth"
+          >
+            {products &&
+              products.slice(0, 4).map((product, index) => {
+                const slideNumber = index + 1;
+                return (
+                  <div
+                    id={`product-slide-${slideNumber}`}
+                    className="carousel-item relative w-full"
+                    key={product._id}
+                  >
+                    <img
+                      src={product.images[0]}
+                      className="w-full object-cover"
+                      alt={product.title}
+                    />
+                    <div className="absolute inset-0 bg-gray-500 opacity-40 flex items-center justify-center">
+                      <div className="text-center text-white px-3 md:px-0">
+                        <h2 className="text-3xl font-bold mb-2">
+                          {product.title}
+                        </h2>
+                        <p className="text-lg">
+                          {product.description.slice(0, 50)}
+                        </p>
+                        <button className="mt-4 btn btn-outline btn-sm text-white border-white hover:bg-white hover:text-black">
+                          Shop Now
+                        </button>
+                      </div>
+                    </div>
+                    <div className="absolute hidden md:flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          goToSlide(
+                            slideNumber === 1
+                              ? Math.min(products.length, 4)
+                              : slideNumber - 1
+                          );
+                        }}
+                        className="btn btn-circle bg-black opacity-30 border-none text-white hover:bg-black"
+                      >
+                        ❮
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          goToSlide(
+                            slideNumber === Math.min(products.length, 4)
+                              ? 1
+                              : slideNumber + 1
+                          );
+                        }}
+                        className="btn btn-circle bg-black opacity-30 border-none text-white hover:bg-black"
+                      >
+                        ❯
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+  
+          {/* Carousel Indicators */}
+          <div className="hidden md:flex justify-center w-full py-2 gap-2 absolute bottom-4">
+            {products &&
+              products.slice(0, 4).map((_, index) => {
+                const slideNumber = index + 1;
+                return (
+                  <button
+                    key={slideNumber}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goToSlide(slideNumber);
+                    }}
+                    className={`w-3 h-3 rounded-full ${
+                      activeSlide === slideNumber
+                        ? "bg-white"
+                        : "bg-white opacity-50"
+                    }`}
+                  />
+                );
+              })}
+          </div>
+        </div>
+        }
+  
+        {/* Hero Section */}
+        <div className="hero flex md:flex-row flex-col gap-2 items-start min-h-[400px]">
+          {/* Filter Section */}
+          {
+            products && kidsProducts.length === 0 ? '' :
+          <div className="left hidden md:flex w-[20%] min-h-[500px] dark:bg-gray-800 bg-gray-300 p-3 rounded-md flex-col gap-2">
+            <span className="text-lg font-semibold">Filter by</span>
+            <hr />
+            <Filter
+              handleChange={handleChange}
+              activeTab={activeTab}
+              setKidsProducts={setKidsProducts}
+            />
+          </div>
+          }
+  
+          {/* Product Section */}
+          {
+            products && kidsProducts.length === 0 ? '' :
+          <div className="right md:w-[80%] grid grid-cols-2 md:grid-cols-4 gap-2 px-1 md:px-2">
+            {products &&
+              kidsProducts.slice(0, 4).map((product) => {
+                return (
+                  <div
+                    className="cardContainer mt-2"
+                    key={product._id}
+                    onClick={() => handleProductClick(product._id)}
+                  >
+                    <div className="imageContainer md:w-[290px] hover:scale-102 transition-all duration-300 cursor-pointer">
+                      <img
+                        src={product.images[0]}
+                        alt={product.title}
+                        className="w-full md:h-[430px] object-cover object-center"
+                      />
+                    </div>
+                    <div className="contentContainer">
+                      <p className="text-md text-gray-300 font-bold line-clamp-1 text-wrap overflow-hidden text-ellipsis">
+                        {product.name}
+                      </p>
+                      <p className="text-sm text-gray-500 line-clamp-1 text-wrap overflow-hidden text-ellipsis">
+                        {product.description}
+                      </p>
+                      <div className="pricing flex items-center gap-2">
+                        <span className="text-sm text-gray-200 font-semibold">
+                          ₹{product.price - product.discount}
+                        </span>
+                        <span className="text-sm text-gray-500 line-through">
+                          {product.discount
+                            ? `₹${product.price}`
+                            : ""}
+                        </span>
+                        <span className="text-sm text-green-500">
+                          {product.discount
+                            ? `${Math.round(
+                                (product.discount / product.price) * 100
+                              )}% off`
+                            : ""}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+          }
+        </div>
+  
+  
+        {/* More Products Section */}
+        {
+          kidsProducts.length === 0 ? <div className="col-span-full text-center text-gray-500 mb-5">No products found</div> :
+        <div className="moreProducts grid grid-cols-2 md:grid-cols-5 gap-2 px-1 md:px-2 mb-10">
+          {kidsProducts.slice(4, kidsProducts.length).map((product) => {
+            return (
+              <div
+                className="cardContainer mt-2"
+                key={product._id}
+                onClick={() => handleProductClick(product._id)}
+              >
+                <div className="imageContainer md:w-[290px] hover:scale-102 transition-all duration-300 cursor-pointer">
+                  <img
+                    src={product.images[0]}
+                    alt={product.title}
+                    className="w-full md:h-[430px] object-cover object-center"
+                  />
+                </div>
+                <div className="contentContainer">
+                  <p className="text-md text-gray-300 font-bold line-clamp-1 text-wrap overflow-hidden text-ellipsis">
+                    {product.name}
+                  </p>
+                  <p className="text-sm text-gray-500 line-clamp-1 text-wrap overflow-hidden text-ellipsis">
+                    {product.description}
+                  </p>
+                  <div className="pricing flex items-center gap-2">
+                    <span className="text-sm text-gray-200 font-semibold">
+                      ₹{product.price - product.discount}
+                    </span>
+                    <span className="text-sm text-gray-500 line-through">
+                      {product.discount
+                        ? `₹${product.price}`
+                        : ""}
+                    </span>
+                    <span className="text-sm text-green-500">
+                      {product.discount
+                        ? `${Math.round(
+                            (product.discount / product.price) * 100
+                          )}% off`
+                        : ""}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        }
+        {/* Pagination */}
+        <div className="join flex justify-center items-center gap-2 mb-10">
+            <button disabled={parseInt(limit) === 1} className="join-item btn btn-outline hover:btn-warning hover:text-white" onClick={()=>{navigate(`/kids/${parseInt(limit)-1}`) ; window.scrollTo({top: 0, behavior: "smooth"})}}>«</button>
+            <button className="join-item btn btn-outline btn-primary">{limit}</button>
+            <button disabled={kidsProducts.length === 0} className="join-item btn btn-outline hover:btn-warning hover:text-white" onClick={()=>{navigate(`/kids/${parseInt(limit)+1}`) ; window.scrollTo({top: 0, behavior: "smooth"})}}>»</button> 
+          </div>
+      </div>
+    );
+  };
+
+    // Filter Component
+const Filter = ({ handleChange, activeTab, setKidsProducts }) => {
+    const { products } = GetProductByType("Kids");
+  
+    const handleAll = () => {
+      handleChange("all");
+      setKidsProducts(products);
+    };
+  
+    const handleShirt = () => {
+      handleChange("shirt");
+      setKidsProducts(products.filter((product) => product.category === "Shirt"));
+      // setMenProducts(menProducts.filter((product) => product.category === "Shirt"));
+    };
+  
+    const handleTShirt = () => {
+      handleChange("t-shirt");
+      setKidsProducts(
+        products.filter((product) => product.category === "T-shirt")
+      );
+      // setMenProducts(menProducts.filter((product) => product.category === "T-shirt"));
+    };
+    const handleJeans = () => {
+      handleChange("jeans");
+      setKidsProducts(products.filter((product) => product.category === "Jeans"));
+      // setMenProducts(menProducts.filter((product) => product.category === "Jeans"));
+    };
+    const handleShorts = () => {
+      handleChange("shorts");
+      setKidsProducts(products.filter((product) => product.category === "Shorts"));
+      // setMenProducts(menProducts.filter((product) => product.category === "Shorts"));
+    };
+    const handlePrice = () => {
+      handleChange("price");
+      setKidsProducts(products.sort((a, b) => a.price - b.price));
+      // setMenProducts(menProducts.sort((a, b) => a.price - b.price));
+    };
+  
+    return (
+      <>
+        <button
+          onClick={handleAll}
+          className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
+            activeTab === "all"
+              ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          }`}
+        >
+          <FaHome className="text-2xl" />
+          All
+        </button>
+        <button
+          onClick={handleShirt}
+          className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
+            activeTab === "shirt"
+              ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          }`}
+        >
+          <PiShirtFoldedFill className="text-2xl" />
+          Shirt
+        </button>
+        <button
+          onClick={handleTShirt}
+          className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
+            activeTab === "t-shirt"
+              ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          }`}
+        >
+          <FaTshirt className="text-2xl" />
+          T-Shirt
+        </button>
+        <button
+          onClick={handleJeans}
+          className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
+            activeTab === "jeans"
+              ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          }`}
+        >
+          <PiPantsFill className="text-2xl" />
+          Jeans
+        </button>
+        <button
+          onClick={handleShorts}
+          className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
+            activeTab === "shorts"
+              ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          }`}
+        >
+          <GiUnderwearShorts className="text-2xl" />
+          Shorts
+        </button>
+        <button
+          onClick={handlePrice}
+          className={`flex items-center w-full px-4 py-3 gap-2 text-sm font-medium rounded-md transition-colors ${
+            activeTab === "price"
+              ? "bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          }`}
+        >
+          <FaRupeeSign className="text-2xl" />
+          Price
+        </button>
+      </>
+    );
+  };
+  
