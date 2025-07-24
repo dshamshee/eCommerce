@@ -152,10 +152,10 @@ router.post("/login", async (req, res) => {
             { id: user._id, email: user.email },
             process.env.JWT_SECRET_KEY
           );
-          // res.cookie("token", token, {
-          //   httpOnly: true,
-          //   secure: true,
-          // }); // for development mode
+          res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+          }); // for development mode
           res.status(200).json({
             message: "User logged in successfully",
             token: token,

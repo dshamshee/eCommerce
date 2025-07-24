@@ -6,6 +6,7 @@ const upload = require("../config/multer_config");
 const memoryUpload = require("../config/multer_memory.config");
 const uploadOnCloudinary = require("../utils/cloudinaryConfig");
 const fs = require("fs");
+const { Decimal128 } = require("mongodb");
 
 router.post("/add-product", isLoggedIn, async(req, res)=>{
     const {productData} = req.body;
@@ -37,6 +38,52 @@ router.post("/add-product", isLoggedIn, async(req, res)=>{
     } catch (error) {
         console.error('Error adding product:', error);
         return res.status(500).json({message: error.message});
+    }
+});
+
+// Add Product by JSON 
+router.post('/add-product-json', isLoggedIn, async(req, res)=>{
+    try {
+        // req.body will now be an array of product objects
+        const productsData = req.body;
+
+        // Basic validation: ensure productsData is an array
+        if (!Array.isArray(productsData) || productsData.length === 0) {
+            return res.status(400).json({ message: "Request body must be an array of product objects." });
+        }
+
+        // Map over the array to convert ratings to Decimal128 for each product
+        const productsToInsert = productsData.map(product => {
+            let decimalRatings = undefined;
+            if (product.ratings !== undefined && product.ratings !== null) {
+                try {
+                    decimalRatings = new Decimal128(String(product.ratings));
+                } catch (decimalError) {
+                    // You might want more sophisticated error handling here,
+                    // e.g., skipping the product, or returning a more detailed error for each invalid one.
+                    // For now, let's throw an error for the entire batch if one is invalid.
+                    throw new Error(`Invalid format for ratings in product '${product.name || 'Unnamed Product'}'. Must be a valid number.`);
+                }
+            }
+            return {
+                ...product, // Spread all existing properties
+                ratings: decimalRatings // Override with Decimal128 version
+            };
+        });
+
+        const insertedProducts = await productModel.insertMany(productsToInsert);
+
+        return res.status(201).json({
+            message: `${insertedProducts.length} products added successfully`,
+            products: insertedProducts
+        });
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ message: "Validation Error", errors: messages });
+        }
+        // Catch the custom error thrown during Decimal128 conversion or other errors
+        return res.status(500).json({ message: error.message || "An unexpected error occurred." });
     }
 });
 
