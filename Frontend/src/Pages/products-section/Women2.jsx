@@ -310,40 +310,40 @@ export const Women2 = () => {
 };
 
 // Filter Component
-const Filter = ({ handleChange, activeTab, setMenProducts }) => {
-  const { products } = GetProductByType("Men");
+const Filter = ({ handleChange, activeTab, setWomenProducts }) => {
+  const { products } = GetProductByType("Women");
 
   const handleAll = () => {
     handleChange("all");
-    setMenProducts(products);
+    setWomenProducts(products);
   };
 
   const handleShirt = () => {
     handleChange("shirt");
-    setMenProducts(products.filter((product) => product.category === "Shirt"));
+    setWomenProducts(products.filter((product) => product.category === "Shirt"));
     // setMenProducts(menProducts.filter((product) => product.category === "Shirt"));
   };
 
   const handleTShirt = () => {
     handleChange("t-shirt");
-    setMenProducts(
+    setWomenProducts(
       products.filter((product) => product.category === "T-shirt")
     );
     // setMenProducts(menProducts.filter((product) => product.category === "T-shirt"));
   };
   const handleJeans = () => {
     handleChange("jeans");
-    setMenProducts(products.filter((product) => product.category === "Jeans"));
+    setWomenProducts(products.filter((product) => product.category === "Jeans"));
     // setMenProducts(menProducts.filter((product) => product.category === "Jeans"));
   };
   const handleShorts = () => {
     handleChange("shorts");
-    setMenProducts(products.filter((product) => product.category === "Shorts"));
+    setWomenProducts(products.filter((product) => product.category === "Shorts"));
     // setMenProducts(menProducts.filter((product) => product.category === "Shorts"));
   };
   const handlePrice = () => {
     handleChange("price");
-    setMenProducts(products.sort((a, b) => a.price - b.price));
+    setWomenProducts(products.sort((a, b) => a.price - b.price));
     // setMenProducts(menProducts.sort((a, b) => a.price - b.price));
   };
 

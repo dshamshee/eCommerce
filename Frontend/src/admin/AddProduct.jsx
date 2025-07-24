@@ -278,6 +278,7 @@ export const AddProduct = () => {
                                     <option value="" disabled>Select Gender</option>
                                     <option value="Men">Men</option>
                                     <option value="Women">Women</option>
+                                    <option value="Kids">Kids</option>
                                     <option value="Unisex">Unisex</option>
                                 </select>
                             </div>

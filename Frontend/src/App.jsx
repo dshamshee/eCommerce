@@ -55,7 +55,7 @@ function App() {
           element: <Women2 />,
         },
         {
-          path: "/kids",
+          path: "/kids/:limit",
           element: <Kids />,
         },
         {
