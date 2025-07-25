@@ -19,7 +19,6 @@ export const Login = () => {
         try {
             const response = await userLogin(data);
             if(response.status === 200) {
-                console.log(response);
                 toast.success('Successfully logged in');
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('userName', response.data.userName);

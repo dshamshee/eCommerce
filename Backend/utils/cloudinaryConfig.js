@@ -23,6 +23,7 @@ const uploadOnCloudinary = async (fileData) =>{
             // It's a file path (from disk storage)
             uploadResponse = await cloudinary.uploader.upload(fileData, {
                 resource_type: "auto", // automatically detect the file type (image, video, etc.)
+                quality: 70,
             });
             
             // Delete the file from local filesystem after upload
@@ -34,6 +35,7 @@ const uploadOnCloudinary = async (fileData) =>{
             
             uploadResponse = await cloudinary.uploader.upload(dataURI, {
                 resource_type: "auto", // automatically detect the file type
+                quality: 70, // automatically compress the image size
             });
         } else {
             return null;
