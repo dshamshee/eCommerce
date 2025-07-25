@@ -40,19 +40,24 @@ const ProductCard = memo(({ product, handleNavigate }) => (
       </h3>
       
       {/* Price */}
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex md:flex-row flex-col md:items-center gap-2 mb-3">
         <span className="md:text-lg text-sm font-bold dark:text-gray-100 text-gray-900">
-          ₹{product.price.toFixed(2)}
+          ₹{(product.price - product.discount).toFixed(2)}
         </span>
-        {product.discount && (
-          <span className="text-sm dark:text-gray-400 text-gray-900 line-through">
-            {/* ₹{parseInt(product.discount) !== 0 ? product.discount + product.price : 'abc'} */}
+       
+          <div className='flex items-center gap-2'>
+          <span className={`text-sm dark:text-gray-400 text-gray-900 line-through ${product.discount === 0 ? 'hidden' : ''}`}>
+            ₹{product.price.toFixed(2)} 
           </span>
-        )}
+          <span className={`text-sm dark:text-green-500 text-green-500 ${product.discount === 0 ? 'hidden' : ''}`}>
+            {product.discount > 0 && `${Math.round((product.discount/product.price * 100))}% off`}
+          </span>
+          </div>
+  
       </div>
 
       {/* Color/Size Options */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         {product.colors && (
           <div className="flex items-center gap-1 mb-2">
             <span className="text-sm dark:text-gray-400 text-gray-900">Colors:</span>
@@ -80,14 +85,14 @@ const ProductCard = memo(({ product, handleNavigate }) => (
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* Quick Actions */}
       <div className="flex gap-2 md:flex-row flex-col">
         {/* <button className="hidden md:block flex-1 md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:py-2 md:px-4 border dark:border-gray-700 border-gray-300 py-1 px-2 dark:bg-gray-800 dark:text-gray-100 text-gray-900 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
           Cart
         </button> */}
-        <a onClick={() => handleNavigate(product._id)}><button className="md:py-2 py-1 ml-[170px] md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:px-3 px-2 border dark:border-gray-700 border-gray-300 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
+        <a onClick={() => handleNavigate(product._id)}><button className="md:py-2 py-1 px-6 md:ml-[170px] md:text-sm text-xs md:btn-md btn-xs cursor-pointer md:px-3 md:px-2 border dark:border-gray-700 border-gray-300 font-medium rounded dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors">
           Quick View
         </button>
         </a>
