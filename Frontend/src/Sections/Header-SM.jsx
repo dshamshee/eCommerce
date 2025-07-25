@@ -95,8 +95,8 @@ export const HeaderSM = () => {
           <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/women/1' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
             navigate('/women/1');
           }}>Women</a></li>
-          <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/kids' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
-            navigate('/kids');
+          <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/kids/1' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
+            navigate('/kids/1');
           }}>Kids</a></li>
           <li className={`text-gray-900 dark:text-gray-100 hover:text-rose-600 dark:hover:text-rose-500 cursor-pointer ${window.location.pathname === '/profile' ? 'text-rose-600 dark:text-rose-500' : ''}`}><a onClick={()=>{
             navigate('/profile2');

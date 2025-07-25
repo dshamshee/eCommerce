@@ -69,14 +69,12 @@ export const Orders = () => {
 
   useEffect(() => {
     if (!isLoading && orders) {
-      // console.log(orders[0].userId.name)
       setOrdersData(orders);
-      setStartDate(new Date(orders[0].createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
-      setEndDate(new Date(orders[orders.length - 1].createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+      setStartDate(orders && orders.length > 0 ? new Date(orders[0].createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : null);
+      setEndDate(orders && orders.length > 0 ? new Date(orders[orders.length - 1].createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : null);
     }
   }, [orders, isLoading]);
 
-  console.log(ordersData)
 
   if(isLoading){
     return(
