@@ -1,0 +1,116 @@
+erDiagram
+    User {
+        ObjectId _id PK
+        String name
+        String email UK
+        String password
+        Number phone UK
+        String googleId UK
+        String role
+        String avatar
+        Date createdAt
+        Date updatedAt
+        Array cart
+        Array wishlist
+    }
+    
+    Product {
+        ObjectId _id PK
+        String name
+        String description
+        Number price
+        Number discount
+        String category
+        String genderType
+        Array sizes
+        Array colors
+        Array images
+        Number stock
+        Boolean isNewProduct
+        Date newProductExpiry
+        Boolean isBestSeller
+        Decimal128 ratings
+        Number reviews
+        String fabric
+        Array care
+        Array features
+        Date createdAt
+        Date updatedAt
+    }
+    
+    Cart {
+        ObjectId _id PK
+        ObjectId userId FK
+        Array products
+        Number totalPrice
+        Date createdAt
+        Date updatedAt
+    }
+    
+    CartProduct {
+        ObjectId productId FK
+        String size
+        String color
+        Number quantity
+    }
+    
+    Order {
+        ObjectId _id PK
+        ObjectId userId FK
+        Array products
+        String paymentMethod
+        Number totalAmount
+        ObjectId deliveryAddress FK
+        String status
+        Date createdAt
+        Date updatedAt
+    }
+    
+    OrderProduct {
+        ObjectId productId FK
+        Number quantity
+    }
+    
+    Payment {
+        ObjectId _id PK
+        ObjectId userId FK
+        String paymentID
+        Number amount
+        String currency
+        String status
+        String orderID
+        String method
+        String userOrderID
+        Date createdAt
+        Date updatedAt
+    }
+    
+    DeliveryAddress {
+        ObjectId _id PK
+        ObjectId userId FK
+        String name
+        String address
+        String city
+        String state
+        String zipCode
+        String country
+        String phone
+        Boolean isDefault
+        Date createdAt
+        Date updatedAt
+    }
+    
+    %% Relationships
+    User ||--o{ Cart : "has"
+    User ||--o{ Order : "places"
+    User ||--o{ Payment : "makes"
+    User ||--o{ DeliveryAddress : "has"
+    
+    Cart ||--o{ CartProduct : "contains"
+    Product ||--o{ CartProduct : "included_in"
+    
+    Order ||--o{ OrderProduct : "contains"
+    Product ||--o{ OrderProduct : "included_in"
+    
+    Order }o--|| DeliveryAddress : "delivered_to"
+

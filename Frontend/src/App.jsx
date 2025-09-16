@@ -28,7 +28,10 @@ import { AdminDashboard } from "./admin/AdminDashboard";
 import { EditProduct } from "./admin/EditProduct";
 import { Orders } from "./admin/Orders";
 import { Analytics } from "./admin/Analytics";
+import { PaymentManagement } from "./admin/PaymentManagement";
 import { ViewOrder } from "./admin/ViewOrder";
+import { ReturnOrder } from "./Pages/orders/ReturnOrder";
+import {TrackOrder} from "./Pages/orders/TrackOrder"
 
 function App() {
 
@@ -91,6 +94,14 @@ function App() {
           element: <Profile2 />,
         },
         {
+          path: "/profile/return-order",
+          element: <ReturnOrder />
+        },
+        {
+          path: "/profile/track-order/:id",
+          element: <TrackOrder />
+        },
+        {
           path: "/error",
           element: <ErrorPage />,
         },
@@ -127,6 +138,10 @@ function App() {
         {
           path: "view-order/:id",
           element: <ViewOrder />,
+        },
+        {
+          path: "payment-management",
+          element: <PaymentManagement />,
         }
       ],
     },

@@ -1,0 +1,22 @@
+.payment-management-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.stat {
+    flex: 1;
+    min-width: 200px;
+    margin: 10px;
+}
+
+@media (max-width: 768px) {
+    .stats-horizontal {
+        flex-direction: column;
+    }
+}

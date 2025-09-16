@@ -1,0 +1,81 @@
+flowchart TD
+    A[User/Admin] --> B[Frontend React App]
+    
+    %% User Authentication Flow
+    B --> C[Authentication System]
+    C --> D[JWT Token Generation]
+    C --> E[Google OAuth]
+    C --> F[Email OTP Verification]
+    
+    %% Main Application Processes
+    B --> G[Product Management]
+    B --> H[Cart Management]
+    B --> I[Order Management]
+    B --> J[Payment Processing]
+    B --> K[User Profile Management]
+    
+    %% Backend API Layer
+    G --> L[Product API Routes]
+    H --> M[Cart API Routes]
+    I --> N[Order API Routes]
+    J --> O[Payment API Routes]
+    K --> P[User API Routes]
+    C --> P
+    
+    %% Middleware Layer
+    L --> Q[isLoggedIn Middleware]
+    M --> Q
+    N --> Q
+    O --> Q
+    P --> Q
+    
+    %% Database Operations
+    Q --> R[MongoDB Database]
+    
+    %% External Services
+    J --> S[Razorpay Payment Gateway]
+    G --> T[Cloudinary Image Storage]
+    F --> U[Gmail SMTP Service]
+    
+    %% Database Collections
+    R --> V[(User Collection)]
+    R --> W[(Product Collection)]
+    R --> X[(Cart Collection)]
+    R --> Y[(Order Collection)]
+    R --> Z[(Payment Collection)]
+    R --> AA[(DeliveryAddress Collection)]
+    
+    %% Admin Processes
+    B --> AB[Admin Dashboard]
+    AB --> AC[Product Analytics]
+    AB --> AD[Order Management]
+    AB --> AE[Payment Management]
+    AB --> AF[User Management]
+    
+    %% Admin to Backend
+    AC --> L
+    AD --> N
+    AE --> O
+    AF --> P
+    
+    %% Data Flow Arrows with Labels
+    G -.->|"Product CRUD Operations"| L
+    H -.->|"Add/Remove/Update Cart"| M
+    I -.->|"Create/Track Orders"| N
+    J -.->|"Process Payments"| O
+    K -.->|"Profile Updates"| P
+    
+    %% File Upload Flow
+    B --> AG[File Upload]
+    AG --> AH[Multer Middleware]
+    AH --> T
+    T --> AI[Image URLs]
+    AI --> R
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style R fill:#e8f5e8
+    style S fill:#fff3e0
+    style T fill:#fff3e0
+    style U fill:#fff3e0
+
