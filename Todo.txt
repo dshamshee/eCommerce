@@ -57,3 +57,17 @@ Features            Pending
 
 create Order Traking page for User 
 Modify Admin Menu 
+
+
+Implement Return system 
+Return Schema:{
+    OrderId: ObjectId,
+    Reason: String,
+    BankDetails: [{
+        AccountHolderName: string,
+        AccountNumber: string,
+        IFSC: string,
+    }],
+    CrreatedAt: Date
+    Status: ["Initiate", "Completed"]
+}

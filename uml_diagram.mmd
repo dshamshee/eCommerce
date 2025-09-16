@@ -1,0 +1,208 @@
+classDiagram
+    class User {
+        -ObjectId _id
+        -String name
+        -String email
+        -String password
+        -Number phone
+        -String googleId
+        -String role
+        -String avatar
+        -Date createdAt
+        -Date updatedAt
+        -Array cart
+        -Array wishlist
+        +signup()
+        +login()
+        +updateProfile()
+        +deleteAccount()
+        +generateOTP()
+    }
+    
+    class Product {
+        -ObjectId _id
+        -String name
+        -String description
+        -Number price
+        -Number discount
+        -String category
+        -String genderType
+        -Array sizes
+        -Array colors
+        -Array images
+        -Number stock
+        -Boolean isNewProduct
+        -Date newProductExpiry
+        -Boolean isBestSeller
+        -Decimal128 ratings
+        +addProduct()
+        +updateProduct()
+        +deleteProduct()
+        +getProducts()
+        +getProductById()
+        +uploadImages()
+    }
+    
+    class Cart {
+        -ObjectId _id
+        -ObjectId userId
+        -Array products
+        -Number totalPrice
+        -Date createdAt
+        -Date updatedAt
+        +addToCart()
+        +removeFromCart()
+        +updateQuantity()
+        +getCartItems()
+        +calculateTotalPrice()
+    }
+    
+    class Order {
+        -ObjectId _id
+        -ObjectId userId
+        -Array products
+        -String paymentMethod
+        -Number totalAmount
+        -ObjectId deliveryAddress
+        -String status
+        -Date createdAt
+        -Date updatedAt
+        +createOrder()
+        +updateOrderStatus()
+        +cancelOrder()
+        +getOrders()
+        +getOrderById()
+    }
+    
+    class Payment {
+        -ObjectId _id
+        -ObjectId userId
+        -String paymentID
+        -Number amount
+        -String currency
+        -String status
+        -String orderID
+        -String method
+        -String userOrderID
+        +createPaymentOrder()
+        +fetchPaymentDetails()
+        +getAllPayments()
+    }
+    
+    class DeliveryAddress {
+        -ObjectId _id
+        -ObjectId userId
+        -String name
+        -String address
+        -String city
+        -String state
+        -String zipCode
+        -String country
+        -String phone
+        -Boolean isDefault
+        +addAddress()
+        +updateAddress()
+        +deleteAddress()
+        +getAddresses()
+    }
+    
+    class UserController {
+        +signup()
+        +login()
+        +googleLogin()
+        +generateOTP()
+        +getUser()
+        +updateUser()
+        +updateUserProfile()
+        +deleteUser()
+        +logout()
+        +getAllUsers()
+        +getGraphData()
+    }
+    
+    class ProductController {
+        +addProduct()
+        +uploadImages()
+        +getProducts()
+        +getProductById()
+        +updateProduct()
+        +deleteProduct()
+    }
+    
+    class CartController {
+        +addToCart()
+        +getCartItems()
+        +updateCartItem()
+        +removeCartItem()
+    }
+    
+    class OrderController {
+        +createOrder()
+        +getAllOrders()
+        +getOrderById()
+        +updateOrderStatus()
+        +cancelOrder()
+    }
+    
+    class PaymentController {
+        +createOrder()
+        +fetchPayment()
+        +getAllPayments()
+    }
+    
+    class AuthMiddleware {
+        +isLoggedIn()
+        +verifyJWT()
+        +checkAdminRole()
+    }
+    
+    class RazorpayService {
+        +createOrder()
+        +fetchPayment()
+        +verifyPayment()
+    }
+    
+    class CloudinaryService {
+        +uploadImage()
+        +deleteImage()
+        +getImageUrl()
+    }
+    
+    class ReactApp {
+        +Router
+        +Components
+        +Pages
+        +Contexts
+        +ApiCalls
+    }
+    
+    User --> Cart
+    User --> Order
+    User --> Payment
+    User --> DeliveryAddress
+    Cart --> Product
+    Order --> Product
+    Order --> DeliveryAddress
+    
+    UserController --> User
+    ProductController --> Product
+    CartController --> Cart
+    OrderController --> Order
+    PaymentController --> Payment
+    
+    UserController --> AuthMiddleware
+    ProductController --> AuthMiddleware
+    CartController --> AuthMiddleware
+    OrderController --> AuthMiddleware
+    PaymentController --> AuthMiddleware
+    
+    PaymentController --> RazorpayService
+    ProductController --> CloudinaryService
+    UserController --> CloudinaryService
+    
+    ReactApp --> UserController
+    ReactApp --> ProductController
+    ReactApp --> CartController
+    ReactApp --> OrderController
+    ReactApp --> PaymentController
+

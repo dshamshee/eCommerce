@@ -10,6 +10,7 @@ const cartRoutes = require("./routes/cart");
 const paymentRoutes = require("./routes/payment");
 const { updateExpiredNewProducts } = require("./utils/productUtils");
 const cors = require("cors");
+const returnOrderRoutes = require("./routes/returnOrder");
 require("dotenv").config();
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api/delivery-address', deliveryAddressRoutes);
 app.use('/api/order', orderRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/return', returnOrderRoutes);
 
 
 app.listen(process.env.PORT, () => {

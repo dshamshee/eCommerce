@@ -8,12 +8,14 @@ import { addAddress, updateAddress, deleteAddress, setDefaultAddress } from '../
 import { toast } from 'react-toastify';
 import { updateProfile, updateUserData } from '../../API/POST-Axios/userApi';
 import { mutate } from 'swr';
+import { useNavigate } from 'react-router-dom';
 
 const Profile2 = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [editMode, setEditMode] = useState(false);
   const [addNewAddress, setAddNewAddress] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const navigate = useNavigate()
   // const [Country, setCountry] = useState('');
   // const [State, setState] = useState('');
   // const [City, setCity] = useState('');
@@ -279,6 +281,13 @@ const Profile2 = () => {
   // Handle update profile
   const handleUpdateProfile = () => {
     fileInputRef.current.click();
+  }
+
+  // Handle Track Order 
+  const handleTrackOrder = (id)=>{
+    console.log(id)
+    navigate(`/profile/track-order/${id}`)
+    
   }
 
 
@@ -603,7 +612,7 @@ const handleFileChange = async (e) => {
                         </div>
                         
                         <div className="mt-4 flex justify-end space-x-4">
-                          <button className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
+                          <button onClick={()=> handleTrackOrder(order._id)} className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
                             Track Order
                           </button>
                           <button className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
