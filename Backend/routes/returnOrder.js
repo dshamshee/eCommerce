@@ -28,4 +28,19 @@ router.post("/create-return-order", isLoggedIn, async(req, res)=>{
     }
 })
 
+// get router order by id
+router.get('/get-return-order/:id', isLoggedIn, async(req, res)=>{
+
+    try {
+        const returnedOrder = await returnOrderModel.findOne({orderId: req.params.id});
+        if(!returnedOrder){
+            return res.status(200).json({success: false, message: "Return order not found"})
+        }
+        return res.status(200).json({success: true, message: "Return order fetched successfully", returnedOrder});
+    } catch (error) {
+        console.log("Error in get return order", error);
+        return res.status(500).json({message: error.message});
+    }
+})
+
 module.exports = router;

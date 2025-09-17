@@ -1,9 +1,11 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { GetOrderById } from "../../API/GET-SWR/order";
 import { useState, useEffect } from "react";
-import { FaArrowLeft, FaBox, FaShippingFast, FaCheckCircle, FaTruck, FaClock, FaMapMarkerAlt, FaUser, FaEnvelope, FaPhone, FaRupeeSign, FaCreditCard, FaCalendarAlt, FaHashtag, FaExclamationTriangle } from "react-icons/fa";
+import { FaArrowLeft, FaBox, FaShippingFast, FaCheckCircle, FaTruck, FaClock, FaMapMarkerAlt, FaUser, FaEnvelope, FaPhone, FaRupeeSign, FaCreditCard, FaCalendarAlt, FaHashtag, FaExclamationTriangle, FaUndo, FaMoneyBillWave, FaCogs } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { returnOrder } from "../../API/POST-Axios/returnOrder";
+import { GetetReturnedOrder } from "../../API/GET-SWR/returnOrder";
+import { mutate } from "swr";
 
 export const TrackOrder = () => {
   const navigate = useNavigate();
@@ -16,6 +18,25 @@ export const TrackOrder = () => {
     ifsc: "",
   })
   const [reason, setReason] = useState("");
+  const [isOrderReturned, setIsOrderReturned] = useState(false);
+  const { returnedOrder, isLoading: isReturnedOrderLoading, error: isReturnedOrderError } = GetetReturnedOrder(id);
+
+
+  // check the order is already returned or not
+  useEffect(() => {
+    if (returnedOrder) {
+      setIsOrderReturned(true);
+    } else if (!isReturnedOrderLoading && !returnedOrder) {
+      // If loading is complete and no returned order found, set to false
+      setIsOrderReturned(false);
+    }
+  }, [returnedOrder, isReturnedOrderLoading]);
+
+  // Helper function to check if the error is a 404 (expected for non-returned orders)
+  const isReturnOrderNotFound = isReturnedOrderError && 
+    (isReturnedOrderError.response?.status === 404 || 
+     isReturnedOrderError.message?.includes('404') ||
+     isReturnedOrderError.message?.includes('not found'));
 
   // Listen for system theme changes
   useEffect(() => {
@@ -66,6 +87,34 @@ export const TrackOrder = () => {
       step: 0,
       bgColor: "bg-red-50 dark:bg-red-900/20",
       textColor: "text-red-700 dark:text-red-300"
+    }
+  };
+
+  // Return status configuration
+  const returnStatusConfig = {
+    "Initiate": { 
+      color: "bg-yellow-500", 
+      icon: <FaUndo className="w-6 h-6" />, 
+      description: "Return request submitted and being reviewed",
+      step: 1,
+      bgColor: "bg-yellow-50 dark:bg-yellow-900/20",
+      textColor: "text-yellow-700 dark:text-yellow-300"
+    },
+    "Processing": { 
+      color: "bg-blue-500", 
+      icon: <FaCogs className="w-6 h-6" />, 
+      description: "Return is being processed by our team",
+      step: 2,
+      bgColor: "bg-blue-50 dark:bg-blue-900/20",
+      textColor: "text-blue-700 dark:text-blue-300"
+    },
+    "Completed": { 
+      color: "bg-green-500", 
+      icon: <FaMoneyBillWave className="w-6 h-6" />, 
+      description: "Refund has been processed to your account",
+      step: 3,
+      bgColor: "bg-green-50 dark:bg-green-900/20",
+      textColor: "text-green-700 dark:text-green-300"
     }
   };
 
@@ -126,6 +175,8 @@ export const TrackOrder = () => {
             });
             setReason("");
             document.getElementById('my_modal_1').close();
+            setIsOrderReturned(true);
+            mutate(`/return/get-return-order/${id}`);
         } else {
             toast.error(response.data?.message || "Failed to initiate return");
         }
@@ -246,9 +297,17 @@ export const TrackOrder = () => {
               </div>
             </div>
             
-            <div className={`px-3 py-1 rounded-full text-sm font-medium ${currentStatus.color} text-white flex items-center space-x-2`}>
-              {currentStatus.icon}
-              <span>{order.status}</span>
+            <div className="flex items-center space-x-3">
+              {isOrderReturned && returnedOrder && (
+                <div className="px-3 py-1 rounded-full text-sm font-medium bg-red-500 text-white flex items-center space-x-2">
+                  <FaUndo className="w-4 h-4" />
+                  <span>Return {returnedOrder.status === 'Initiate' ? 'Initiated' : returnedOrder.status}</span>
+                </div>
+              )}
+              <div className={`px-3 py-1 rounded-full text-sm font-medium ${currentStatus.color} text-white flex items-center space-x-2`}>
+                {currentStatus.icon}
+                <span>{order.status}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -281,8 +340,8 @@ export const TrackOrder = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Order Timeline */}
-            {order.status !== "Cancelled" && (
+            {/* Order Timeline - Show when order is not cancelled and not returned */}
+            {order.status !== "Cancelled" && !isOrderReturned && !isReturnedOrderLoading && (isReturnOrderNotFound || !isReturnedOrderError) && (
               <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} p-6`}>
                 <h3 className="text-xl font-bold mb-6 flex items-center">
                   <FaShippingFast className="w-6 h-6 mr-3 text-blue-500" />
@@ -336,6 +395,116 @@ export const TrackOrder = () => {
                     })}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Return Timeline - Show when order is returned */}
+            {isOrderReturned && !isReturnedOrderLoading && returnedOrder && (
+              <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-sm border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} p-6`}>
+                <h3 className="text-xl font-bold mb-6 flex items-center">
+                  <FaUndo className="w-6 h-6 mr-3 text-red-500" />
+                  Return Progress
+                </h3>
+                
+                {/* Return Hero Section */}
+                <div className={`${returnStatusConfig[returnedOrder.status]?.bgColor || 'bg-yellow-50 dark:bg-yellow-900/20'} rounded-lg p-4 mb-6`}>
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-12 h-12 rounded-full ${returnStatusConfig[returnedOrder.status]?.color || 'bg-yellow-500'} flex items-center justify-center text-white`}>
+                      {returnStatusConfig[returnedOrder.status]?.icon || <FaUndo className="w-6 h-6" />}
+                    </div>
+                    <div>
+                      <h4 className={`font-bold text-lg ${returnStatusConfig[returnedOrder.status]?.textColor || 'text-yellow-700 dark:text-yellow-300'}`}>
+                        Return {returnedOrder.status === 'Initiate' ? 'Initiated' : returnedOrder.status}
+                      </h4>
+                      <p className={`${returnStatusConfig[returnedOrder.status]?.textColor || 'text-yellow-700 dark:text-yellow-300'} opacity-80`}>
+                        {returnStatusConfig[returnedOrder.status]?.description || 'Return request has been submitted'}
+                      </p>
+                      <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        Return requested on: {formatDate(returnedOrder.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <div className={`absolute left-6 top-0 h-full w-0.5 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
+                  <div className="space-y-8">
+                    {Object.entries(returnStatusConfig).map(([status, config]) => {
+                      const currentStatusStep = returnStatusConfig[returnedOrder.status]?.step || 1;
+                      const isCompleted = currentStatusStep >= config.step;
+                      const isCurrent = status === returnedOrder.status;
+                      
+                      return (
+                        <div key={status} className="flex items-start relative">
+                          <div className={`flex items-center justify-center w-12 h-12 rounded-full border-4 z-10 transition-all duration-300 ${
+                            isCompleted 
+                              ? `${config.color} border-white shadow-lg` 
+                              : isDarkMode 
+                                ? 'bg-gray-800 border-gray-600' 
+                                : 'bg-white border-gray-300'
+                          }`}>
+                            <div className={`${isCompleted ? 'text-white' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                              {config.icon}
+                            </div>
+                          </div>
+                          <div className="ml-6 flex-1">
+                            <div className="flex items-center justify-between">
+                              <h4 className={`font-semibold text-lg ${isCurrent ? 'text-yellow-500' : ''}`}>
+                                {status === 'Initiate' ? 'Return Initiated' : status}
+                              </h4>
+                              {isCurrent && (
+                                <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-xs rounded-full font-medium">
+                                  Current
+                                </span>
+                              )}
+                            </div>
+                            <p className={`mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                              {config.description}
+                            </p>
+                            {isCompleted && (
+                              <p className={`mt-2 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                {isCurrent ? `Updated: ${formatDate(returnedOrder.createdAt)}` : 'Completed'}
+                              </p>
+                            )}
+                            {isCurrent && returnedOrder.reason && (
+                              <div className={`mt-3 p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                                <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                  Return Reason:
+                                </p>
+                                <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                  {returnedOrder.reason}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Return Details */}
+                {returnedOrder.bankDetails && (
+                  <div className={`mt-6 p-4 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                    <h5 className={`font-medium mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Refund Account Details:
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <span className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Account Holder:</span>
+                        <p className="font-medium">{returnedOrder.bankDetails.AccountHolderName}</p>
+                      </div>
+                      <div>
+                        <span className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Account Number:</span>
+                        <p className="font-medium">****{returnedOrder.bankDetails.AccountNumber?.slice(-4)}</p>
+                      </div>
+                      <div>
+                        <span className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>IFSC Code:</span>
+                        <p className="font-medium">{returnedOrder.bankDetails.IFSC}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -478,17 +647,44 @@ export const TrackOrder = () => {
                   <FaEnvelope className="w-4 h-4 mr-2" />
                   Contact Support
                 </button>
-                {order.status !== "Delivered" && order.status !== "Cancelled" && (
-                    order.status !== "Delevered" ? (
-                        <Link 
+                
+                {/* Show Return Order button only if order is delivered and not already returned */}
+                {order.status === "Delevered" && !isOrderReturned && !isReturnedOrderLoading && (isReturnOrderNotFound || !isReturnedOrderError) && (
+                  <button 
+                    className="w-full btn btn-error" 
+                    onClick={()=>document.getElementById('my_modal_1').showModal()}
+                  >
+                    <FaUndo className="w-4 h-4 mr-2" />
+                    Return Order
+                  </button>
+                )}
+                
+                {/* Show Cancel Order button only if order is not delivered, not cancelled, and not returned */}
+                {order.status !== "Delevered" && order.status !== "Cancelled" && !isOrderReturned && !isReturnedOrderLoading && (isReturnOrderNotFound || !isReturnedOrderError) && (
+                  <Link 
                     to="#" 
                     className="w-full btn btn-error"
                   >
                     Cancel Order
                   </Link>
-                    ) : (
-                        <button className="w-full btn btn-error" onClick={()=>document.getElementById('my_modal_1').showModal()}>Return Order</button>
-                    )
+                )}
+                
+                {/* Show return status info if order is returned */}
+                {isOrderReturned && returnedOrder && (
+                  <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'} border`}>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <FaUndo className="w-4 h-4 text-red-500" />
+                      <span className="font-medium text-red-700 dark:text-red-300">Order Return Status</span>
+                    </div>
+                    <p className={`text-sm ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>
+                      Your return request is currently: <strong>{returnedOrder.status === 'Initiate' ? 'Being Processed' : returnedOrder.status}</strong>
+                    </p>
+                    {returnedOrder.status === 'Completed' && (
+                      <p className={`text-sm mt-1 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+                        ✓ Refund has been processed to your account
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

@@ -25,6 +25,7 @@ export const ProductList = () => {
   useEffect(() => {
     setAllProducts(products);
   }, [products]);
+  console.log(allProducts)
 
   const handlePrevious = () => {
     if (limit > 1) {
