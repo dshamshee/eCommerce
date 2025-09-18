@@ -37,7 +37,7 @@ export const AboutBrand = () => {
               </div>
             </div>
             <p className="dark:text-gray-400 text-gray-900 mb-4">
-              "Hi, I'm Zeeshan Shamshee, the heart behind Wolvenstitch. After
+              "Hi, I'm Danish Shamshee, the heart behind Wolvenstitch. After
               years of working in fast fashion, I was frustrated by the
               industry's waste and lack of transparency. I dreamed of a brand
               that blended ethical craftsmanship with modern design—where every
