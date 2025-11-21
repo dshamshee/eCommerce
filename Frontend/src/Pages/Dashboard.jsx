@@ -76,11 +76,11 @@ export const Dashboard = () => {
           </h3>
         </div>
         <div className="buttons flex gap-4">
-          <button className="btn px-4 py-2 rounded-md md:text-black text-white font-semibold md:bg-white bg-gray-800">
+          <button className="btn cursor-default px-4 py-2 rounded-md md:text-black text-white font-semibold md:bg-white bg-gray-800">
             Shop the Drop
           </button>
-          <button className="px-4 py-2 rounded-md btn btn-outline">
-            View Collection
+          <button className="cursor-default px-4 py-2 rounded-md outline">
+             Fashion That Fits
           </button>
         </div>
       </div>
