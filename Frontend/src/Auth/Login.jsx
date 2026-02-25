@@ -109,11 +109,11 @@ export const Login = () => {
                                     </label>
                                 </div>
 
-                                <div className="text-sm">
+                                {/* <div className="text-sm">
                                     <a href="#" className="font-semibold text-blue-600 hover:text-blue-700 transition duration-150 ease-in-out">
                                         Forgot password?
                                     </a>
-                                </div>
+                                </div> */}
                             </div>
 
                             <div className="mt-8">

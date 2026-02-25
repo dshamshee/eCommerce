@@ -53,8 +53,7 @@ export const MakePayment = () => {
     }
 
     const options = {
-      //   key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      key: "rzp_test_B3a8U66geHkk0M",
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: amount,
       currency: "INR",
       name: "Wolvenstitch a clothing brand",
