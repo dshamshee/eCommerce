@@ -67,13 +67,13 @@ router.post('/generate-otp', async (req ,res)=>{
     const transporter=nodemailer.createTransport({
       service:'gmail',
       auth:{
-        user:'danishshamshee@gmail.com',
+        user:'danishshamsheee@gmail.com',
         pass:'xbah udob vkvp queq' // gmail app passcode 
       }
     })
     const otp = Math.floor(100000 + Math.random() * 900000);
     const sendedOTP = await transporter.sendMail({
-      from:"danishshamshee@gmail.com",
+      from:"danishshamsheee@gmail.com",
       to:email,
       subject:"Wolvenstitch - OTP Verification",
       html:`Hello ${name} !! Your Otp is ${otp} . Kindly Don't Share it to any One`
