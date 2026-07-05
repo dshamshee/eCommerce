@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 // Memoized Product Card Component
 const ProductCard = memo(({ product, handleNavigate }) => (
-  <div 
-    key={product._id} 
+  <div
+    key={product._id}
     className="group relative dark:bg-gray-800 bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300"
   >
     {/* Product Badges */}
@@ -38,22 +38,22 @@ const ProductCard = memo(({ product, handleNavigate }) => (
       <h3 className="md:text-lg text-xs text-nowrap overflow-hidden text-ellipsis whitespace-nowrap font-medium dark:text-gray-100 text-gray-900 mb-1">
         {product.name}
       </h3>
-      
+
       {/* Price */}
       <div className="flex md:flex-row flex-col md:items-center gap-2 mb-3">
         <span className="md:text-lg text-sm font-bold dark:text-gray-100 text-gray-900">
           ₹{(product.price - product.discount).toFixed(2)}
         </span>
-       
-          <div className='flex items-center gap-2'>
+
+        <div className='flex items-center gap-2'>
           <span className={`text-sm dark:text-gray-400 text-gray-900 line-through ${product.discount === 0 ? 'hidden' : ''}`}>
-            ₹{product.price.toFixed(2)} 
+            ₹{product.price.toFixed(2)}
           </span>
           <span className={`text-sm dark:text-green-500 text-green-500 ${product.discount === 0 ? 'hidden' : ''}`}>
-            {product.discount > 0 && `${Math.round((product.discount/product.price * 100))}% off`}
+            {product.discount > 0 && `${Math.round((product.discount / product.price * 100))}% off`}
           </span>
-          </div>
-  
+        </div>
+
       </div>
 
       {/* Color/Size Options */}
@@ -102,7 +102,7 @@ const ProductCard = memo(({ product, handleNavigate }) => (
 ));
 
 // Main Grid Component
-export const GridProducts = memo(({products}) => {
+export const GridProducts = memo(({ products }) => {
   const displayProducts = products.slice(0, 8);
   const navigate = useNavigate();
   // const {getProductById} = useProductContext();
@@ -112,7 +112,7 @@ export const GridProducts = memo(({products}) => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
-  });
+    });
   };
 
   return (

@@ -11,16 +11,16 @@ import { useEffect } from "react";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const {user, isLoading: userLoading} = GetUser();
+  const { user, isLoading: userLoading } = GetUser();
   // const {allProducts, error, isLoading} = GetProducts();
   const { allProducts, error, isLoading } = useProductContext();
 
   // Redirect to admin page if user is admin (after login)
-  useEffect(()=>{
-    if(!userLoading && user?.role === 'admin'){
+  useEffect(() => {
+    if (!userLoading && user?.role === 'admin') {
       navigate('/admin');
     }
-  },[user, userLoading, navigate])
+  }, [user, userLoading, navigate])
 
   if (error) {
     navigate("/error");
@@ -40,7 +40,7 @@ export const Dashboard = () => {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center md:hidden">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-5xl font-bold dark:text-gray-100 text-gray-900 mb-4">
-           
+
             ELEVATE YOUR <span className="text-rose-500">STYLE</span>
           </h1>
           <p className="dark:text-gray-400 text-gray-900 text-lg mb-8">
@@ -50,7 +50,7 @@ export const Dashboard = () => {
           <button className="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3 rounded-md font-medium transition">
             Explore Collection
           </button>
-          
+
         </div>
         <div className="md:w-1/2">
           <img
@@ -61,7 +61,7 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      <hr className="mt-28 mb-5 dark:border-gray-700 border-gray-300 md:hidden"/>
+      <hr className="mt-28 mb-5 dark:border-gray-700 border-gray-300 md:hidden" />
 
       {/* Headings for Desktop */}
       <div className="headings md:w-[90%] mx-auto md:flex flex-col items-center justify-center gap-4 hidden">
@@ -80,7 +80,7 @@ export const Dashboard = () => {
             Shop the Drop
           </button>
           <button className="cursor-default px-4 py-2 rounded-md outline">
-             Fashion That Fits
+            Fashion That Fits
           </button>
         </div>
       </div>

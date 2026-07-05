@@ -1,6 +1,6 @@
 
 
-export const Collection_1 = ({products}) => {
+export const Collection_1 = ({ products }) => {
 
   return (
     <div className="mainContainer mt-20">
