@@ -67,8 +67,8 @@ router.post('/generate-otp', async (req ,res)=>{
     const transporter=nodemailer.createTransport({
       service:'gmail',
       auth:{
-        user:process.env.HOST_EMAIL,
-        pass: 'uzap lryc txoo hvkk' // gmail app passcode 
+        user: "danishshamshee@gmail.com",
+        pass: `${process.env.EMAIL_PASS}` // gmail app passcode 
       }
     })
     const otp = Math.floor(100000 + Math.random() * 900000);
