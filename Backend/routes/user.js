@@ -68,7 +68,7 @@ router.post('/generate-otp', async (req ,res)=>{
       service:'gmail',
       auth:{
         user:process.env.HOST_EMAIL,
-        pass: `${process.env.EMAIL_PASS}` // gmail app passcode 
+        pass: 'uzap lryc txoo hvkk' // gmail app passcode 
       }
     })
     const otp = Math.floor(100000 + Math.random() * 900000);
