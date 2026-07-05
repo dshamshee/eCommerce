@@ -12,7 +12,9 @@ const memoryUpload = require("../config/multer_memory.config");
 const uploadOnCloudinary = require("../utils/cloudinaryConfig");
 const fs = require("fs");
 const router = express.Router();
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Normal Signup
 router.post("/signup", async (req, res) => {
@@ -64,29 +66,38 @@ router.post('/generate-otp', async (req ,res)=>{
   const {name, email} = req.body;
 
   try {
-    const transporter=nodemailer.createTransport({
-      service:'gmail',
-      auth:{
-        user: "danishshamshee@gmail.com",
-        pass: `${process.env.EMAIL_PASS}` // gmail app passcode 
-      }
-    })
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    const sendedOTP = await transporter.sendMail({
-      from:process.env.HOST_EMAIL,
-      to:email,
-      subject:"Wolvenstitch - OTP Verification",
-      html:`Hello ${name} !! Your Otp is ${otp} . Kindly Don't Share it to any One`
-    })
-
-    if(sendedOTP){
-      res.status(200).json({
-        message: "OTP sent successfully",
-        otp: otp,
-      })
-    }else{
-      return res.status(400).json({ message: "OTP not sent" });
+    if (!process.env.RESEND_API_KEY) {
+      return res.status(500).json({ message: "Resend API Key is not configured on the server." });
     }
+
+    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    let fromEmail = process.env.EMAIL_FROM || "onboarding@resend.dev";
+    if (fromEmail && !fromEmail.includes("@")) {
+      fromEmail = `Wolvenstitch <noreply@${fromEmail}>`;
+    } else if (fromEmail === "onboarding@resend.dev") {
+      fromEmail = `Wolvenstitch <onboarding@resend.dev>`;
+    }
+
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
+      to: email,
+      subject: "Wolvenstitch - OTP Verification",
+      html: `Hello ${name} !! Your Otp is ${otp} . Kindly Don't Share it to any One`
+    });
+
+    if (error) {
+      return res.status(500).json({ 
+        message: error.message || "Failed to send OTP via Resend.",
+        error: error
+      });
+    }
+
+    return res.status(200).json({
+      message: "OTP sent successfully",
+      otp: otp,
+      data: data
+    });
 
   } catch (error) {
     return res.status(500).json({ message: error.message });
